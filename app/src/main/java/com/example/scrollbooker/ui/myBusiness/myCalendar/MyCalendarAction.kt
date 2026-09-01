@@ -7,7 +7,7 @@ sealed interface MyCalendarAction {
     data object Settings: MyCalendarAction
     data object DayRefresh: MyCalendarAction
     data object OnBlockToggle: MyCalendarAction
+    data object OpenDurationSheet: MyCalendarAction
     data class DayChanged(val day: LocalDate): MyCalendarAction
-    data class SlotDurationChanged(val value: String?): MyCalendarAction
     data class SlotClick(val slot: CalendarEventsSlot): MyCalendarAction
 }

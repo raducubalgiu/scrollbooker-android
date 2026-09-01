@@ -18,6 +18,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.scale
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.semantics.Role
+import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import com.example.scrollbooker.core.util.Dimens.SpacingS
@@ -33,6 +34,7 @@ fun InputRadio(
     selected: Boolean,
     onSelect: () -> Unit,
     headLine: String,
+    headLineStyle: TextStyle = bodyLarge,
     subHeadline: String? = null,
     containerColor: Color = Background,
     contentColor: Color = OnBackground,
@@ -69,7 +71,7 @@ fun InputRadio(
             ) {
                 Text(
                     text = headLine,
-                    style = bodyLarge,
+                    style = headLineStyle,
                     color = contentColor,
                 )
 

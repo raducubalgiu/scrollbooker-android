@@ -24,7 +24,6 @@ import com.example.scrollbooker.ui.myBusiness.myCalendar.components.header.MyCal
 import com.example.scrollbooker.ui.myBusiness.myCalendar.components.header.MyCalendarHeaderStateAction.HandleNextWeek
 import com.example.scrollbooker.ui.myBusiness.myCalendar.components.header.MyCalendarHeaderStateAction.HandlePreviousWeek
 import com.example.scrollbooker.ui.myBusiness.myCalendar.components.header.MyCalendarHeaderStateAction.OnChangeTab
-import com.example.scrollbooker.ui.myBusiness.myCalendar.components.header.MyCalendarHeaderStateAction.OnSlotChange
 import com.example.scrollbooker.components.customized.calendar.CalendarHeaderState
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
@@ -36,6 +35,7 @@ fun MyCalendarScaffoldContent(
     daySchedule: Schedule?,
     slotDuration: Int,
     blockUiState: BlockUiState,
+    isRefreshing: Boolean,
     onAction: (MyCalendarAction) -> Unit
 ) {
     val scope = rememberCoroutineScope()
@@ -117,6 +117,7 @@ fun MyCalendarScaffoldContent(
                     daySchedule = daySchedule,
                     slotDuration = slotDuration,
                     blockUiState = blockUiState,
+                    isRefreshing = isRefreshing,
                     onSlotClick = { onAction(SlotClick(it)) },
                     onDayRefresh = { onAction(DayRefresh) }
                 )
@@ -139,7 +140,7 @@ private fun handleHeaderAction(
         is MyCalendarHeaderStateAction.OnBlockToggle -> onAction(OnBlockToggle)
         is HandleNextWeek -> handleNextWeek()
         is HandlePreviousWeek -> handlePreviousWeek()
-        is OnSlotChange -> onAction(SlotDurationChanged(action.slotDuration))
+        is MyCalendarHeaderStateAction.OpenDurationSheet -> onAction(OpenDurationSheet)
         is OnChangeTab -> {
             onAction(DayChanged(action.date))
 

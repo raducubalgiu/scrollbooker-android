@@ -32,8 +32,7 @@ import com.example.scrollbooker.core.util.Dimens.SpacingXS
 import com.example.scrollbooker.ui.myBusiness.myCalendar.components.header.MyCalendarHeaderActionsStateAction.HandleNextWeek
 import com.example.scrollbooker.ui.myBusiness.myCalendar.components.header.MyCalendarHeaderActionsStateAction.HandlePreviousWeek
 import com.example.scrollbooker.ui.myBusiness.myCalendar.components.header.MyCalendarHeaderActionsStateAction.OnBlockToggle
-import com.example.scrollbooker.ui.myBusiness.myCalendar.components.header.MyCalendarHeaderActionsStateAction.OnSlotChange
-import com.example.scrollbooker.ui.myBusiness.myCalendar.durations
+import com.example.scrollbooker.ui.myBusiness.myCalendar.components.header.MyCalendarHeaderActionsStateAction.OpenDurationSheet
 import com.example.scrollbooker.ui.theme.Divider
 import com.example.scrollbooker.ui.theme.Error
 import com.example.scrollbooker.ui.theme.OnSurfaceBG
@@ -56,9 +55,8 @@ fun MyCalendarHeaderActions(
         Column(Modifier.weight(0.5f)) {
             MyCalendarDurationAction(
                 label = stringResource(R.string.interval),
-                options = durations,
                 selectedSlot = state.slotDuration.toString(),
-                onSlotChange = { onAction(OnSlotChange(it)) }
+                onClick = { onAction(OpenDurationSheet) }
             )
         }
 

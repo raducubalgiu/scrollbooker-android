@@ -9,6 +9,8 @@ import com.example.scrollbooker.ui.myBusiness.myCalendar.sheets.block.BlockSlots
 import com.example.scrollbooker.ui.myBusiness.myCalendar.sheets.block.BlockSlotsSheet
 import com.example.scrollbooker.ui.myBusiness.myCalendar.sheets.block.BlockSlotsSheetState
 import com.example.scrollbooker.ui.myBusiness.myCalendar.sheets.detail.MyCalendarAppointmentDetailSheet
+import com.example.scrollbooker.ui.myBusiness.myCalendar.sheets.duration.DurationSheetAction
+import com.example.scrollbooker.ui.myBusiness.myCalendar.sheets.duration.MyCalendarDurationSheet
 import com.example.scrollbooker.ui.myBusiness.myCalendar.sheets.ownClient.OwnClientAction
 import com.example.scrollbooker.ui.myBusiness.myCalendar.sheets.ownClient.OwnClientSheet
 import com.example.scrollbooker.ui.myBusiness.myCalendar.sheets.ownClient.OwnClientSheetState
@@ -24,6 +26,8 @@ fun MyCalendarSheets(
     onOwnClientAction: (OwnClientAction) -> Unit,
     blockState: BlockSlotsSheetState,
     onBlockAction: (BlockSlotsAction) -> Unit,
+    selectedDuration: String,
+    onDurationAction: (DurationSheetAction) -> Unit,
 ) {
     val current = controller.currentSheet ?: return
 
@@ -49,6 +53,11 @@ fun MyCalendarSheets(
             MyCalendarSheet.OwnClient -> OwnClientSheet(
                 state = ownClientState,
                 onAction = onOwnClientAction
+            )
+
+            MyCalendarSheet.Duration -> MyCalendarDurationSheet(
+                selected = selectedDuration,
+                onAction = onDurationAction
             )
         }
     }

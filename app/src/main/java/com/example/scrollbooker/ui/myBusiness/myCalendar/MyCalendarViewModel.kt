@@ -39,6 +39,7 @@ import kotlinx.coroutines.flow.filterNotNull
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.flow
+import kotlinx.coroutines.flow.onCompletion
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
@@ -65,17 +66,11 @@ class MyCalendarViewModel @Inject constructor(
     private val _selectedDay = MutableStateFlow<LocalDate?>(LocalDate.now())
     val selectedDay: StateFlow<LocalDate?> = _selectedDay.asStateFlow()
 
-    private val _isBlocking = MutableStateFlow<Boolean>(false)
-    val isBlocking: StateFlow<Boolean> = _isBlocking
-
     private val _defaultBlockedStartLocale = MutableStateFlow<Set<LocalDateTime>>(emptySet())
     val defaultBlockedStartLocale: StateFlow<Set<LocalDateTime>> = _defaultBlockedStartLocale.asStateFlow()
 
     private val _selectedStartLocale = MutableStateFlow<Set<LocalDateTime>>(emptySet())
     val selectedStartLocale: StateFlow<Set<LocalDateTime>> = _selectedStartLocale.asStateFlow()
-
-    private val _isSaving = MutableStateFlow<Boolean>(false)
-    val isSaving: StateFlow<Boolean> = _isSaving
 
     private val _slotDuration = MutableStateFlow<Int>(60)
     val slotDuration: MutableStateFlow<Int> = _slotDuration
@@ -83,15 +78,23 @@ class MyCalendarViewModel @Inject constructor(
     private val _selectedOwnClient = MutableStateFlow<CalendarEventsSlot?>(null)
     val selectedOwnClient: StateFlow<CalendarEventsSlot?> = _selectedOwnClient.asStateFlow()
 
+    private val _isBlocking = MutableStateFlow<Boolean>(false)
+    val isBlocking: StateFlow<Boolean> = _isBlocking
+
+    private val _isSaving = MutableStateFlow<Boolean>(false)
+    val isSaving: StateFlow<Boolean> = _isSaving
+
+    // True only while calendarEvents is silently re-fetching a day that already has data
+    // (stale refresh) - drives the pull-to-refresh spinner without forcing a full loading state.
+    private val _isRefreshingCurrentDay = MutableStateFlow(false)
+    val isRefreshingCurrentDay: StateFlow<Boolean> = _isRefreshingCurrentDay.asStateFlow()
+
     private val _events = MutableSharedFlow<SnackBarUiEvent.Show>(
         extraBufferCapacity = 1,
         onBufferOverflow = BufferOverflow.DROP_OLDEST
     )
     val events: SharedFlow<SnackBarUiEvent.Show> = _events.asSharedFlow()
 
-    // Bumped only when an own-client/last-minute/block action actually succeeds, so the
-    // sheets can close themselves on real success instead of on every isSaving->false toggle
-    // (which used to close the sheet on failure too, silently).
     private val _actionSucceededTick = MutableStateFlow(0)
     val actionSucceededTick: StateFlow<Int> = _actionSucceededTick.asStateFlow()
 
@@ -111,12 +114,13 @@ class MyCalendarViewModel @Inject constructor(
     private val dateFmt = DateTimeFormatter.ISO_LOCAL_DATE
     private val cache = ConcurrentHashMap<String, FeatureState<CalendarEvents>>()
 
+    // Keys pending a forced re-fetch (via refreshCurrentDay) whose cached value must still be
+    // kept around and shown while that re-fetch is in flight, so the screen never blanks out.
+    private val staleKeys = ConcurrentHashMap.newKeySet<String>()
+
     private fun cacheKey(userId: Int, businessId: Int, employeeId: Int?, day: LocalDate, slot: Int): String =
         "$userId:$businessId:${employeeId ?: "-"}:${day.format(dateFmt)}:$slot"
 
-    // Shared availability context (userId/businessId/employeeId/slotDuration) that both the
-    // header (26-week overview, built by BaseCalendarViewModel) and the day events flow are
-    // keyed on, so they never drift apart.
     override val calendarContextFlow: Flow<CalendarContext> =
         combine(
             userIdFlow.filterNotNull(),
@@ -127,8 +131,6 @@ class MyCalendarViewModel @Inject constructor(
             CalendarContext(userId, businessId, employeeId, slot)
         }.distinctUntilChanged()
 
-    // MyCalendar shows 6 months in the past and 6 months in the future, centered on today -
-    // unlike BookingViewModel, which only looks 6 months into the future.
     override fun calendarWindow(currentMonday: LocalDate): Pair<LocalDate, LocalDate> =
         currentMonday.minusWeeks(13) to currentMonday.plusWeeks(13)
 
@@ -188,15 +190,22 @@ class MyCalendarViewModel @Inject constructor(
                 val key = cacheKey(p.userId, p.businessId, p.employeeId, p.day, p.slot)
 
                 val cached = cache[key]
+                val isStale = staleKeys.contains(key)
 
                 if(cached is FeatureState.Success) {
+                    // Keep showing the last known data (even if stale) instead of blanking the
+                    // screen with a full loading state while a forced refresh is in flight.
                     emit(cached)
                 } else {
                     emit(FeatureState.Loading)
                 }
 
-                if (cache[key] is FeatureState.Success) {
+                if (cached is FeatureState.Success && !isStale) {
                     return@flow
+                }
+
+                if (isStale) {
+                    _isRefreshingCurrentDay.value = true
                 }
 
                 val result = withVisibleLoading {
@@ -217,14 +226,23 @@ class MyCalendarViewModel @Inject constructor(
                     }
                 )
 
-                cache[key] = state
+                staleKeys.remove(key)
+
+                // Only cache successes - a transient failure during a background refresh
+                // shouldn't poison the last known good data for this day.
+                if (state is FeatureState.Success) {
+                    cache[key] = state
+                }
+
                 emit(state)
 
                 if(state is FeatureState.Success) {
                     syncBlockedSelection(p.day, state.data)
                 }
 
-            }.catch { e ->
+            }
+            .onCompletion { _isRefreshingCurrentDay.value = false }
+            .catch { e ->
                 emit(FeatureState.Error(e))
             }
         }
@@ -249,6 +267,46 @@ class MyCalendarViewModel @Inject constructor(
                 .withoutDay(day)
                 .plus(blocked)
         }
+    }
+
+    fun setSelectedOwnClient(calendarEvents: CalendarEventsSlot?) {
+        _selectedOwnClient.value = calendarEvents
+    }
+
+    fun toggleBlocking() {
+        _isBlocking.update { !it }
+    }
+
+    fun setBlockDate(startDate: LocalDateTime) {
+        _selectedStartLocale.update { current ->
+            if(startDate in current) current -startDate else current + startDate
+        }
+    }
+
+    fun resetSelectedLocalDates() {
+        _selectedStartLocale.value = _defaultBlockedStartLocale.value
+        _isBlocking.value = false
+    }
+
+    fun setDay(day: LocalDate) {
+        _selectedDay.value = day
+    }
+
+    fun setSlotDuration(duration: String?) {
+        if(duration?.isNotEmpty() == true) {
+            _slotDuration.value = duration.toInt()
+        }
+    }
+
+    suspend fun refreshCurrentDay() {
+        val context = calendarContextFlow.first()
+        val day = selectedDay.value ?: return
+        val key = cacheKey(context.userId, context.businessId, context.employeeId, day, context.slotDuration)
+
+        // Marked stale (not removed) so calendarEvents keeps showing the current data while it
+        // silently re-fetches, instead of blanking the whole day out to a loading state.
+        staleKeys.add(key)
+        refreshTick.update { it + 1 }
     }
 
     fun createOwnClientAppointment(request: AppointmentOwnClientCreate) {
@@ -356,43 +414,5 @@ class MyCalendarViewModel @Inject constructor(
                     _isSaving.value = false
                 }
         }
-    }
-
-    fun setSelectedOwnClient(calendarEvents: CalendarEventsSlot?) {
-        _selectedOwnClient.value = calendarEvents
-    }
-
-    fun toggleBlocking() {
-        _isBlocking.update { !it }
-    }
-
-    fun setBlockDate(startDate: LocalDateTime) {
-        _selectedStartLocale.update { current ->
-            if(startDate in current) current -startDate else current + startDate
-        }
-    }
-
-    fun resetSelectedLocalDates() {
-        _selectedStartLocale.value = _defaultBlockedStartLocale.value
-        _isBlocking.value = false
-    }
-
-    fun setDay(day: LocalDate) {
-        _selectedDay.value = day
-    }
-
-    fun setSlotDuration(duration: String?) {
-        if(duration?.isNotEmpty() == true) {
-            _slotDuration.value = duration.toInt()
-        }
-    }
-
-    suspend fun refreshCurrentDay() {
-        val context = calendarContextFlow.first()
-        val day = selectedDay.value ?: return
-        val key = cacheKey(context.userId, context.businessId, context.employeeId, day, context.slotDuration)
-
-        cache.remove(key)
-        refreshTick.update { it + 1 }
     }
 }

@@ -24,7 +24,7 @@ import com.example.scrollbooker.core.util.Dimens.BasePadding
 import com.example.scrollbooker.ui.myBusiness.myCalendar.components.header.MyCalendarHeaderActionsStateAction.HandleNextWeek
 import com.example.scrollbooker.ui.myBusiness.myCalendar.components.header.MyCalendarHeaderActionsStateAction.HandlePreviousWeek
 import com.example.scrollbooker.ui.myBusiness.myCalendar.components.header.MyCalendarHeaderActionsStateAction.OnBlockToggle
-import com.example.scrollbooker.ui.myBusiness.myCalendar.components.header.MyCalendarHeaderActionsStateAction.OnSlotChange
+import com.example.scrollbooker.ui.myBusiness.myCalendar.components.header.MyCalendarHeaderActionsStateAction.OpenDurationSheet
 import com.example.scrollbooker.components.customized.calendar.CalendarDayTab
 import com.example.scrollbooker.ui.theme.OnBackground
 import com.example.scrollbooker.ui.theme.Primary
@@ -62,7 +62,7 @@ fun MyCalendarHeader(
                 HandlePreviousWeek -> { onAction(MyCalendarHeaderStateAction.HandlePreviousWeek) }
                 HandleNextWeek -> { onAction(MyCalendarHeaderStateAction.HandleNextWeek) }
                 OnBlockToggle -> { onAction(MyCalendarHeaderStateAction.OnBlockToggle) }
-                is OnSlotChange -> { onAction(MyCalendarHeaderStateAction.OnSlotChange(action.slotDuration)) }
+                OpenDurationSheet -> { onAction(MyCalendarHeaderStateAction.OpenDurationSheet) }
             }
         }
     )

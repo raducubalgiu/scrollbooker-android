@@ -18,23 +18,19 @@ import com.example.scrollbooker.core.snackbar.CustomSnackBar
 import com.example.scrollbooker.core.snackbar.rememberSnackBarController
 import com.example.scrollbooker.ui.myBusiness.myCalendar.sheets.block.BlockSlotsAction
 import com.example.scrollbooker.ui.myBusiness.myCalendar.sheets.block.BlockSlotsSheetState
+import com.example.scrollbooker.ui.myBusiness.myCalendar.sheets.duration.DurationSheetAction
 import androidx.compose.material3.SheetValue
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberUpdatedState
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import com.example.scrollbooker.entity.booking.availability.domain.model.CalendarEventsSlot
-import com.example.scrollbooker.entity.booking.availability.domain.model.isFreeSlot
 import com.example.scrollbooker.ui.myBusiness.myCalendar.components.header.MyCalendarBlockAction
 import com.example.scrollbooker.ui.myBusiness.myCalendar.components.MyCalendarFab
 import com.example.scrollbooker.ui.myBusiness.myCalendar.components.MyCalendarScaffoldContent
 import com.example.scrollbooker.ui.myBusiness.myCalendar.sheets.MyCalendarSheet
-import com.example.scrollbooker.ui.myBusiness.myCalendar.sheets.MyCalendarSheetController
 import com.example.scrollbooker.ui.myBusiness.myCalendar.sheets.MyCalendarSheets
 import com.example.scrollbooker.ui.myBusiness.myCalendar.sheets.ownClient.OwnClientAction
 import com.example.scrollbooker.ui.myBusiness.myCalendar.sheets.ownClient.OwnClientSheetState
 import com.example.scrollbooker.ui.myBusiness.myCalendar.sheets.rememberMyCalendarSheetController
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -58,6 +54,7 @@ fun MyCalendarScreen(
     val isSaving by viewModel.isSaving.collectAsStateWithLifecycle()
     val actionSucceededTick by viewModel.actionSucceededTick.collectAsStateWithLifecycle()
     val userId by viewModel.userId.collectAsStateWithLifecycle()
+    val isRefreshingCurrentDay by viewModel.isRefreshingCurrentDay.collectAsStateWithLifecycle()
 
     val snackbarHostState = remember { SnackbarHostState() }
     val snackBarController = rememberSnackBarController(snackbarHostState)
@@ -128,93 +125,56 @@ fun MyCalendarScreen(
                 is BlockSlotsAction.Confirm -> viewModel.blockAppointments(action.message)
                 BlockSlotsAction.Dismiss -> sheets.close()
             }
+        },
+        selectedDuration = slotDuration.toString(),
+        onDurationAction = { action ->
+            when(action) {
+                is DurationSheetAction.Select -> {
+                    viewModel.setSlotDuration(action.value)
+                    sheets.close()
+                }
+                DurationSheetAction.Close -> sheets.close()
+            }
         }
     )
 
-    Scaffold(
-        snackbarHost = {
-            CustomSnackBar(hostState = snackbarHostState)
-        },
-        floatingActionButton = {
-            MyCalendarFab(
-                calendarEvents = calendarEvents,
-                isBlocking = isBlocking,
-                onClick = {
-                    viewModel.setSelectedOwnClient(null)
-                    sheets.open(MyCalendarSheet.OwnClient)
-                }
-            )
-        },
-        bottomBar = {
-            MyCalendarBlockAction(
-                isEnabled = defaultBlockedLocalDates != blockedLocalDates,
-                isBlocking = isBlocking,
-                onCancel = { viewModel.resetSelectedLocalDates() },
-                onBlockConfirm = { sheets.open(MyCalendarSheet.Block) }
-            )
-        },
-    ) { innerPadding ->
-        Box(modifier = Modifier
-            .fillMaxSize()
-            .padding(bottom = innerPadding.calculateBottomPadding())
-        ) {
-            MyCalendarScaffoldContent(
-                headerState = headerState,
-                calendarEvents = calendarEvents,
-                daySchedule = daySchedule,
-                slotDuration = slotDuration,
-                blockUiState = blockUiState,
-                onAction = { action -> handleMyCalendarAction(action, viewModel, sheets, isBlocking, onBack, scope) },
-            )
-        }
-    }
-}
-
-private fun handleMyCalendarAction(
-    action: MyCalendarAction,
-    viewModel: MyCalendarViewModel,
-    sheets: MyCalendarSheetController,
-    isBlocking: Boolean,
-    onBack: () -> Unit,
-    scope: CoroutineScope
-) {
-    when (action) {
-        is MyCalendarAction.DayChanged -> {
-            viewModel.setDay(action.day)
-            if (isBlocking) viewModel.resetSelectedLocalDates()
+    Box(Modifier.fillMaxSize()) {
+        Scaffold(
+            floatingActionButton = {
+                MyCalendarFab(
+                    calendarEvents = calendarEvents,
+                    isBlocking = isBlocking,
+                    onClick = {
+                        viewModel.setSelectedOwnClient(null)
+                        sheets.open(MyCalendarSheet.OwnClient)
+                    }
+                )
+            },
+            bottomBar = {
+                MyCalendarBlockAction(
+                    isEnabled = defaultBlockedLocalDates != blockedLocalDates,
+                    isBlocking = isBlocking,
+                    onCancel = { viewModel.resetSelectedLocalDates() },
+                    onBlockConfirm = { sheets.open(MyCalendarSheet.Block) }
+                )
+            },
+        ) { innerPadding ->
+            Box(modifier = Modifier
+                .fillMaxSize()
+                .padding(bottom = innerPadding.calculateBottomPadding())
+            ) {
+                MyCalendarScaffoldContent(
+                    headerState = headerState,
+                    calendarEvents = calendarEvents,
+                    daySchedule = daySchedule,
+                    slotDuration = slotDuration,
+                    blockUiState = blockUiState,
+                    isRefreshing = isRefreshingCurrentDay,
+                    onAction = { action -> handleMyCalendarAction(action, viewModel, sheets, isBlocking, onBack, scope) },
+                )
+            }
         }
 
-        is MyCalendarAction.SlotDurationChanged ->
-            viewModel.setSlotDuration(action.value)
-
-        is MyCalendarAction.SlotClick ->
-            handleSlotClick(action.slot, viewModel, sheets, isBlocking)
-
-        MyCalendarAction.Back -> onBack()
-
-        MyCalendarAction.Settings -> sheets.open(MyCalendarSheet.Settings)
-
-        MyCalendarAction.OnBlockToggle -> { viewModel.toggleBlocking() }
-
-        MyCalendarAction.DayRefresh -> scope.launch { viewModel.refreshCurrentDay() }
-
-    }
-}
-
-private fun handleSlotClick(
-    slot: CalendarEventsSlot,
-    viewModel: MyCalendarViewModel,
-    sheets: MyCalendarSheetController,
-    isBlocking: Boolean,
-) {
-    when {
-        slot.isBooked -> sheets.open(MyCalendarSheet.Detail)
-
-        isBlocking && slot.isFreeSlot() -> viewModel.setBlockDate(slot.startDateLocale!!)
-
-        slot.isFreeSlot() -> {
-            viewModel.setSelectedOwnClient(slot)
-            sheets.open(MyCalendarSheet.OwnClient)
-        }
+        CustomSnackBar(hostState = snackbarHostState)
     }
 }

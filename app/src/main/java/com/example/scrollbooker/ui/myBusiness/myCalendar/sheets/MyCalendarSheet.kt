@@ -5,4 +5,5 @@ sealed interface MyCalendarSheet {
     data object Detail: MyCalendarSheet
     data object Block: MyCalendarSheet
     data object OwnClient: MyCalendarSheet
+    data object Duration: MyCalendarSheet
 }

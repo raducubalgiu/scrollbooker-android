@@ -18,7 +18,6 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.example.scrollbooker.R
 import com.example.scrollbooker.components.core.layout.ErrorScreen
-import com.example.scrollbooker.components.core.layout.LoadingScreen
 import com.example.scrollbooker.components.core.layout.MessageScreen
 import com.example.scrollbooker.core.extensions.parseTimeStringToLocalTime
 import com.example.scrollbooker.core.util.Dimens.BasePadding
@@ -36,6 +35,7 @@ fun MyCalendarPagerSection(
     daySchedule: Schedule?,
     slotDuration: Int,
     blockUiState: BlockUiState,
+    isRefreshing: Boolean,
     onSlotClick: (CalendarEventsSlot) -> Unit,
     onDayRefresh: () -> Unit
 ) {
@@ -56,7 +56,7 @@ fun MyCalendarPagerSection(
         ) {
             when(val events = calendarEvents) {
                 is FeatureState.Error -> ErrorScreen()
-                is FeatureState.Loading -> LoadingScreen()
+                is FeatureState.Loading -> DayTimelineShimmer(slotDuration = slotDuration)
                 is FeatureState.Success -> {
                     val calendarEvents = events.data
                     val slots = calendarEvents.days.firstOrNull()?.slots ?: emptyList()
@@ -72,18 +72,25 @@ fun MyCalendarPagerSection(
 
                     if(dayStart != null && dayEnd != null) {
                         PullToRefreshBox(
-                            isRefreshing = false,
+                            isRefreshing = isRefreshing,
                             onRefresh = onDayRefresh,
+                            // The default circular indicator doesn't read well here - the
+                            // shimmer on the slots themselves is the refresh feedback instead.
+                            indicator = {}
                         ) {
-                            DayTimeline(
-                                dayStart = dayStart,
-                                dayEnd = dayEnd,
-                                slots = slots,
-                                slotDuration = slotDuration,
-                                blockUiState = blockUiState,
-                                onStyleResolver = { slot -> with(calendarEvents) { slot.resolveUiStyle() } },
-                                onSlotClick = onSlotClick
-                            )
+                            if (isRefreshing) {
+                                DayTimelineShimmer(slotDuration = slotDuration)
+                            } else {
+                                DayTimeline(
+                                    dayStart = dayStart,
+                                    dayEnd = dayEnd,
+                                    slots = slots,
+                                    slotDuration = slotDuration,
+                                    blockUiState = blockUiState,
+                                    onStyleResolver = { slot -> with(calendarEvents) { slot.resolveUiStyle() } },
+                                    onSlotClick = onSlotClick
+                                )
+                            }
                         }
                     } else {
                         MessageScreen(

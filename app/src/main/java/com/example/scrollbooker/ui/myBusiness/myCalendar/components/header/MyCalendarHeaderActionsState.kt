@@ -12,5 +12,5 @@ sealed interface MyCalendarHeaderActionsStateAction {
     data object HandlePreviousWeek: MyCalendarHeaderActionsStateAction
     data object HandleNextWeek: MyCalendarHeaderActionsStateAction
     data object OnBlockToggle: MyCalendarHeaderActionsStateAction
-    data class OnSlotChange(val slotDuration: String?): MyCalendarHeaderActionsStateAction
+    data object OpenDurationSheet: MyCalendarHeaderActionsStateAction
 }

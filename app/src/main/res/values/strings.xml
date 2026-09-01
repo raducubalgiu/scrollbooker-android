@@ -336,6 +336,9 @@
     <string name="reason_legal_day_off">Zi legală liberă</string>
     <string name="blockSlots">Blochează sloturi</string>
     <string name="interval">Interval</string>
+    <string name="intervalDescription">Îți construim sloturi de timp în funcție de interval, pentru o vizualizare mai bună și eficientă.</string>
+    <string name="intervalStep">din %1$d în %1$d minute</string>
+    <string name="intervalStepDe">din %1$d în %1$d de minute</string>
     <string name="ownClient">Client Propriu</string>
     <string name="scrollbooker">ScrollBooker</string>
     <string name="product">Produs</string>
