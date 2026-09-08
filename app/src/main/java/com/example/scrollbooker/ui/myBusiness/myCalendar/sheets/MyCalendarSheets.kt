@@ -41,7 +41,9 @@ fun MyCalendarSheets(
         dragHandle = {}
     ) {
         when (current) {
-            MyCalendarSheet.Settings -> MyCalendarSettingsSheet()
+            MyCalendarSheet.Settings -> MyCalendarSettingsSheet(
+                onClose = { controller.close() }
+            )
 
             MyCalendarSheet.Detail -> MyCalendarAppointmentDetailSheet()
 

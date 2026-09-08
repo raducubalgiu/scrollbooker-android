@@ -154,4 +154,6 @@ dependencies {
     implementation(libs.androidx.credentials)
     implementation(libs.androidx.credentials.play.services)
     implementation(libs.googleid)
+    implementation(libs.gms.play.services.auth)
+    implementation(libs.kotlinx.coroutines.play.services)
 }

@@ -557,4 +557,14 @@
     <string name="analytics_source_profile">Din profil</string>
     <string name="analytics_source_reviews">Recenzii video</string>
     <string name="analytics_source_other">Altele</string>
+
+    <!-- Calendar Connection -->
+    <string name="calendarConnection">Conectare calendar</string>
+    <string name="calendarConnectionDescription">Conectează-ți contul Google Calendar pentru a sincroniza automat programările.</string>
+    <string name="connectGoogleCalendar">Conectează Google Calendar</string>
+    <string name="disconnectGoogleCalendar">Deconectează</string>
+    <string name="calendarConnected">Conectat</string>
+    <string name="calendarNotConnected">Neconectat</string>
+    <string name="disconnectGoogleCalendarConfirm">Sigur vrei să deconectezi Google Calendar? Programările nu se vor mai sincroniza.</string>
+    <string name="calendarConnectionLoadFailed">Nu am putut încărca starea conexiunii cu Google Calendar.</string>
 </resources>
