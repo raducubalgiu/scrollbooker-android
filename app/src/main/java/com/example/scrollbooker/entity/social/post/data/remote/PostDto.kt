@@ -1,4 +1,5 @@
 package com.example.scrollbooker.entity.social.post.data.remote
+import com.example.scrollbooker.entity.booking.appointment.domain.model.BusinessCoordinates
 import com.google.gson.annotations.SerializedName
 import java.math.BigDecimal
 
@@ -12,6 +13,9 @@ data class PostDto(
     val businessOwner: PostBusinessOwnerDto,
 
     val employee: PostEmployeeDto?,
+
+    @SerializedName("business_location")
+    val businessLocation: PostBusinessLocationDto?,
 
     val counters: PostCountersDto,
 
@@ -30,7 +34,7 @@ data class PostDto(
     val isOwnPost: Boolean,
 
     @SerializedName("business_id")
-    val businessId: Int,
+    val businessId: Int?,
 
     val review: PostReviewDto?,
 
@@ -83,6 +87,21 @@ data class PostEmployeeDto(
     val avatar: String?
 )
 
+data class PostBusinessLocationDto(
+    val address: String,
+
+    @SerializedName("formatted_address")
+    val formattedAddress: String,
+
+    val coordinates: BusinessCoordinates,
+
+    @SerializedName("map_url")
+    val mapUrl: String?,
+
+    @SerializedName("place_id")
+    val placeId: String
+)
+
 data class PostProductDto(
     val id: Int,
     val name: String,
@@ -116,11 +135,11 @@ data class UserPostActionsDto(
 
 data class PostMediaFileDto(
     val id: Int,
-    val url: String,
+    val url: String?,
     val type: String,
 
     @SerializedName("thumbnail_url")
-    val thumbnailUrl: String,
+    val thumbnailUrl: String?,
 
     val duration: Float?,
 
@@ -131,7 +150,12 @@ data class PostMediaFileDto(
     val orderIndex: Int,
 
     @SerializedName("custom_cover_url")
-    val customCoverUrl: String?
+    val customCoverUrl: String?,
+
+    val status: String,
+
+    @SerializedName("ready_to_stream")
+    val readyToStream: Boolean
 )
 
 data class HashtagDto(

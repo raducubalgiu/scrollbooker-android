@@ -1,4 +1,6 @@
 package com.example.scrollbooker.entity.social.post.domain.model
+import com.example.scrollbooker.core.enums.MediaStatusEnum
+import com.example.scrollbooker.entity.booking.appointment.domain.model.BusinessCoordinates
 import java.math.BigDecimal
 
 data class Post(
@@ -7,16 +9,25 @@ data class Post(
     val user: PostUser,
     val businessOwner: PostBusinessOwner,
     val employee: PostEmployee?,
+    val businessLocation: PostBusinessLocation?,
     val userActions: UserPostActions,
     val mediaFiles: List<PostMediaFile>,
     val counters: PostCounters,
     val hashtags: List<Hashtag>,
     val isVideoReview: Boolean,
     val isOwnPost: Boolean,
-    val businessId: Int,
+    val businessId: Int?,
     val review: PostReview?,
     val serviceDomain: PostServiceDomain?,
     val createdAt: String
+)
+
+data class PostBusinessLocation(
+    val address: String,
+    val formattedAddress: String,
+    val coordinates: BusinessCoordinates,
+    val mapUrl: String?,
+    val placeId: String
 )
 
 data class PostUser(
@@ -67,13 +78,15 @@ data class UserPostActions(
 
 data class PostMediaFile(
     val id: Int,
-    val url: String,
+    val url: String?,
     val type: String,
-    val thumbnailUrl: String,
+    val thumbnailUrl: String?,
     val duration: Float?,
     val postId: Int,
     val orderIndex: Int,
-    val customCoverUrl: String?
+    val customCoverUrl: String?,
+    val status: MediaStatusEnum?,
+    val readyToStream: Boolean
 )
 
 data class Hashtag(

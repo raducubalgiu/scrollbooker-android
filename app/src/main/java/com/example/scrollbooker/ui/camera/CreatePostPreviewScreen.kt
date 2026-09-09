@@ -222,6 +222,7 @@ fun CreatePostPreviewScreen(
                                     avatar = null
                                 ),
                                 employee = null,
+                                businessLocation = null,
                                 userActions = UserPostActions(
                                     isLiked = false,
                                     isBookmarked = false,

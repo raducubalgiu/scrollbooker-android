@@ -6,6 +6,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.viewModelScope
+import com.example.scrollbooker.components.customized.post.PostCreatedSignal
 import com.example.scrollbooker.components.customized.post.PostInteractionStore
 import com.example.scrollbooker.components.customized.post.PostViewHeartbeatTracker
 import com.example.scrollbooker.core.util.FeatureState
@@ -69,7 +70,8 @@ class MyProfileViewModel @Inject constructor(
     getSchedulesByUserIdUseCase: GetSchedulesByUserIdUseCase,
     postInteractionStore: PostInteractionStore,
     videoPlayerManager: VideoPlayerManager,
-    postViewHeartbeatTracker: PostViewHeartbeatTracker
+    postViewHeartbeatTracker: PostViewHeartbeatTracker,
+    postCreatedSignal: PostCreatedSignal
 ):  BaseProfileViewModel(
     shouldShowVisibleLoading = false,
     getUserProfileUseCase = getUserProfileUseCase,
@@ -85,6 +87,39 @@ class MyProfileViewModel @Inject constructor(
 ) {
     override val userIdFlow: Flow<Int?> = authDataStore.getUserId().distinctUntilChanged()
     override val usernameFlow: Flow<String?> = authDataStore.getUserUsername().distinctUntilChanged()
+
+    private var uploadPollingJob: Job? = null
+
+    init {
+        // CameraViewModel notifies this (session-long, tab-scoped) instance directly when a
+        // post finishes uploading, so the still-processing post shows up on this screen
+        // without needing a manual pull-to-refresh or refreshing on every screen visit.
+        viewModelScope.launch {
+            postCreatedSignal.events.collect {
+                refreshPagedContent()
+                pollUntilStreamReady()
+            }
+        }
+    }
+
+    // There's no push channel (no sockets) telling us when Cloudflare Stream finishes
+    // encoding, so we poll for it: re-fetch the first page every 30s, capped at 10 tries
+    // (~5 min) so a stuck/failed encode doesn't poll forever. A tick after the post is
+    // already ready is harmless - it just re-fetches the same, now-ready data.
+    private fun pollUntilStreamReady() {
+        uploadPollingJob?.cancel()
+        uploadPollingJob = viewModelScope.launch {
+            repeat(UPLOAD_POLL_MAX_ATTEMPTS) {
+                delay(UPLOAD_POLL_INTERVAL_MS)
+                refreshPagedContent()
+            }
+        }
+    }
+
+    companion object {
+        private const val UPLOAD_POLL_INTERVAL_MS = 30_000L
+        private const val UPLOAD_POLL_MAX_ATTEMPTS = 10
+    }
 
     private val _editState = MutableStateFlow<FeatureState<Unit>?>(null)
     val editState: StateFlow<FeatureState<Unit>?> = _editState.asStateFlow()

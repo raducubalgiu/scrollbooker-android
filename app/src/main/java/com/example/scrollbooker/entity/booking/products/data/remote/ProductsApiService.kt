@@ -23,7 +23,8 @@ interface ProductsApiService {
 
     @GET("posts/{postId}/products")
     suspend fun getPostLinkedProducts(
-        @Path("postId") postId: Int
+        @Path("postId") postId: Int,
+        @Query("allow_fallback") allowFallback: Boolean
     ): List<ProductDto>
 
     @GET("products/{productId}")

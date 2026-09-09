@@ -14,6 +14,7 @@ import androidx.media3.common.MediaItem
 import androidx.media3.common.PlaybackException
 import androidx.media3.common.Player
 import androidx.media3.exoplayer.ExoPlayer
+import com.example.scrollbooker.components.customized.post.PostCreatedSignal
 import com.example.scrollbooker.core.snackbar.SnackBarUiEvent
 import com.example.scrollbooker.core.util.FeatureState
 import com.example.scrollbooker.core.util.toCoverDataUri
@@ -70,6 +71,7 @@ class CameraViewModel @Inject constructor(
     private val getProductsByBusinessIdAndEmployeeIdUseCase: GetProductsByBusinessIdAndEmployeeIdUseCase,
     private val getSelectedServiceDomainsWithServicesByBusinessIdUseCase: GetSelectedServiceDomainsWithServicesByBusinessIdUseCase,
     private val authDataStore: AuthDataStore,
+    private val postCreatedSignal: PostCreatedSignal,
     savedStateHandle: SavedStateHandle,
     @ApplicationContext private val context: Context
 ): ViewModel() {
@@ -232,8 +234,6 @@ class CameraViewModel @Inject constructor(
     private var prepareJob: Job? = null
     private var coverJob: Job? = null
 
-    // Filmstrip thumbnails for the cover picker, cached per video so revisiting the
-    // cover screen doesn't re-extract the same frames from disk every time.
     private val _filmstrip = MutableStateFlow<List<Bitmap>>(emptyList())
     val filmstrip: StateFlow<List<Bitmap>> = _filmstrip.asStateFlow()
 
@@ -581,6 +581,7 @@ class CameraViewModel @Inject constructor(
                 }
                 .onSuccess {
                     _isSaving.value = FeatureState.Success(Unit)
+                    postCreatedSignal.notifyPostCreated()
                     _navigationEvents.send(NavigationEvent.NavigateToProfile)
                 }
         }

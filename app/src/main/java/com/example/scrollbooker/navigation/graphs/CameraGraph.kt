@@ -132,6 +132,7 @@ fun NavGraphBuilder.cameraGraph(
                         popUpTo(MainRoute.CameraNavigator.route) {
                             inclusive = true
                         }
+                        launchSingleTop = true
                     }
                 }
             )

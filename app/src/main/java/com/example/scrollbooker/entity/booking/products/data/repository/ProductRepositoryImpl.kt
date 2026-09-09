@@ -29,8 +29,8 @@ class ProductRepositoryImpl @Inject constructor(
         return api.getProductsByAppointmentId(appointmentId).map { it.toDomain() }
     }
 
-    override suspend fun getPostLinkedProducts(postId: Int): List<Product> {
-        return api.getPostLinkedProducts(postId).map { it.toDomain() }
+    override suspend fun getPostLinkedProducts(postId: Int, allowFallback: Boolean): List<Product> {
+        return api.getPostLinkedProducts(postId, allowFallback).map { it.toDomain() }
     }
 
     override suspend fun getProduct(productId: Int): Product {

@@ -144,7 +144,7 @@ fun BaseProfilePostDetailScreen(
                     scope.launch {
                         sheetState.hide()
                         sheetContent = None
-                        viewModel.refreshAfterPostDeleted()
+                        viewModel.refreshPagedContent()
                     }
                 },
                 onNavigateToUserProfile = { profileNavigate.toUserProfile(it) }

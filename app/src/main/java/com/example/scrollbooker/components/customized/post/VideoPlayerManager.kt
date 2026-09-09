@@ -254,7 +254,8 @@ class VideoPlayerManager @Inject constructor(
                     indexToPostId[currentKey] = post.id
                     playerToKey[player] = currentKey
 
-                    val mediaItem = MediaItem.fromUri(post.mediaFiles.first().url)
+                    val mediaUrl = post.mediaFiles.firstOrNull()?.url ?: continue
+                    val mediaItem = MediaItem.fromUri(mediaUrl)
                     player.setMediaItem(mediaItem)
                     player.prepare()
 

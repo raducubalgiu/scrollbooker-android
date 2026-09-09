@@ -159,7 +159,12 @@ class EditPostViewModel @Inject constructor(
     private fun initDataLoading() {
         viewModelScope.launch {
             val postDeferred = async { runCatching { getPostByIdUseCase(postId) } }
-            val linkedProductsDeferred = async { getPostLinkedProductsUseCase(postId) }
+            val linkedProductsDeferred = async {
+                getPostLinkedProductsUseCase(
+                    postId = postId,
+                    allowFallback = false
+                )
+            }
 
             launch { loadCatalogProducts() }
 

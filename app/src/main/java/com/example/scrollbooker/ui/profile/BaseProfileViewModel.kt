@@ -223,11 +223,7 @@ abstract class BaseProfileViewModel(
         _isRefreshing.value = false
     }
 
-    // Called by the screen once a post's delete sheet has finished closing, so the Pager
-    // regenerates (fresh pageEventFlow) and the deleted post disappears - deliberately not
-    // triggered automatically on delete, so the re-fetch doesn't compete with the sheet's
-    // close animation.
-    override fun refreshAfterPostDeleted() {
+    override fun refreshPagedContent() {
         pagingRefreshTrigger.tryEmit(Unit)
     }
 

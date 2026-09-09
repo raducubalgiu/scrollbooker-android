@@ -14,7 +14,7 @@ interface ProductRepository {
         productsLimitPerService: Int?
     ): UserProducts
     suspend fun getProductsByAppointmentId(appointmentId: Int): List<Product>
-    suspend fun getPostLinkedProducts(postId: Int): List<Product>
+    suspend fun getPostLinkedProducts(postId: Int, allowFallback: Boolean): List<Product>
     suspend fun getProduct(productId: Int): Product
     suspend fun createProduct(product: ProductCreateRequest, filters: List<ProductFilterRequest>): Product
     suspend fun deleteProduct(productId: Int)

@@ -50,6 +50,7 @@ fun Modifier.shimmerEffect(
         )
         onDrawWithContent {
             drawRect(brush = brush)
+            drawContent()
         }
     }
 }

@@ -1,9 +1,11 @@
 package com.example.scrollbooker.entity.social.post.data.mappers
 import com.example.scrollbooker.components.customized.post.PostActionUiState
+import com.example.scrollbooker.core.enums.MediaStatusEnum
 import com.example.scrollbooker.entity.social.post.data.remote.HashtagDto
 import com.example.scrollbooker.entity.social.post.data.remote.PostBusinessOwnerDto
 import com.example.scrollbooker.entity.social.post.data.remote.PostCountersDto
 import com.example.scrollbooker.entity.social.post.data.remote.PostDto
+import com.example.scrollbooker.entity.social.post.data.remote.PostBusinessLocationDto
 import com.example.scrollbooker.entity.social.post.data.remote.PostEmployeeDto
 import com.example.scrollbooker.entity.social.post.data.remote.PostMediaFileDto
 import com.example.scrollbooker.entity.social.post.data.remote.PostProductCurrencyDto
@@ -14,6 +16,7 @@ import com.example.scrollbooker.entity.social.post.data.remote.PostUserDto
 import com.example.scrollbooker.entity.social.post.data.remote.UserPostActionsDto
 import com.example.scrollbooker.entity.social.post.domain.model.Hashtag
 import com.example.scrollbooker.entity.social.post.domain.model.Post
+import com.example.scrollbooker.entity.social.post.domain.model.PostBusinessLocation
 import com.example.scrollbooker.entity.social.post.domain.model.PostBusinessOwner
 import com.example.scrollbooker.entity.social.post.domain.model.PostCounters
 import com.example.scrollbooker.entity.social.post.domain.model.PostEmployee
@@ -32,6 +35,7 @@ fun PostDto.toDomain(): Post {
         user = user.toDomain(),
         businessOwner = businessOwner.toDomain(),
         employee = employee?.toDomain(),
+        businessLocation = businessLocation?.toDomain(),
         userActions = userActions.toDomain(),
         mediaFiles = mediaFiles.map { it.toDomain() },
         counters = counters.toDomain(),
@@ -75,6 +79,16 @@ fun PostEmployeeDto.toDomain(): PostEmployee {
     )
 }
 
+fun PostBusinessLocationDto.toDomain(): PostBusinessLocation {
+    return PostBusinessLocation(
+        address = address,
+        formattedAddress = formattedAddress,
+        coordinates = coordinates,
+        mapUrl = mapUrl,
+        placeId = placeId
+    )
+}
+
 fun PostProductDto.toDomain(): PostProduct {
     return PostProduct(
         id = id,
@@ -112,7 +126,9 @@ fun PostMediaFileDto.toDomain(): PostMediaFile {
         duration = duration,
         postId = postId,
         orderIndex = orderIndex,
-        customCoverUrl = customCoverUrl
+        customCoverUrl = customCoverUrl,
+        status = MediaStatusEnum.fromKey(status),
+        readyToStream = readyToStream
     )
 }
 

@@ -23,7 +23,7 @@ fun PostPlayerWithThumbnail(
     player: ExoPlayer,
     showPlayIcon: Boolean = false,
     displayThumbnail: Boolean = true,
-    thumbnailUrl: String
+    thumbnailUrl: String?
 ) {
     Box(Modifier.fillMaxSize()) {
         PostPlayerView(

@@ -125,7 +125,7 @@ fun PostOverlay(
                 }
 
                 PostActions(
-                    businessId = post.businessId,
+                    businessId = post.businessId ?: -1,
                     businessOwner = post.businessOwner,
                     user = post.user,
                     isSavingLike = isSavingLike,
