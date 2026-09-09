@@ -9,11 +9,9 @@ import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.key
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
@@ -27,9 +25,8 @@ import androidx.paging.PagingData
 import androidx.paging.compose.LazyPagingItems
 import androidx.paging.compose.collectAsLazyPagingItems
 import com.example.scrollbooker.components.customized.post.handlePostSheetAction
-import com.example.scrollbooker.components.customized.post.sheets.PostSheets
-import com.example.scrollbooker.components.customized.post.sheets.PostSheetsContent
-import com.example.scrollbooker.components.customized.post.sheets.PostSheetsContent.None
+import com.example.scrollbooker.components.customized.post.sheets.PostSheetsHost
+import com.example.scrollbooker.components.customized.post.sheets.rememberPostSheetsState
 import com.example.scrollbooker.core.enums.BookingSourceEnum
 import com.example.scrollbooker.entity.social.post.domain.model.Post
 import com.example.scrollbooker.navigation.navigators.FeedNavigator
@@ -76,47 +73,20 @@ fun FeedScreen(
     var isDrawerOpen by rememberSaveable { mutableStateOf(false) }
     var temporarySelectedIds by rememberSaveable { mutableStateOf(emptySet<Int>()) }
     var temporaryOnlyVideoReviews by rememberSaveable { mutableStateOf(false) }
-    val sheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
-    var sheetContent by remember { mutableStateOf<PostSheetsContent>(None) }
+    val postSheets = rememberPostSheetsState()
 
-    if(sheetContent != None) {
-        key(sheetContent) {
-            PostSheets(
-                sheetState = sheetState,
-                sheetContent = sheetContent,
-                onClose = {
-                    scope.launch {
-                        sheetState.hide()
-                        sheetContent = None
-                    }
-                },
-                onNavigateToBooking = { product ->
-                    val source = if(horizontalPagerState.currentPage == 0) BookingSourceEnum.EXPLORE_FEED
-                        else BookingSourceEnum.FOLLOWING_FEED
+    PostSheetsHost(
+        state = postSheets,
+        onNavigateToBooking = { product ->
+            val source = if (horizontalPagerState.currentPage == 0) BookingSourceEnum.EXPLORE_FEED
+                else BookingSourceEnum.FOLLOWING_FEED
 
-                    feedNavigate.toBookingFromProduct(product, source)
-                },
-                onNavigateToEditPost = { feedNavigate.toEditPost(it) },
-                onOpenStatisticsSheet = { sheetContent = PostSheetsContent.StatisticsSheet(it) },
-                onOpenDeleteConfirm = { sheetContent = PostSheetsContent.DeletePostSheet(it) },
-                onPostDeleted = {
-                    scope.launch {
-                        sheetState.hide()
-                        sheetContent = None
-                        tabConfigs[horizontalPagerState.currentPage].viewModel.refreshAfterPostDeleted()
-                    }
-                },
-                onNavigateToUserProfile = { feedNavigate.toUserProfile(it) }
-            )
-        }
-    }
-
-    fun handleOpenSheet(targetSheet: PostSheetsContent) {
-        scope.launch {
-            sheetState.show()
-            sheetContent = targetSheet
-        }
-    }
+            feedNavigate.toBookingFromProduct(product, source)
+        },
+        onNavigateToEditPost = { feedNavigate.toEditPost(it) },
+        onPostDeleted = { tabConfigs[horizontalPagerState.currentPage].viewModel.refreshAfterPostDeleted() },
+        onNavigateToUserProfile = { feedNavigate.toUserProfile(it) }
+    )
 
     Box(modifier = Modifier
         .fillMaxSize()
@@ -173,7 +143,7 @@ fun FeedScreen(
                         posts = config.posts,
                         isTabActive = horizontalPagerState.settledPage == tabIndex,
                         viewModel = config.viewModel,
-                        onAction = { action, post -> handlePostSheetAction(action, post, ::handleOpenSheet) },
+                        onAction = { action, post -> handlePostSheetAction(action, post, postSheets::open) },
                         onNavigateToUserProfile = { feedNavigate.toUserProfile(it) },
                         onNavigateToReviews = { feedNavigate.toReviews(it) }
                     )

@@ -32,7 +32,7 @@ import androidx.compose.ui.graphics.StrokeCap
 import androidx.compose.ui.input.pointer.PointerInputChange
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.unit.dp
-import androidx.media3.exoplayer.ExoPlayer
+import androidx.media3.common.Player
 import com.example.scrollbooker.core.util.Dimens.SpacingM
 import com.example.scrollbooker.ui.theme.labelLarge
 import kotlinx.coroutines.delay
@@ -53,7 +53,7 @@ private val TrackBottomInset = 2.dp
 
 @Composable
 fun VideoScrubber(
-    player: ExoPlayer,
+    player: Player,
     isFocused: Boolean,
     isPaused: Boolean,
     onSeekingChanged: (Boolean) -> Unit,

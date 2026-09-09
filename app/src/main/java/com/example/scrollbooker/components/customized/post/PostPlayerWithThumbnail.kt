@@ -14,13 +14,13 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.zIndex
-import androidx.media3.exoplayer.ExoPlayer
+import androidx.media3.common.Player
 import com.example.scrollbooker.R
 import com.example.scrollbooker.components.customized.post.components.PostPlayerView
 
 @Composable
 fun PostPlayerWithThumbnail(
-    player: ExoPlayer,
+    player: Player,
     showPlayIcon: Boolean = false,
     displayThumbnail: Boolean = true,
     thumbnailUrl: String?

@@ -1,74 +1,45 @@
 package com.example.scrollbooker.ui.profile
-import androidx.compose.animation.core.Spring
-import androidx.compose.animation.core.spring
-import androidx.compose.animation.fadeIn
-import androidx.compose.animation.fadeOut
-import androidx.compose.animation.rememberSplineBasedDecay
 import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
-import androidx.compose.foundation.interaction.MutableInteractionSource
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.pager.PageSize
-import androidx.compose.foundation.pager.PagerDefaults
-import androidx.compose.foundation.pager.PagerSnapDistance
-import androidx.compose.foundation.pager.VerticalPager
 import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Close
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Scaffold
-import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.key
-import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.rememberCoroutineScope
-import androidx.compose.runtime.setValue
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import androidx.media3.exoplayer.ExoPlayer
 import androidx.paging.compose.collectAsLazyPagingItems
-import coil.compose.AsyncImage
 import com.example.scrollbooker.R
 import com.example.scrollbooker.components.core.buttons.MainButton
 import com.example.scrollbooker.components.core.headers.Header
-import com.example.scrollbooker.components.core.layout.LoadingScreen
 import com.example.scrollbooker.components.customized.post.PostActionUiState
-import com.example.scrollbooker.components.customized.post.PostPlayerWithThumbnail
-import com.example.scrollbooker.components.customized.post.components.EndOfFeedPager
-import com.example.scrollbooker.components.customized.post.components.PostOverlay
-import com.example.scrollbooker.components.customized.post.components.VideoScrubber
+import com.example.scrollbooker.components.customized.post.PostDetailSkeleton
+import com.example.scrollbooker.components.customized.post.PostVerticalPager
 import com.example.scrollbooker.components.customized.post.handlePostSheetAction
 import com.example.scrollbooker.components.customized.post.sheets.PostSheetActionEnum
-import com.example.scrollbooker.components.customized.post.sheets.PostSheets
-import com.example.scrollbooker.components.customized.post.sheets.PostSheetsContent
-import com.example.scrollbooker.components.customized.post.sheets.PostSheetsContent.None
+import com.example.scrollbooker.components.customized.post.sheets.PostSheetsHost
+import com.example.scrollbooker.components.customized.post.sheets.rememberPostSheetsState
 import com.example.scrollbooker.core.enums.BookingSourceEnum
-import com.example.scrollbooker.core.extensions.getOrNull
 import com.example.scrollbooker.core.util.Dimens.BasePadding
 import com.example.scrollbooker.core.util.Dimens.SpacingS
-import com.example.scrollbooker.core.util.sharePost
-import com.example.scrollbooker.entity.social.post.data.mappers.applyUiState
 import com.example.scrollbooker.entity.social.post.data.mappers.withMediaStatus
 import com.example.scrollbooker.entity.social.post.domain.model.Post
 import com.example.scrollbooker.navigation.navigators.ProfileNavigator
 import com.example.scrollbooker.ui.theme.BackgroundDark
 import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -79,9 +50,7 @@ fun BaseProfilePostDetailScreen(
     postIndex: Int,
     profileNavigate: ProfileNavigator,
 ) {
-    val context = LocalContext.current
     val userPausedSet by viewModel.userPausedPostIds.collectAsStateWithLifecycle()
-    val scope = rememberCoroutineScope()
     val postTab = PostTabEnum.fromKey(postTabKey)
 
     val title = when (postTab) {
@@ -109,60 +78,23 @@ fun BaseProfilePostDetailScreen(
         }
     }
 
-    val sheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
-    var sheetContent by remember { mutableStateOf<PostSheetsContent>(None) }
+    val postSheets = rememberPostSheetsState()
 
-    if (sheetContent != None) {
-        key(sheetContent) {
-            PostSheets(
-                sheetState = sheetState,
-                sheetContent = sheetContent,
-                onClose = {
-                    scope.launch {
-                        sheetState.hide()
-                        sheetContent = None
-                    }
-                },
-                onNavigateToBooking = { product ->
-                    val source = when (PostTabEnum.fromKey(postTabKey)) {
-                        PostTabEnum.POSTS -> BookingSourceEnum.PROFILE_GRID_POST_DETAIL
-                        PostTabEnum.BOOKMARKS -> BookingSourceEnum.PROFILE_BOOKMARKS_POST_DETAIL
-                        null -> BookingSourceEnum.PROFILE_GRID_POST_DETAIL
-                    }
+    PostSheetsHost(
+        state = postSheets,
+        onNavigateToBooking = { product ->
+            val source = when (PostTabEnum.fromKey(postTabKey)) {
+                PostTabEnum.POSTS -> BookingSourceEnum.PROFILE_GRID_POST_DETAIL
+                PostTabEnum.BOOKMARKS -> BookingSourceEnum.PROFILE_BOOKMARKS_POST_DETAIL
+                null -> BookingSourceEnum.PROFILE_GRID_POST_DETAIL
+            }
 
-                    profileNavigate.toBookingFromProduct(product, source)
-                },
-                onNavigateToEditPost = { profileNavigate.toEditPost(it) },
-                onOpenStatisticsSheet = {
-                    scope.launch {
-                        sheetState.hide()
-                        sheetContent = PostSheetsContent.StatisticsSheet(it)
-                    }
-                },
-                onOpenDeleteConfirm = {
-                    scope.launch {
-                        sheetState.hide()
-                        sheetContent = PostSheetsContent.DeletePostSheet(it)
-                    }
-                },
-                onPostDeleted = {
-                    scope.launch {
-                        sheetState.hide()
-                        sheetContent = None
-                        viewModel.refreshPagedContent()
-                    }
-                },
-                onNavigateToUserProfile = { profileNavigate.toUserProfile(it) }
-            )
-        }
-    }
-
-    fun handleOpenSheet(targetSheet: PostSheetsContent) {
-        scope.launch {
-            sheetState.show()
-            sheetContent = targetSheet
-        }
-    }
+            profileNavigate.toBookingFromProduct(product, source)
+        },
+        onNavigateToEditPost = { profileNavigate.toEditPost(it) },
+        onPostDeleted = { viewModel.refreshPagedContent() },
+        onNavigateToUserProfile = { profileNavigate.toUserProfile(it) }
+    )
 
     val hasData = remember(posts.itemCount) { posts.itemCount > 0 }
 
@@ -196,16 +128,6 @@ fun BaseProfilePostDetailScreen(
             )
         }
 
-        val fling = PagerDefaults.flingBehavior(
-            state = pagerState,
-            pagerSnapDistance = PagerSnapDistance.atMost(1),
-            decayAnimationSpec = rememberSplineBasedDecay(),
-            snapAnimationSpec = spring(
-                dampingRatio = Spring.DampingRatioNoBouncy,
-                stiffness = Spring.StiffnessHigh
-            )
-        )
-
         Scaffold(
             containerColor = BackgroundDark,
             topBar = {
@@ -225,102 +147,22 @@ fun BaseProfilePostDetailScreen(
                     .background(BackgroundDark)
                     .padding(bottom = innerPadding.calculateBottomPadding())
             ) {
-                EndOfFeedPager(
+                PostVerticalPager(
                     pagerState = pagerState,
-                    isAtLastPage = { posts.itemCount > 0 && pagerState.currentPage == posts.itemCount - 1 },
+                    items = posts,
+                    getPlayer = { p -> viewModel.getPlayerForIndex(detailScopeKey, p) },
+                    userPausedPostIds = userPausedSet,
+                    observePostUi = viewModel::observePostUi,
+                    onTogglePlay = { p -> viewModel.togglePlayPause(detailScopeKey, p) },
+                    onLike = { viewModel.toggleLike(it) },
+                    onBookmark = { viewModel.toggleBookmark(it) },
+                    onShare = { post, channel -> viewModel.sharePost(post, channel) },
+                    onAction = { action, post -> handlePostSheetAction(action, post, postSheets::open) },
+                    onNavigateToUserProfile = { profileNavigate.toUserProfile(it) },
+                    onNavigateToReviews = { profileNavigate.toReviews(it) },
+                    showBookButton = false,
                     modifier = Modifier.weight(1f)
-                ) { pagerModifier ->
-                    VerticalPager(
-                        state = pagerState,
-                        overscrollEffect = null,
-                        flingBehavior = fling,
-                        pageSize = PageSize.Fill,
-                        pageSpacing = 0.dp,
-                        beyondViewportPageCount = 1,
-                        modifier = pagerModifier,
-                    ) { page ->
-                        val post = posts.getOrNull(page) ?: return@VerticalPager
-
-                        val player by remember(detailScopeKey, page) {
-                            derivedStateOf { viewModel.getPlayerForIndex(detailScopeKey, page) }
-                        }
-
-                        val postActionState by viewModel.observePostUi(post.id).collectAsStateWithLifecycle()
-                        val postUi = remember(post, postActionState) {
-                            post.copy(
-                                userActions = post.userActions.applyUiState(postActionState),
-                                counters = post.counters.applyUiState(postActionState),
-                                description = postActionState.description ?: post.description
-                            )
-                        }
-
-                        var isSeeking by remember(post.id) { mutableStateOf(false) }
-
-                        Box(
-                            modifier = Modifier
-                                .fillMaxSize()
-                                .clickable(
-                                    interactionSource = remember { MutableInteractionSource() },
-                                    indication = null,
-                                    onClick = { viewModel.togglePlayPause(detailScopeKey, page) }
-                                )
-                        ) {
-                            if (player != null) {
-                                PostPlayerWithThumbnail(
-                                    player = player!! as ExoPlayer,
-                                    showPlayIcon = userPausedSet.contains(post.id),
-                                    thumbnailUrl = post.mediaFiles.first().thumbnailUrl
-                                )
-                            } else {
-                                AsyncImage(
-                                    modifier = Modifier.fillMaxSize(),
-                                    model = post.mediaFiles.first().thumbnailUrl,
-                                    contentScale = ContentScale.Crop,
-                                    contentDescription = null
-                                )
-                            }
-
-                            androidx.compose.animation.AnimatedVisibility(
-                                visible = !isSeeking,
-                                enter = fadeIn(),
-                                exit = fadeOut()
-                            ) {
-                                PostOverlay(
-                                    post = postUi,
-                                    isSavingLike = postActionState.isSavingLike,
-                                    isSavingBookmark = postActionState.isSavingBookmark,
-                                    onAction = { action ->
-                                        handlePostSheetAction(
-                                            action,
-                                            post,
-                                            ::handleOpenSheet
-                                        )
-                                    },
-                                    onLike = { viewModel.toggleLike(post) },
-                                    onBookmark = { viewModel.toggleBookmark(post) },
-                                    onShare = {
-                                        sharePost(context, post) { channel ->
-                                            viewModel.sharePost(post, channel)
-                                        }
-                                    },
-                                    onNavigateToUserProfile = { profileNavigate.toUserProfile(it) },
-                                    onNavigateToReviews = { profileNavigate.toReviews(it) },
-                                    showBookButton = false,
-                                )
-                            }
-
-                            if (player != null) {
-                                VideoScrubber(
-                                    player = player!! as ExoPlayer,
-                                    isFocused = page == pagerState.settledPage,
-                                    isPaused = userPausedSet.contains(post.id),
-                                    onSeekingChanged = { isSeeking = it },
-                                    modifier = Modifier.align(Alignment.BottomCenter)
-                                )
-                            }
-                        }
-                    }
-                }
+                )
 
                 MainButton(
                     modifier = Modifier.padding(
@@ -333,56 +175,13 @@ fun BaseProfilePostDetailScreen(
                             handlePostSheetAction(
                                 action = PostSheetActionEnum.OPEN_LINKED_PRODUCTS,
                                 post = it,
-                                handleOpenSheet = ::handleOpenSheet
+                                handleOpenSheet = postSheets::open
                             )
                         }
                     },
                     title = stringResource(R.string.bookNow),
                 )
             }
-        }
-    }
-}
-
-@OptIn(ExperimentalMaterial3Api::class)
-@Composable
-private fun PostDetailSkeleton(
-    title: String,
-    onBack: () -> Unit,
-) {
-    Scaffold(
-        containerColor = BackgroundDark,
-        topBar = {
-            Header(
-                onBack = onBack,
-                title = title,
-                icon = Icons.Default.Close,
-                iconSize = 30.dp,
-                containerColor = Color.Transparent,
-                contentColor = Color.White
-            )
-        }
-    ) { innerPadding ->
-        Column(
-            modifier = Modifier
-                .fillMaxSize()
-                .background(BackgroundDark)
-                .padding(bottom = innerPadding.calculateBottomPadding())
-        ) {
-            Box(modifier = Modifier.weight(1f)) {
-                LoadingScreen(color = Color.White)
-            }
-
-            MainButton(
-                modifier = Modifier.padding(
-                    vertical = SpacingS,
-                    horizontal = BasePadding
-                ),
-                contentPadding = PaddingValues(12.dp),
-                enabled = false,
-                onClick = {},
-                title = stringResource(R.string.bookNow),
-            )
         }
     }
 }

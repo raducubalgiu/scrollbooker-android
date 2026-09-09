@@ -1,61 +1,33 @@
 package com.example.scrollbooker.ui.feed
 
-import androidx.compose.animation.AnimatedVisibility
-import androidx.compose.animation.core.Spring
-import androidx.compose.animation.core.spring
-import androidx.compose.animation.fadeIn
-import androidx.compose.animation.fadeOut
-import androidx.compose.animation.rememberSplineBasedDecay
-import androidx.compose.foundation.clickable
-import androidx.compose.foundation.interaction.MutableInteractionSource
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.pager.PageSize
-import androidx.compose.foundation.pager.PagerDefaults
-import androidx.compose.foundation.pager.PagerSnapDistance
-import androidx.compose.foundation.pager.VerticalPager
 import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.key
 import androidx.compose.runtime.mutableIntStateOf
-import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.runtime.snapshotFlow
-import androidx.compose.ui.Alignment
-import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.unit.dp
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleEventObserver
 import androidx.lifecycle.compose.LocalLifecycleOwner
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import androidx.media3.exoplayer.ExoPlayer
 import androidx.paging.LoadState
 import androidx.paging.compose.LazyPagingItems
-import coil.compose.AsyncImage
 import com.example.scrollbooker.R
 import com.example.scrollbooker.components.core.layout.EmptyScreen
 import com.example.scrollbooker.components.core.layout.ErrorScreen
 import com.example.scrollbooker.components.core.layout.LoadingScreen
-import com.example.scrollbooker.components.customized.post.PostPlayerWithThumbnail
-import com.example.scrollbooker.components.customized.post.components.EndOfFeedPager
-import com.example.scrollbooker.components.customized.post.components.PostOverlay
-import com.example.scrollbooker.components.customized.post.components.VideoScrubber
+import com.example.scrollbooker.components.customized.post.PostVerticalPager
 import com.example.scrollbooker.components.customized.post.sheets.PostSheetActionEnum
 import com.example.scrollbooker.core.extensions.getOrNull
-import com.example.scrollbooker.core.util.sharePost
-import com.example.scrollbooker.entity.social.post.data.mappers.applyUiState
 import com.example.scrollbooker.entity.social.post.domain.model.Post
 import com.example.scrollbooker.navigation.navigators.ReviewsParam
 import com.example.scrollbooker.navigation.navigators.UserProfileParam
@@ -71,7 +43,6 @@ fun BaseFeedTabScreen(
     onNavigateToReviews: (param: ReviewsParam) -> Unit,
     onNavigateToUserProfile: (param: UserProfileParam) -> Unit
 ) {
-    val context = LocalContext.current
     val userPausedSet by viewModel.userPausedPostIds.collectAsStateWithLifecycle()
 
     val verticalPagerState = rememberPagerState { posts.itemCount }
@@ -141,18 +112,6 @@ fun BaseFeedTabScreen(
             }
     }
 
-    val decay = rememberSplineBasedDecay<Float>()
-    val snapSpec = remember {
-        spring<Float>(dampingRatio = Spring.DampingRatioNoBouncy, stiffness = Spring.StiffnessHigh)
-    }
-
-    val fling = PagerDefaults.flingBehavior(
-        state = verticalPagerState,
-        pagerSnapDistance = PagerSnapDistance.atMost(1),
-        decayAnimationSpec = decay,
-        snapAnimationSpec = snapSpec
-    )
-
     when (posts.loadState.refresh) {
         is LoadState.Error -> ErrorScreen()
         is LoadState.Loading -> LoadingScreen(color = Color.White)
@@ -165,93 +124,21 @@ fun BaseFeedTabScreen(
                 )
             }
 
-            EndOfFeedPager(
+            PostVerticalPager(
                 pagerState = verticalPagerState,
-                isAtLastPage = { posts.itemCount > 0 && verticalPagerState.currentPage == posts.itemCount - 1 }
-            ) { pagerModifier ->
-                VerticalPager(
-                    state = verticalPagerState,
-                    overscrollEffect = null,
-                    flingBehavior = fling,
-                    pageSize = PageSize.Fill,
-                    pageSpacing = 0.dp,
-                    beyondViewportPageCount = 1,
-                    modifier = pagerModifier,
-                ) { page ->
-                    val post = posts.getOrNull(page) ?: return@VerticalPager
-                    val postId = post.id
-
-                    key(postId) {
-                        val postActionState by viewModel.observePostUi(postId).collectAsStateWithLifecycle()
-                        val postUi = remember(post, postActionState) {
-                            post.copy(
-                                userActions = post.userActions.applyUiState(postActionState),
-                                counters = post.counters.applyUiState(postActionState),
-                                description = postActionState.description ?: post.description
-                            )
-                        }
-
-                        val player = viewModel.getPlayerForIndex(page)
-                        var isSeeking by remember { mutableStateOf(false) }
-
-                        Box(modifier = Modifier
-                            .fillMaxSize()
-                            .clickable(
-                                interactionSource = remember { MutableInteractionSource() },
-                                indication = null,
-                                onClick = { viewModel.togglePlayer(page) }
-                            )
-                        ) {
-                            if (player != null) {
-                                PostPlayerWithThumbnail(
-                                    player = player as ExoPlayer,
-                                    showPlayIcon = userPausedSet.contains(postId),
-                                    thumbnailUrl = post.mediaFiles.first().thumbnailUrl
-                                )
-                            } else {
-                                AsyncImage(
-                                    modifier = Modifier.fillMaxSize(),
-                                    model = post.mediaFiles.first().thumbnailUrl,
-                                    contentDescription = null,
-                                    contentScale = ContentScale.Crop
-                                )
-                            }
-
-                            AnimatedVisibility(
-                                visible = !isSeeking,
-                                enter = fadeIn(),
-                                exit = fadeOut()
-                            ) {
-                                PostOverlay(
-                                    post = postUi,
-                                    isSavingLike = postActionState.isSavingLike,
-                                    isSavingBookmark = postActionState.isSavingBookmark,
-                                    onAction = { onAction(it, post) },
-                                    onLike = { viewModel.toggleLike(post) },
-                                    onBookmark = { viewModel.toggleBookmark(post) },
-                                    onShare = {
-                                        sharePost(context, post) { channel ->
-                                            viewModel.sharePost(post, channel)
-                                        }
-                                    },
-                                    onNavigateToReviews = onNavigateToReviews,
-                                    onNavigateToUserProfile = onNavigateToUserProfile,
-                                )
-                            }
-
-                            if (player != null) {
-                                VideoScrubber(
-                                    player = player,
-                                    isFocused = page == settledPage,
-                                    isPaused = userPausedSet.contains(postId),
-                                    onSeekingChanged = { isSeeking = it },
-                                    modifier = Modifier.align(Alignment.BottomCenter)
-                                )
-                            }
-                        }
-                    }
-                }
-            }
+                items = posts,
+                getPlayer = { p -> viewModel.getPlayerForIndex(p) },
+                userPausedPostIds = userPausedSet,
+                observePostUi = viewModel::observePostUi,
+                onTogglePlay = { p -> viewModel.togglePlayer(p) },
+                onLike = { viewModel.toggleLike(it) },
+                onBookmark = { viewModel.toggleBookmark(it) },
+                onShare = { post, channel -> viewModel.sharePost(post, channel) },
+                onAction = { action, post -> onAction(action, post) },
+                onNavigateToUserProfile = onNavigateToUserProfile,
+                onNavigateToReviews = onNavigateToReviews,
+                keyByPostId = true,
+            )
         }
     }
 }
