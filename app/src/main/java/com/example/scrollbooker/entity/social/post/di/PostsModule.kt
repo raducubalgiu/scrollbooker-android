@@ -15,6 +15,7 @@ import com.example.scrollbooker.entity.social.post.domain.useCase.GetExplorePost
 import com.example.scrollbooker.entity.social.post.domain.useCase.GetFollowingPostsUseCase
 import com.example.scrollbooker.entity.social.post.domain.useCase.GetPostAnalyticsSummaryUseCase
 import com.example.scrollbooker.entity.social.post.domain.useCase.GetPostByIdUseCase
+import com.example.scrollbooker.entity.social.post.domain.useCase.GetPostsMediaStatusUseCase
 import com.example.scrollbooker.entity.social.post.domain.useCase.GetUserPostsUseCase
 import com.example.scrollbooker.entity.social.post.domain.useCase.GetUserVideoReviewsPostsUseCase
 import com.example.scrollbooker.entity.social.post.domain.useCase.LikePostUseCase
@@ -192,5 +193,13 @@ object PostsModule {
         repository: PostRepository,
     ): CreatePostsViewEventsBulkUseCase {
         return CreatePostsViewEventsBulkUseCase(repository)
+    }
+
+    @Provides
+    @Singleton
+    fun provideGetPostsMediaStatusUseCase(
+        repository: PostRepository,
+    ): GetPostsMediaStatusUseCase {
+        return GetPostsMediaStatusUseCase(repository)
     }
 }

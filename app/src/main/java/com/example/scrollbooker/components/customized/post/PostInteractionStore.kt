@@ -2,6 +2,7 @@ package com.example.scrollbooker.components.customized.post
 
 import com.example.scrollbooker.core.enums.ShareChannelEnum
 import com.example.scrollbooker.entity.social.post.domain.model.Post
+import com.example.scrollbooker.entity.social.post.domain.model.PostMediaStatus
 import com.example.scrollbooker.entity.social.post.domain.useCase.BookmarkPostUseCase
 import com.example.scrollbooker.entity.social.post.domain.useCase.DeletePostUseCase
 import com.example.scrollbooker.entity.social.post.domain.useCase.LikePostUseCase
@@ -14,7 +15,6 @@ import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
@@ -152,5 +152,9 @@ class PostInteractionStore @Inject constructor(
 
     fun updateDescription(postId: Int, newDescription: String) {
         _postUi.edit(postId) { s -> s.copy(description = newDescription) }
+    }
+
+    fun applyMediaStatus(postId: Int, mediaStatus: PostMediaStatus) {
+        _postUi.edit(postId) { s -> s.copy(mediaStatus = mediaStatus) }
     }
 }

@@ -18,6 +18,7 @@ import com.example.scrollbooker.entity.social.post.data.remote.PostsViewEventsBu
 import com.example.scrollbooker.entity.social.post.data.remote.UpdatePostRequest
 import com.example.scrollbooker.entity.social.post.domain.model.Post
 import com.example.scrollbooker.entity.social.post.domain.model.PostAnalyticsSummary
+import com.example.scrollbooker.entity.social.post.domain.model.PostMediaStatus
 import com.example.scrollbooker.entity.social.post.domain.repository.PostRepository
 import kotlinx.coroutines.flow.Flow
 import javax.inject.Inject
@@ -119,5 +120,9 @@ class PostRepositoryImpl @Inject constructor(
 
     override suspend fun createPostViewEventsBulk(request: PostsViewEventsBulkRequest): PostsViewEventsBulkResponse {
         return apiService.createPostViewEventsBulk(request)
+    }
+
+    override suspend fun getPostsMediaStatus(ids: List<Int>): List<PostMediaStatus> {
+        return apiService.getPostsMediaStatus(ids.joinToString(",")).map { it.toDomain() }
     }
 }

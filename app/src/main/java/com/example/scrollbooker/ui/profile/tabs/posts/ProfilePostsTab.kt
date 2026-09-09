@@ -7,23 +7,29 @@ import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.paging.LoadState
 import androidx.paging.compose.LazyPagingItems
 import com.example.scrollbooker.R
 import com.example.scrollbooker.components.core.layout.EmptyScreen
+import com.example.scrollbooker.components.customized.post.PostActionUiState
 import com.example.scrollbooker.components.customized.postGrid.PostGrid
 import com.example.scrollbooker.components.core.layout.ErrorScreen
 import com.example.scrollbooker.components.customized.LoadMoreSpinner
 import com.example.scrollbooker.core.util.rememberFlingBehavior
+import com.example.scrollbooker.entity.social.post.data.mappers.withMediaStatus
 import com.example.scrollbooker.entity.social.post.domain.model.Post
+import kotlinx.coroutines.flow.StateFlow
 
 @Composable
 fun ProfilePostsTab(
     posts: LazyPagingItems<Post>,
+    observePostUi: (postId: Int) -> StateFlow<PostActionUiState>,
     onNavigateToPost: (postIndex: Int, userId: Int) -> Unit,
     onLoadFinished: () -> Unit
 ) {
@@ -60,10 +66,13 @@ fun ProfilePostsTab(
                     flingBehavior = flingBehavior
                 ) {
                     items(posts.itemCount) { index ->
-                        posts[index]?.let {
+                        posts[index]?.let { rawPost ->
+                            val postActionState by observePostUi(rawPost.id).collectAsStateWithLifecycle()
+                            val post = rawPost.withMediaStatus(postActionState.mediaStatus)
+
                             PostGrid(
-                                post = it,
-                                onNavigateToPost = { onNavigateToPost(index, it.user.id) }
+                                post = post,
+                                onNavigateToPost = { onNavigateToPost(index, post.user.id) }
                             )
                         }
                     }

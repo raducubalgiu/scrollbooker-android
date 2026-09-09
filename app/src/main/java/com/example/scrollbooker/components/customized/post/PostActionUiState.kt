@@ -1,4 +1,5 @@
 package com.example.scrollbooker.components.customized.post
+import com.example.scrollbooker.entity.social.post.domain.model.PostMediaStatus
 
 data class PostActionUiState(
     val isLiked: Boolean? = null,
@@ -14,7 +15,8 @@ data class PostActionUiState(
     val isSavingBookmark: Boolean = false,
     val isSavingShare: Boolean = false,
 
-    val description: String? = null
+    val description: String? = null,
+    val mediaStatus: PostMediaStatus? = null
 ) {
     companion object { val EMPTY = PostActionUiState() }
 }

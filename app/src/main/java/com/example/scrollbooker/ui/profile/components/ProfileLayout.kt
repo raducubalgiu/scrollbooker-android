@@ -38,6 +38,7 @@ import com.example.scrollbooker.core.util.rememberCollapsingNestedScroll
 import com.example.scrollbooker.core.util.rememberFlingBehavior
 import com.example.scrollbooker.entity.booking.employee.domain.model.Employee
 import com.example.scrollbooker.entity.booking.products.domain.model.UserProducts
+import com.example.scrollbooker.components.customized.post.PostActionUiState
 import com.example.scrollbooker.entity.social.post.domain.model.Post
 import com.example.scrollbooker.entity.user.userProfile.domain.model.UserProfile
 import com.example.scrollbooker.entity.user.userProfile.domain.model.UserProfileAbout
@@ -69,6 +70,7 @@ fun ProfileLayout(
     productsState: StateFlow<FeatureState<UserProducts>>,
     employeesState: Flow<PagingData<Employee>>,
     bookmarksState: Flow<PagingData<Post>>,
+    observePostUi: (postId: Int) -> StateFlow<PostActionUiState>,
     aboutState: StateFlow<FeatureState<UserProfileAbout>>,
     isRefreshingState: StateFlow<Boolean>,
     onRefreshProfileAndTab: (currentTab: ProfileTab) -> Unit,
@@ -176,6 +178,7 @@ fun ProfileLayout(
 
                                         ProfilePostsTab(
                                             posts = posts,
+                                            observePostUi = observePostUi,
                                             onNavigateToPost = onNavigateToPost,
                                             onLoadFinished = onLoadFinished
                                         )

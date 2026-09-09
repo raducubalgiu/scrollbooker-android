@@ -5,10 +5,12 @@ import androidx.lifecycle.viewModelScope
 import androidx.media3.exoplayer.ExoPlayer
 import androidx.paging.PagingData
 import androidx.paging.cachedIn
+import androidx.paging.map
 import com.example.scrollbooker.components.customized.post.PostActionUiState
 import com.example.scrollbooker.components.customized.post.PostInteractionStore
 import com.example.scrollbooker.components.customized.post.PostViewHeartbeatTracker
 import com.example.scrollbooker.components.customized.post.VideoPlayerManager
+import com.example.scrollbooker.core.enums.MediaStatusEnum
 import com.example.scrollbooker.core.enums.ShareChannelEnum
 import com.example.scrollbooker.core.util.FeatureState
 import com.example.scrollbooker.core.util.withVisibleLoading
@@ -20,6 +22,7 @@ import com.example.scrollbooker.entity.booking.schedule.domain.model.Schedule
 import com.example.scrollbooker.entity.booking.schedule.domain.useCase.GetSchedulesByUserIdUseCase
 import com.example.scrollbooker.entity.social.bookmark.domain.useCase.GetUserBookmarkedPostsUseCase
 import com.example.scrollbooker.entity.social.post.domain.model.Post
+import com.example.scrollbooker.entity.social.post.domain.model.PostMediaStatus
 import com.example.scrollbooker.entity.social.post.domain.useCase.GetUserPostsUseCase
 import com.example.scrollbooker.entity.user.userProfile.domain.model.UserProfile
 import com.example.scrollbooker.entity.user.userProfile.domain.model.UserProfileAbout
@@ -38,10 +41,12 @@ import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.filterNotNull
 import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.flow
+import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.mapNotNull
 import kotlinx.coroutines.flow.merge
 import kotlinx.coroutines.flow.onStart
 import kotlinx.coroutines.flow.stateIn
+import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import timber.log.Timber
 
@@ -62,6 +67,7 @@ abstract class BaseProfileViewModel(
     abstract val usernameFlow: Flow<String?>
 
     private val pagingRefreshTrigger = MutableSharedFlow<Unit>(extraBufferCapacity = 1)
+    protected val processingPostIds = MutableStateFlow<Set<Int>>(emptySet())
 
     protected val _isFollowState = MutableStateFlow<Boolean?>(null)
     val isFollowState: StateFlow<Boolean?> = _isFollowState.asStateFlow()
@@ -107,7 +113,22 @@ abstract class BaseProfileViewModel(
             pagingRefreshTrigger.onStart { emit(Unit) }
         ) { userId, _ -> userId }
             .flatMapLatest { currentUserId -> getUserPostsUseCase(currentUserId) }
+            .map { pagingData ->
+                pagingData.map { post ->
+                    val isReady = post.mediaFiles.firstOrNull()?.readyToStream ?: true
+                    processingPostIds.update { if (isReady) it - post.id else it + post.id }
+                    post
+                }
+            }
             .cachedIn(viewModelScope)
+    }
+
+    protected fun applyMediaStatus(mediaStatus: PostMediaStatus) {
+        postInteractionStore.applyMediaStatus(mediaStatus.postId, mediaStatus)
+
+        if (mediaStatus.readyToStream || mediaStatus.status == MediaStatusEnum.FAILED) {
+            processingPostIds.update { it - mediaStatus.postId }
+        }
     }
 
     @OptIn(ExperimentalCoroutinesApi::class)

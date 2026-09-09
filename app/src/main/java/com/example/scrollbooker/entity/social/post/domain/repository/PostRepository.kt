@@ -10,6 +10,7 @@ import com.example.scrollbooker.entity.social.post.data.remote.PostsViewEventsBu
 import com.example.scrollbooker.entity.social.post.data.remote.UpdatePostRequest
 import com.example.scrollbooker.entity.social.post.domain.model.Post
 import com.example.scrollbooker.entity.social.post.domain.model.PostAnalyticsSummary
+import com.example.scrollbooker.entity.social.post.domain.model.PostMediaStatus
 import kotlinx.coroutines.flow.Flow
 
 interface PostRepository {
@@ -37,4 +38,5 @@ interface PostRepository {
     suspend fun getPostAnalyticsSummary(postId: Int): PostAnalyticsSummary
     suspend fun createPostViewEvent(postId: Int, request: PostViewEventRequest)
     suspend fun createPostViewEventsBulk(request: PostsViewEventsBulkRequest): PostsViewEventsBulkResponse
+    suspend fun getPostsMediaStatus(ids: List<Int>): List<PostMediaStatus>
 }

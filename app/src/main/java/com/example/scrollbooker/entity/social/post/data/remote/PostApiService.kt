@@ -107,4 +107,9 @@ interface PostApiService {
     suspend fun createPostViewEventsBulk(
         @Body request: PostsViewEventsBulkRequest
     ): PostsViewEventsBulkResponse
+
+    @GET("posts/media-status")
+    suspend fun getPostsMediaStatus(
+        @Query("ids") ids: String
+    ): List<PostMediaStatusItemDto>
 }

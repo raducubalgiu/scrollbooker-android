@@ -47,6 +47,7 @@ import com.example.scrollbooker.R
 import com.example.scrollbooker.components.core.buttons.MainButton
 import com.example.scrollbooker.components.core.headers.Header
 import com.example.scrollbooker.components.core.layout.LoadingScreen
+import com.example.scrollbooker.components.customized.post.PostActionUiState
 import com.example.scrollbooker.components.customized.post.PostPlayerWithThumbnail
 import com.example.scrollbooker.components.customized.post.components.EndOfFeedPager
 import com.example.scrollbooker.components.customized.post.components.PostOverlay
@@ -62,8 +63,11 @@ import com.example.scrollbooker.core.util.Dimens.BasePadding
 import com.example.scrollbooker.core.util.Dimens.SpacingS
 import com.example.scrollbooker.core.util.sharePost
 import com.example.scrollbooker.entity.social.post.data.mappers.applyUiState
+import com.example.scrollbooker.entity.social.post.data.mappers.withMediaStatus
+import com.example.scrollbooker.entity.social.post.domain.model.Post
 import com.example.scrollbooker.navigation.navigators.ProfileNavigator
 import com.example.scrollbooker.ui.theme.BackgroundDark
+import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -92,14 +96,15 @@ fun BaseProfilePostDetailScreen(
         null -> error("Invalid post tab key")
     }
 
+    fun patchedPost(idx: Int): Post? {
+        val raw = if (idx in 0 until posts.itemCount) posts.peek(idx) else null
+        return raw?.withMediaStatus(viewModel.observePostUi(raw.id).value.mediaStatus)
+    }
+
     DisposableEffect(detailScopeKey) {
-        viewModel.setDetailScreenActive(true, detailScopeKey, postIndex, { idx ->
-            if (idx in 0 until posts.itemCount) posts.peek(idx) else null
-        })
+        viewModel.setDetailScreenActive(true, detailScopeKey, postIndex) { idx -> patchedPost(idx) }
         onDispose {
-            viewModel.setDetailScreenActive(false, detailScopeKey, postIndex, { idx ->
-                if (idx in 0 until posts.itemCount) posts.peek(idx) else null
-            })
+            viewModel.setDetailScreenActive(false, detailScopeKey, postIndex) { idx -> patchedPost(idx) }
             viewModel.onDetailSessionFinished(detailScopeKey)
         }
     }
@@ -179,11 +184,15 @@ fun BaseProfilePostDetailScreen(
             }
         }
 
-        LaunchedEffect(pagerState.settledPage) {
+        val fallbackPostUi = remember { MutableStateFlow(PostActionUiState.EMPTY) }
+        val currentPostActionState by (currentPost?.id?.let(viewModel::observePostUi) ?: fallbackPostUi)
+            .collectAsStateWithLifecycle()
+
+        LaunchedEffect(pagerState.settledPage, currentPostActionState.mediaStatus) {
             viewModel.onPostSettled(
                 scopeKey = detailScopeKey,
                 index = pagerState.settledPage,
-                getPost = { idx -> if (idx in 0 until posts.itemCount) posts.peek(idx) else null }
+                getPost = { idx -> patchedPost(idx) }
             )
         }
 

@@ -16,6 +16,7 @@ import com.example.scrollbooker.entity.booking.employee.domain.useCase.GetEmploy
 import com.example.scrollbooker.entity.booking.products.domain.useCase.GetProductsByBusinessIdAndEmployeeIdUseCase
 import com.example.scrollbooker.entity.booking.schedule.domain.useCase.GetSchedulesByUserIdUseCase
 import com.example.scrollbooker.entity.social.bookmark.domain.useCase.GetUserBookmarkedPostsUseCase
+import com.example.scrollbooker.entity.social.post.domain.useCase.GetPostsMediaStatusUseCase
 import com.example.scrollbooker.entity.social.post.domain.useCase.GetUserPostsUseCase
 import com.example.scrollbooker.entity.user.userProfile.data.remote.toUserAvatarRequest
 import com.example.scrollbooker.entity.user.userProfile.domain.model.SearchUsernameResponse
@@ -71,6 +72,7 @@ class MyProfileViewModel @Inject constructor(
     postInteractionStore: PostInteractionStore,
     videoPlayerManager: VideoPlayerManager,
     postViewHeartbeatTracker: PostViewHeartbeatTracker,
+    private val getPostsMediaStatusUseCase: GetPostsMediaStatusUseCase,
     postCreatedSignal: PostCreatedSignal
 ):  BaseProfileViewModel(
     shouldShowVisibleLoading = false,
@@ -91,9 +93,6 @@ class MyProfileViewModel @Inject constructor(
     private var uploadPollingJob: Job? = null
 
     init {
-        // CameraViewModel notifies this (session-long, tab-scoped) instance directly when a
-        // post finishes uploading, so the still-processing post shows up on this screen
-        // without needing a manual pull-to-refresh or refreshing on every screen visit.
         viewModelScope.launch {
             postCreatedSignal.events.collect {
                 refreshPagedContent()
@@ -102,23 +101,25 @@ class MyProfileViewModel @Inject constructor(
         }
     }
 
-    // There's no push channel (no sockets) telling us when Cloudflare Stream finishes
-    // encoding, so we poll for it: re-fetch the first page every 30s, capped at 10 tries
-    // (~5 min) so a stuck/failed encode doesn't poll forever. A tick after the post is
-    // already ready is harmless - it just re-fetches the same, now-ready data.
     private fun pollUntilStreamReady() {
         uploadPollingJob?.cancel()
         uploadPollingJob = viewModelScope.launch {
             repeat(UPLOAD_POLL_MAX_ATTEMPTS) {
                 delay(UPLOAD_POLL_INTERVAL_MS)
-                refreshPagedContent()
+
+                val ids = processingPostIds.value.toList()
+                if (ids.isEmpty()) return@launch
+
+                getPostsMediaStatusUseCase(ids)
+                    .onSuccess { statuses -> statuses.forEach { applyMediaStatus(it) } }
+                    .onFailure { e -> Timber.tag("MyProfile").e(e, "ERROR: polling posts media status") }
             }
         }
     }
 
     companion object {
-        private const val UPLOAD_POLL_INTERVAL_MS = 30_000L
-        private const val UPLOAD_POLL_MAX_ATTEMPTS = 10
+        private const val UPLOAD_POLL_INTERVAL_MS = 15_000L
+        private const val UPLOAD_POLL_MAX_ATTEMPTS = 20
     }
 
     private val _editState = MutableStateFlow<FeatureState<Unit>?>(null)

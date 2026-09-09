@@ -77,6 +77,7 @@ fun MyProfileScreen(
                 productsState = viewModel.products,
                 employeesState = viewModel.employees,
                 bookmarksState = viewModel.bookmarks,
+                observePostUi = viewModel::observePostUi,
                 aboutState = viewModel.about,
                 isRefreshingState = viewModel.isRefreshing,
                 onRefreshProfileAndTab = { viewModel.refreshProfileAndTab(it) },
