@@ -84,7 +84,12 @@ fun NavGraphBuilder.reviewsGraph(
                 onBack = { reviewsNavigate.back() },
                 onNavigateToUserProfile = { reviewsNavigate.toUserProfile(it) },
                 onNavigateToBooking = { product, source -> reviewsNavigate.toBookingFromProduct(product, source) },
-                onNavigateToEditPost = { reviewsNavigate.toEditPost(it) }
+                onNavigateToBookingFromAppointment = { reviewsNavigate.toBookingFromAppointment(it) },
+                onNavigateToBookingFromProfile = { businessId, userId, businessOwnerId ->
+                    reviewsNavigate.toBookingFromProfile(businessId, userId, businessOwnerId)
+                },
+                onNavigateToEditPost = { reviewsNavigate.toEditPost(it) },
+                onNavigateToStatistics = { reviewsNavigate.toPostStatistics(it) }
             )
         }
     }

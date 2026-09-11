@@ -1,0 +1,86 @@
+package com.example.scrollbooker.components.customized.post.sheets.linkedProducts
+
+import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.itemsIndexed
+import androidx.compose.material3.HorizontalDivider
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.unit.dp
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.example.scrollbooker.R
+import com.example.scrollbooker.components.core.buttons.MainButtonOutlined
+import com.example.scrollbooker.components.core.layout.EmptyScreen
+import com.example.scrollbooker.components.core.layout.ErrorScreen
+import com.example.scrollbooker.components.core.layout.LoadingScreen
+import com.example.scrollbooker.components.customized.productCard.ProductCard
+import com.example.scrollbooker.components.customized.protected.Protected
+import com.example.scrollbooker.core.enums.PermissionEnum
+import com.example.scrollbooker.core.util.Dimens.BasePadding
+import com.example.scrollbooker.core.util.Dimens.SpacingXL
+import com.example.scrollbooker.core.util.FeatureState
+import com.example.scrollbooker.entity.booking.products.domain.model.Product
+import com.example.scrollbooker.ui.theme.Divider
+
+@Composable
+fun LinkedProductsSection(
+    viewModel: LinkedProductsViewModel,
+    onNavigateToBooking: (Product) -> Unit
+) {
+    val productsState by viewModel.productsState.collectAsStateWithLifecycle()
+
+    when (val currentState = productsState) {
+        is FeatureState.Loading -> LoadingScreen()
+        is FeatureState.Error -> ErrorScreen()
+        is FeatureState.Success -> {
+            val products = currentState.data
+
+            if (products.isEmpty()) {
+                EmptyScreen(
+                    message = stringResource(R.string.notFoundServices),
+                    icon = painterResource(R.drawable.ic_shopping_outline),
+                )
+            } else {
+                LazyColumn(
+                    modifier = Modifier.fillMaxSize(),
+                    contentPadding = PaddingValues(vertical = BasePadding)
+                ) {
+                    itemsIndexed(products) { index, product ->
+                        ProductCard(
+                            modifier = Modifier.padding(horizontal = BasePadding),
+                            product = product,
+                            onOpenProductDetail = {},
+                            onNavigateToBooking = onNavigateToBooking
+                        )
+
+                        if (index < products.lastIndex) {
+                            HorizontalDivider(
+                                modifier = Modifier.padding(
+                                    vertical = SpacingXL,
+                                    horizontal = BasePadding
+                                ),
+                                color = Divider,
+                                thickness = 0.55.dp
+                            )
+                        }
+                    }
+
+                    item {
+                        Protected(permission = PermissionEnum.BOOK_BUTTON_VIEW) {
+                            MainButtonOutlined(
+                                modifier = Modifier.padding(BasePadding),
+                                title = stringResource(R.string.seeAllServices),
+                                onClick = {  }
+                            )
+                        }
+                    }
+                }
+            }
+        }
+    }
+}

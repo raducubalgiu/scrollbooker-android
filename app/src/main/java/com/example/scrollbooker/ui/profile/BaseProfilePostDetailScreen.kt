@@ -91,7 +91,12 @@ fun BaseProfilePostDetailScreen(
 
             profileNavigate.toBookingFromProduct(product, source)
         },
+        onNavigateToBookingFromAppointment = { profileNavigate.toBookingFromAppointment(it) },
+        onNavigateToBookingFromProfile = { businessId, userId, businessOwnerId ->
+            profileNavigate.toBookingFromProfile(businessId, userId, businessOwnerId)
+        },
         onNavigateToEditPost = { profileNavigate.toEditPost(it) },
+        onNavigateToStatistics = { profileNavigate.toPostStatistics(it) },
         onPostDeleted = { viewModel.refreshPagedContent() },
         onNavigateToUserProfile = { profileNavigate.toUserProfile(it) }
     )

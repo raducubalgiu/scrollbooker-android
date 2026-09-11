@@ -87,6 +87,10 @@
     <string name="aboutYou">Despre tine</string>
     <string name="dontHaveAppointmentsYet">Nu ai nici o programare momentan</string>
     <string name="reviews">Recenzii</string>
+    <string name="videoReviewDetails">Detalii recenzie</string>
+    <string name="review">Recenzie</string>
+    <string name="reviewFor">Recenzie pentru</string>
+    <string name="seeAllServicesFrom">Vezi toate serviciile de la %1$s</string>
     <string name="followers">Urmăritori</string>
     <string name="dontFoundResults">Nu au fost găsite rezultate</string>
     <string name="price">Preț</string>
@@ -359,7 +363,6 @@
     <string name="reposts">Repostări</string>
     <string name="bookmarks">Salvate</string>
     <string name="copyLink">Copiază linkul</string>
-    <string name="hasTestedTheService">a testat serviciul</string>
     <string name="written">Scrise</string>
     <string name="pick">Alege</string>
     <string name="bookThisService">Rezervă acest serviciu</string>
@@ -478,6 +481,7 @@
     <string name="change">Modifică</string>
     <string name="linkServices">Atașează servicii</string>
     <string name="videoReview">Recenzie video</string>
+    <string name="leftReviewForPrefix">a lăsat o recenzie pentru </string>
     <string name="startDateLowerThanEndDateValidation">Data de start nu poate fi mai mare decat data de sfârșit</string>
     <string name="unapprovedBusinesses">Afaceri în aprobare</string>
     <string name="unapprovedBusinessesDescription">Lista de afaceri ce urmează a fi revizuite</string>

@@ -104,9 +104,10 @@ sealed class MainRoute(val route: String) {
     object CreatePostPreview: MainRoute(route = "createPostPreview")
     object CreatePostCover: MainRoute(route = "createPostCover")
 
-    object EditPostNavigator: MainRoute(route = "editPostNavigator/{postId}") {
-        fun createRoute(postId: Int): String = "editPostNavigator/$postId"
+    object PostUtilityNavigator: MainRoute(route = "postUtilityNavigator/{postId}") {
+        fun createRoute(postId: Int): String = "postUtilityNavigator/$postId"
     }
+    object PostStatistics: MainRoute(route = "postStatistics")
     object EditPost: MainRoute(route = "editPost")
     object EditPostCover: MainRoute(route = "editPostCover")
 

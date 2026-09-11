@@ -29,6 +29,9 @@ import com.example.scrollbooker.navigation.transition.slideOutToRight
 import com.example.scrollbooker.ui.feed.ExploreFeedViewModel
 import com.example.scrollbooker.ui.feed.FollowingFeedViewModel
 
+private fun isPostUtilityRoute(route: String?): Boolean =
+    route != null && (route.startsWith(MainRoute.EditPost.route) || route.startsWith(MainRoute.PostStatistics.route))
+
 @Composable
 fun FeedNavHost(navController: NavHostController) {
     val profileNavigate = remember(navController) { ProfileNavigator(navController) }
@@ -42,16 +45,14 @@ fun FeedNavHost(navController: NavHostController) {
         startDestination = MainRoute.Feed.route,
         enterTransition = { slideInFromRight() },
         exitTransition = {
-            val route = targetState.destination.route
-            if (route?.startsWith(MainRoute.EditPost.route) == true) {
+            if (isPostUtilityRoute(targetState.destination.route)) {
                 ExitTransition.None
             } else {
                 slideOutToLeft()
             }
         },
         popEnterTransition = {
-            val route = initialState.destination.route
-            if (route?.startsWith(MainRoute.EditPost.route) == true) {
+            if (isPostUtilityRoute(initialState.destination.route)) {
                 EnterTransition.None
             } else {
                 slideInFromLeft()

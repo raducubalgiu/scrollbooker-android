@@ -7,7 +7,7 @@ import com.example.scrollbooker.entity.booking.products.domain.repository.Produc
 class GetPostLinkedProductsUseCase(
     private val repository: ProductRepository
 ) {
-    suspend operator fun invoke(postId: Int, allowFallback: Boolean = true): Result<List<Product>> {
+    suspend operator fun invoke(postId: Int, allowFallback: Boolean): Result<List<Product>> {
         return runSuspendCatching {
             repository.getPostLinkedProducts(postId, allowFallback)
         }

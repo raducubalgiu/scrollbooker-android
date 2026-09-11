@@ -31,6 +31,12 @@ import com.example.scrollbooker.navigation.transition.slideOutToLeft
 import com.example.scrollbooker.navigation.transition.slideOutToRight
 import com.example.scrollbooker.ui.theme.Background
 
+private fun isStaticRoute(route: String?): Boolean =
+    route != null && (route.startsWith(MainRoute.Camera.route) || route.startsWith(MainRoute.MyProfilePostDetail.route))
+
+private fun isPostUtilityRoute(route: String?): Boolean =
+    route != null && (route.startsWith(MainRoute.EditPost.route) || route.startsWith(MainRoute.PostStatistics.route))
+
 @Composable
 fun MyProfileNavHost(
     navController: NavHostController,
@@ -50,28 +56,30 @@ fun MyProfileNavHost(
             navController = navController,
             startDestination = MainRoute.MyProfileNavigator.route,
             enterTransition = {
-                if (targetState.destination.route?.startsWith(MainRoute.Camera.route) == true) {
+                if (isStaticRoute(targetState.destination.route)) {
                     EnterTransition.None
                 } else {
                     slideInFromRight()
                 }
             },
             exitTransition = {
-                if (targetState.destination.route?.startsWith(MainRoute.Camera.route) == true) {
+                val route = targetState.destination.route
+                if (isStaticRoute(route) || isPostUtilityRoute(route)) {
                     ExitTransition.None
                 } else {
                     slideOutToLeft()
                 }
             },
             popEnterTransition = {
-                if (initialState.destination.route?.startsWith(MainRoute.Camera.route) == true) {
+                val route = initialState.destination.route
+                if (isStaticRoute(route) || isPostUtilityRoute(route)) {
                     EnterTransition.None
                 } else {
                     slideInFromLeft()
                 }
             },
             popExitTransition = {
-                if (initialState.destination.route?.startsWith(MainRoute.Camera.route) == true) {
+                if (isStaticRoute(initialState.destination.route)) {
                     ExitTransition.None
                 } else {
                     slideOutToRight()

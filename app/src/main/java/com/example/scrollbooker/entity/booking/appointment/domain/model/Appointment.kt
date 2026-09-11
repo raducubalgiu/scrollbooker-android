@@ -7,6 +7,7 @@ import com.example.scrollbooker.core.enums.AppointmentStatusEnum
 import com.example.scrollbooker.core.enums.AppointmentStatusEnum.CANCELED
 import com.example.scrollbooker.core.enums.AppointmentStatusEnum.FINISHED
 import com.example.scrollbooker.core.enums.AppointmentStatusEnum.IN_PROGRESS
+import com.example.scrollbooker.entity.booking.products.domain.model.ProductFilter
 import com.example.scrollbooker.entity.nomenclature.currency.domain.model.Currency
 import org.threeten.bp.ZonedDateTime
 import java.math.BigDecimal
@@ -50,7 +51,8 @@ data class AppointmentProduct(
     val duration: Int,
     val currency: Currency,
     val convertedPriceWithDiscount: BigDecimal,
-    val exchangeRate: BigDecimal?
+    val exchangeRate: BigDecimal?,
+    val filters: List<ProductFilter>
 )
 
 data class AppointmentUser(
@@ -80,6 +82,29 @@ data class AppointmentBusiness(
 
 fun Appointment.getProductNames(): String =
     products.joinToString(", ") { it.name }
+
+fun AppointmentProduct.getDurationText(): String {
+    if (duration == 0) return "0min"
+
+    val hours = duration / 60
+    val remainingMinutes = duration % 60
+
+    val hoursPart = if (hours > 0) "${hours}h" else ""
+    val minutesPart = if (remainingMinutes > 0) "${remainingMinutes}min" else ""
+
+    return listOf(hoursPart, minutesPart)
+        .filter { it.isNotEmpty() }
+        .joinToString(" ")
+}
+
+fun AppointmentProduct.getFiltersSummary(): String {
+    val filterParts = this.filters.mapNotNull { filter ->
+        if (filter.subFilters.isEmpty()) null
+        else filter.subFilters.joinToString(" & ") { it.name }
+    }
+
+    return filterParts.joinToString(" • ")
+}
 
 @StringRes
 fun Appointment.getStatusRes(): Int =

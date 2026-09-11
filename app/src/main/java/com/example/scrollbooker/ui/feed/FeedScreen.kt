@@ -83,7 +83,12 @@ fun FeedScreen(
 
             feedNavigate.toBookingFromProduct(product, source)
         },
+        onNavigateToBookingFromAppointment = { feedNavigate.toBookingFromAppointment(it) },
+        onNavigateToBookingFromProfile = { businessId, userId, businessOwnerId ->
+            feedNavigate.toBookingFromProfile(businessId, userId, businessOwnerId)
+        },
         onNavigateToEditPost = { feedNavigate.toEditPost(it) },
+        onNavigateToStatistics = { feedNavigate.toPostStatistics(it) },
         onPostDeleted = { tabConfigs[horizontalPagerState.currentPage].viewModel.refreshAfterPostDeleted() },
         onNavigateToUserProfile = { feedNavigate.toUserProfile(it) }
     )

@@ -7,6 +7,7 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.width
 import androidx.compose.material3.ShapeDefaults
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
@@ -19,12 +20,13 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Shadow
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
-import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.scrollbooker.R
 import com.example.scrollbooker.core.util.Dimens.SpacingS
+import com.example.scrollbooker.entity.social.post.domain.model.PostBusinessOwner
+import com.example.scrollbooker.entity.social.post.domain.model.PostEmployee
 import com.example.scrollbooker.entity.social.post.domain.model.PostServiceDomain
 import com.example.scrollbooker.entity.social.post.domain.model.PostUser
 import com.example.scrollbooker.navigation.navigators.UserProfileParam
@@ -39,6 +41,8 @@ fun PostOverlayUser(
     user: PostUser,
     serviceDomain: PostServiceDomain?,
     isVideoReview: Boolean,
+    businessOwner: PostBusinessOwner,
+    employee: PostEmployee?,
     onNavigateToUser: (param: UserProfileParam) -> Unit
 ) {
     val interactionSource = remember { MutableInteractionSource() }
@@ -46,7 +50,7 @@ fun PostOverlayUser(
     if(isVideoReview) {
         Surface(
             modifier = Modifier.padding(bottom = SpacingS),
-            shape = ShapeDefaults.ExtraLarge,
+            shape = ShapeDefaults.Small,
             color = Color.White.copy(alpha = 0.1f),
             contentColor = Color.White
         ) {
@@ -55,8 +59,8 @@ fun PostOverlayUser(
                 style = bodySmall,
                 fontWeight = FontWeight.SemiBold,
                 modifier = Modifier.padding(
-                    vertical = 10.dp,
-                    horizontal = 12.dp
+                    vertical = 6.dp,
+                    horizontal = 8.dp
                 )
             )
         }
@@ -104,12 +108,36 @@ fun PostOverlayUser(
 
         when {
             isVideoReview -> {
-                SecondaryText(
-                    text = "${stringResource(R.string.hasTestedTheService)} Tuns",
-                    color = Color.White,
-                    fontWeight = FontWeight.Normal,
-                    fontStyle = FontStyle.Italic
-                )
+                val reviewedId = employee?.id ?: businessOwner.id
+                val reviewedUsername = employee?.username ?: businessOwner.username
+                val reviewedProfession = employee?.profession ?: businessOwner.profession
+                val reviewedFullName = employee?.fullName ?: businessOwner.fullName
+                val reviewedInteractionSource = remember { MutableInteractionSource() }
+
+                Row(verticalAlignment = Alignment.CenterVertically) {
+                    SecondaryText(
+                        text = stringResource(R.string.leftReviewForPrefix),
+                        color = Color.White,
+                        fontWeight = FontWeight.Normal
+                    )
+
+                    Spacer(Modifier.width(2.dp))
+
+                    SecondaryText(
+                        text = reviewedFullName,
+                        color = Color.White,
+                        fontWeight = FontWeight.Bold,
+                        modifier = Modifier.clickable(
+                            interactionSource = reviewedInteractionSource,
+                            indication = null,
+                            onClick = {
+                                onNavigateToUser(
+                                    UserProfileParam(reviewedId, reviewedUsername, reviewedProfession)
+                                )
+                            }
+                        )
+                    )
+                }
             }
             else -> SecondaryText(user.profession)
         }
@@ -119,11 +147,12 @@ fun PostOverlayUser(
 @Composable
 private fun SecondaryText(
     text: String,
+    modifier: Modifier = Modifier,
     color: Color = Primary.copy(0.85f),
     fontWeight: FontWeight = FontWeight.SemiBold,
-    fontStyle: FontStyle = FontStyle.Normal
 ) {
     Text(
+        modifier = modifier,
         text = text,
         style = TextStyle(
             shadow = Shadow(
@@ -137,6 +166,5 @@ private fun SecondaryText(
         ),
         fontWeight = fontWeight,
         color = color,
-        fontStyle = fontStyle
     )
 }

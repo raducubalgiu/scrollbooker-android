@@ -1,4 +1,5 @@
 package com.example.scrollbooker.entity.booking.appointment.data.remote
+import com.example.scrollbooker.entity.booking.products.data.remote.ProductFilterDto
 import com.example.scrollbooker.entity.nomenclature.currency.data.remote.CurrencyDto
 import com.google.gson.annotations.SerializedName
 import java.math.BigDecimal
@@ -82,6 +83,8 @@ data class AppointmentProductDto(
 
     @SerializedName("exchange_rate_used")
     val exchangeRate: BigDecimal?,
+
+    val filters: List<ProductFilterDto>? = emptyList(),
 )
 
 data class AppointmentUserDto(

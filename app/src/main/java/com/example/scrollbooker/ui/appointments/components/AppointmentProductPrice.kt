@@ -14,19 +14,18 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.text.style.TextOverflow
-import androidx.compose.ui.unit.sp
 import com.example.scrollbooker.core.extensions.toTwoDecimals
 import com.example.scrollbooker.core.util.Dimens.SpacingS
 import com.example.scrollbooker.core.util.Dimens.SpacingXS
 import com.example.scrollbooker.ui.theme.Error
 import com.example.scrollbooker.ui.theme.bodyMedium
-import com.example.scrollbooker.ui.theme.titleMedium
 import java.math.BigDecimal
 
 @Composable
 fun AppointmentProductPrice(
     modifier: Modifier = Modifier,
     name: String,
+    subtitle: String? = null,
     price: BigDecimal,
     priceWithDiscount: BigDecimal,
     discount: BigDecimal,
@@ -40,9 +39,18 @@ fun AppointmentProductPrice(
         Column(Modifier.weight(1f)) {
             Text(
                 text = name,
-                style = bodyMedium,
-                color = Color.Gray
+                fontWeight = FontWeight.SemiBold
             )
+
+            if (!subtitle.isNullOrBlank()) {
+                Text(
+                    text = subtitle,
+                    style = bodyMedium,
+                    color = Color.Gray,
+                    maxLines = 2,
+                    overflow = TextOverflow.Ellipsis
+                )
+            }
         }
 
         Row(verticalAlignment = Alignment.CenterVertically) {
@@ -64,8 +72,6 @@ fun AppointmentProductPrice(
 
             Text(
                 text = "${priceWithDiscount.toTwoDecimals()} $currencyName",
-                style = titleMedium,
-                fontSize = 17.sp,
                 fontWeight = FontWeight.SemiBold
             )
         }

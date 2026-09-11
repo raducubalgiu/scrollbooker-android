@@ -67,7 +67,10 @@ fun PostBusinessOwnerDto.toDomain(): PostBusinessOwner {
         id = id,
         fullName = fullName,
         avatar = avatar,
-        ratingsAverage = ratingsAverage
+        profession = profession,
+        username = username,
+        ratingsAverage = ratingsAverage,
+        ratingsCount = ratingsCount
     )
 }
 
@@ -75,7 +78,11 @@ fun PostEmployeeDto.toDomain(): PostEmployee {
     return PostEmployee(
         id = id,
         fullName = fullName,
-        avatar = avatar
+        profession = profession,
+        avatar = avatar,
+        username = username,
+        ratingsAverage = ratingsAverage,
+        ratingsCount = ratingsCount
     )
 }
 

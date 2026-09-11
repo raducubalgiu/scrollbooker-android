@@ -1,5 +1,6 @@
-package com.example.scrollbooker.components.customized.post.sheets.statistics
+package com.example.scrollbooker.ui.statistics
 
+import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.scrollbooker.core.util.FeatureState
@@ -22,14 +23,11 @@ import javax.inject.Inject
 
 @HiltViewModel
 class PostStatisticsViewModel @Inject constructor(
+    savedStateHandle: SavedStateHandle,
     private val getPostAnalyticsSummaryUseCase: GetPostAnalyticsSummaryUseCase
 ): ViewModel() {
-    private val _postId: MutableStateFlow<Int?> = MutableStateFlow<Int?>(null)
+    private val _postId: MutableStateFlow<Int?> = MutableStateFlow(savedStateHandle["postId"] ?: error("Missing postId"))
     val postId: StateFlow<Int?> = _postId.asStateFlow()
-
-    fun setPostId(postId: Int) {
-        _postId.value = postId
-    }
 
     @OptIn(ExperimentalCoroutinesApi::class)
     val analyticsState: StateFlow<FeatureState<PostAnalyticsSummary>> = _postId

@@ -13,7 +13,7 @@ fun handlePostSheetAction(
     handleOpenSheet: (PostSheetsContent) -> Unit
 ) {
     when(action) {
-        PostSheetActionEnum.OPEN_LINKED_PRODUCTS -> handleOpenSheet(LinkedProductsSheet(post.id))
+        PostSheetActionEnum.OPEN_LINKED_PRODUCTS -> handleOpenSheet(LinkedProductsSheet(post))
         PostSheetActionEnum.OPEN_COMMENTS -> handleOpenSheet(CommentsSheet(post.id))
         PostSheetActionEnum.OPEN_MORE -> handleOpenSheet(MoreSheet(post.id))
     }

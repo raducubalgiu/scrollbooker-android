@@ -1,4 +1,4 @@
-package com.example.scrollbooker.components.customized.post.sheets.statistics
+package com.example.scrollbooker.ui.statistics
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Row
@@ -19,12 +19,9 @@ import com.example.scrollbooker.components.customized.stats.StatBarRow
 import com.example.scrollbooker.components.customized.stats.StatCard
 import com.example.scrollbooker.entity.social.post.domain.model.PostAnalyticsSummary
 import java.util.concurrent.TimeUnit
-import kotlin.collections.component1
-import kotlin.collections.component2
-
 
 @Composable
-fun StatisticsContent(summary: PostAnalyticsSummary) {
+fun PostStatisticsContent(summary: PostAnalyticsSummary) {
     val groupedSources = remember(summary.sourceBreakdown) {
         summary.sourceBreakdown
             .groupBy { it.source?.labelResId ?: R.string.analytics_source_other }

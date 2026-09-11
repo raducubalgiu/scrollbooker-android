@@ -126,7 +126,12 @@ fun NavGraphBuilder.socialGraph(
                 onBack = { navController.popBackStack() },
                 onNavigateToUserProfile = { profileNavigate.toUserProfile(it) },
                 onNavigateToBooking = { product, _ -> profileNavigate.toBookingFromProduct(product, BookingSourceEnum.VIDEO_REVIEWS) },
-                onNavigateToEditPost = { profileNavigate.toEditPost(it) }
+                onNavigateToBookingFromAppointment = { profileNavigate.toBookingFromAppointment(it) },
+                onNavigateToBookingFromProfile = { businessId, userId, businessOwnerId ->
+                    profileNavigate.toBookingFromProfile(businessId, userId, businessOwnerId)
+                },
+                onNavigateToEditPost = { profileNavigate.toEditPost(it) },
+                onNavigateToStatistics = { profileNavigate.toPostStatistics(it) }
             )
         }
     }

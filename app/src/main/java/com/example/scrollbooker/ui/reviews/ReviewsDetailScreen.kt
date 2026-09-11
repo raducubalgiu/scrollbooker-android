@@ -36,6 +36,7 @@ import com.example.scrollbooker.core.enums.BookingSourceEnum
 import com.example.scrollbooker.core.enums.PostViewSourceEnum
 import com.example.scrollbooker.core.util.Dimens.BasePadding
 import com.example.scrollbooker.core.util.Dimens.SpacingS
+import com.example.scrollbooker.entity.booking.appointment.domain.model.Appointment
 import com.example.scrollbooker.entity.booking.products.domain.model.Product
 import com.example.scrollbooker.navigation.navigators.UserProfileParam
 import com.example.scrollbooker.ui.theme.BackgroundDark
@@ -49,7 +50,10 @@ fun ReviewsDetailScreen(
     onBack: () -> Unit,
     onNavigateToUserProfile: (UserProfileParam) -> Unit,
     onNavigateToBooking: (Product, BookingSourceEnum) -> Unit,
-    onNavigateToEditPost: (Int) -> Unit
+    onNavigateToBookingFromAppointment: (Appointment) -> Unit,
+    onNavigateToBookingFromProfile: (businessId: Int, userId: Int, businessOwnerId: Int) -> Unit,
+    onNavigateToEditPost: (Int) -> Unit,
+    onNavigateToStatistics: (Int) -> Unit
 ) {
     val userPausedSet by viewModel.userPausedPostIds.collectAsStateWithLifecycle()
 
@@ -73,7 +77,12 @@ fun ReviewsDetailScreen(
     PostSheetsHost(
         state = postSheets,
         onNavigateToBooking = { product -> onNavigateToBooking(product, BookingSourceEnum.VIDEO_REVIEWS) },
+        onNavigateToBookingFromAppointment = { onNavigateToBookingFromAppointment(it) },
+        onNavigateToBookingFromProfile = { businessId, userId, businessOwnerId ->
+            onNavigateToBookingFromProfile(businessId, userId, businessOwnerId)
+        },
         onNavigateToEditPost = { onNavigateToEditPost(it) },
+        onNavigateToStatistics = { onNavigateToStatistics(it) },
         onPostDeleted = { viewModel.refreshAfterPostDeleted() },
         onNavigateToUserProfile = onNavigateToUserProfile
     )

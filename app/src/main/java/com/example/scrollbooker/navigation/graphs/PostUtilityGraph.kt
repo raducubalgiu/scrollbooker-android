@@ -22,6 +22,8 @@ import com.example.scrollbooker.navigation.routes.MainRoute
 import com.example.scrollbooker.ui.editPost.EditPostCoverScreen
 import com.example.scrollbooker.ui.editPost.EditPostScreen
 import com.example.scrollbooker.ui.editPost.EditPostViewModel
+import com.example.scrollbooker.ui.statistics.PostStatisticsScreen
+import com.example.scrollbooker.ui.statistics.PostStatisticsViewModel
 
 fun NavGraphBuilder.postUtilityGraph(navController: NavHostController) {
     val pushSpec: FiniteAnimationSpec<IntOffset> = tween(320, easing = LinearOutSlowInEasing)
@@ -30,7 +32,7 @@ fun NavGraphBuilder.postUtilityGraph(navController: NavHostController) {
     val fadeOutSpec: FiniteAnimationSpec<Float> = tween(220, easing = LinearOutSlowInEasing)
 
     navigation(
-        route = MainRoute.EditPostNavigator.route,
+        route = MainRoute.PostUtilityNavigator.route,
         arguments = listOf(navArgument("postId") { type = NavType.IntType }),
         startDestination = MainRoute.EditPost.route,
         enterTransition = { slideInVertically(pushSpec) { it } + fadeIn(fadeInSpec) },
@@ -42,7 +44,7 @@ fun NavGraphBuilder.postUtilityGraph(navController: NavHostController) {
             route = MainRoute.EditPost.route
         ) { backStackEntry ->
             val parentEntry = remember(backStackEntry) {
-                navController.getBackStackEntry(MainRoute.EditPostNavigator.route)
+                navController.getBackStackEntry(MainRoute.PostUtilityNavigator.route)
             }
             val viewModel = hiltViewModel<EditPostViewModel>(parentEntry)
 
@@ -61,11 +63,25 @@ fun NavGraphBuilder.postUtilityGraph(navController: NavHostController) {
             popExitTransition = { slideOutVertically(popSpec) { it } + fadeOut(fadeOutSpec) }
         ) { backStackEntry ->
             val parentEntry = remember(backStackEntry) {
-                navController.getBackStackEntry(MainRoute.EditPostNavigator.route)
+                navController.getBackStackEntry(MainRoute.PostUtilityNavigator.route)
             }
             val viewModel = hiltViewModel<EditPostViewModel>(parentEntry)
 
             EditPostCoverScreen(
+                viewModel = viewModel,
+                onBack = { navController.popBackStack() }
+            )
+        }
+
+        composable(
+            route = MainRoute.PostStatistics.route
+        ) { backStackEntry ->
+            val parentEntry = remember(backStackEntry) {
+                navController.getBackStackEntry(MainRoute.PostUtilityNavigator.route)
+            }
+            val viewModel = hiltViewModel<PostStatisticsViewModel>(parentEntry)
+
+            PostStatisticsScreen(
                 viewModel = viewModel,
                 onBack = { navController.popBackStack() }
             )

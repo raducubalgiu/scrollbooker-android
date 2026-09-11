@@ -91,6 +91,8 @@ fun PostOverlay(
                         user = post.user,
                         isVideoReview = isVideoReview,
                         serviceDomain = post.serviceDomain,
+                        businessOwner = post.businessOwner,
+                        employee = post.employee,
                         onNavigateToUser = onNavigateToUserProfile,
                     )
 

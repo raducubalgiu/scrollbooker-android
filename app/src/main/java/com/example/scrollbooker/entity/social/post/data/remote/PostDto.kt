@@ -74,8 +74,15 @@ data class PostBusinessOwnerDto(
 
     val avatar: String?,
 
+    val profession: String,
+
+    val username: String,
+
     @SerializedName("ratings_average")
-    val ratingsAverage: Float
+    val ratingsAverage: Float,
+
+    @SerializedName("ratings_count")
+    val ratingsCount: Int
 )
 
 data class PostEmployeeDto(
@@ -84,7 +91,17 @@ data class PostEmployeeDto(
     @SerializedName("fullname")
     val fullName: String,
 
-    val avatar: String?
+    val profession: String,
+
+    val avatar: String?,
+
+    val username: String,
+
+    @SerializedName("ratings_average")
+    val ratingsAverage: Float,
+
+    @SerializedName("ratings_count")
+    val ratingsCount: Int
 )
 
 data class PostBusinessLocationDto(

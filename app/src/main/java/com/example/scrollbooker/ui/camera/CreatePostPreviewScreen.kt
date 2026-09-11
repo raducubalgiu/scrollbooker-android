@@ -219,6 +219,9 @@ fun CreatePostPreviewScreen(
                                     id = 1,
                                     fullName = "Numele meu",
                                     ratingsAverage = 4.5f,
+                                    ratingsCount = 100,
+                                    profession = "Creator",
+                                    username = "numele_meu",
                                     avatar = null
                                 ),
                                 employee = null,

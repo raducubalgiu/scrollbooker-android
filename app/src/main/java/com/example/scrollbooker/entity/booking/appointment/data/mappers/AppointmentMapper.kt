@@ -13,6 +13,7 @@ import com.example.scrollbooker.entity.booking.appointment.domain.model.Appointm
 import com.example.scrollbooker.entity.booking.appointment.domain.model.AppointmentUser
 import com.example.scrollbooker.entity.booking.appointment.domain.model.AppointmentWrittenReview
 import com.example.scrollbooker.entity.booking.appointment.domain.model.BusinessCoordinates
+import com.example.scrollbooker.entity.booking.products.data.mappers.toDomain
 import com.example.scrollbooker.entity.nomenclature.currency.data.mapper.toDomain
 import org.threeten.bp.ZonedDateTime
 
@@ -60,7 +61,8 @@ fun AppointmentProductDto.toDomain(): AppointmentProduct {
         discount = discount,
         currency = currency.toDomain(),
         convertedPriceWithDiscount = convertedPriceWithDiscount,
-        exchangeRate = exchangeRate
+        exchangeRate = exchangeRate,
+        filters = filters.orEmpty().map { it.toDomain() }
     )
 }
 

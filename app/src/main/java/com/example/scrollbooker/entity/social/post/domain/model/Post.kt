@@ -45,13 +45,20 @@ data class PostBusinessOwner(
     val id: Int,
     val fullName: String,
     val avatar: String?,
-    val ratingsAverage: Float
+    val profession: String,
+    val username: String,
+    val ratingsAverage: Float,
+    val ratingsCount: Int
 )
 
 data class PostEmployee(
     val id: Int,
     val fullName: String,
-    val avatar: String?
+    val avatar: String?,
+    val profession: String,
+    val username: String,
+    val ratingsAverage: Float,
+    val ratingsCount: Int
 )
 
 data class PostProduct(
