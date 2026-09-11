@@ -5,11 +5,9 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
@@ -75,8 +73,8 @@ fun PostOverlay(
                 .fillMaxSize()
                 .padding(
                     start = SpacingM,
-                    end = SpacingXXS,
-                    bottom = SpacingM
+                    bottom = SpacingM,
+                    end = SpacingXXS
                 ),
             verticalArrangement = Arrangement.Bottom
         ) {
@@ -85,7 +83,7 @@ fun PostOverlay(
                 verticalAlignment = Alignment.Bottom
             ) {
                 Column(modifier = Modifier.weight(1f)) {
-                    Spacer(Modifier.height(SpacingXS))
+                    TapAbsorbingSpacer(SpacingXS)
 
                     PostOverlayUser(
                         user = post.user,
@@ -96,7 +94,7 @@ fun PostOverlay(
                         onNavigateToUser = onNavigateToUserProfile,
                     )
 
-                    Spacer(Modifier.height(BasePadding))
+                    TapAbsorbingSpacer(BasePadding)
 
                     post.description
                         ?.takeIf { it.isNotBlank() }

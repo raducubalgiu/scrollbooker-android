@@ -29,6 +29,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.StrokeCap
+import androidx.compose.ui.input.pointer.PointerEventPass
 import androidx.compose.ui.input.pointer.PointerInputChange
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.unit.dp
@@ -48,7 +49,8 @@ private val IdleTrackHeight = 2.dp
 private val ActiveTrackHeight = 4.dp
 private val IdleThumbRadius = 0.dp
 private val ActiveThumbRadius = 6.dp
-private val TouchTargetHeight = 36.dp
+val VideoScrubberTouchHeight = 16.dp
+private val TouchTargetHeight = VideoScrubberTouchHeight
 private val TrackBottomInset = 2.dp
 
 @Composable
@@ -143,17 +145,25 @@ fun VideoScrubber(
                 .fillMaxWidth()
                 .height(TouchTargetHeight)
                 .pointerInput(player) {
+                    // Read events on the Initial pass, which always resolves before the Main
+                    // pass that Button/clickable use — a hard Compose ordering guarantee,
+                    // regardless of sibling z-order. That lets us decide tap-vs-drag first:
+                    // consuming here (drag) is guaranteed to reach Book Now before its own
+                    // click detector runs; not consuming (plain tap) leaves the event pristine
+                    // for Book Now's Main-pass handler to fire normally.
                     awaitEachGesture {
-                        val down = awaitFirstDown(requireUnconsumed = false)
+                        val down = awaitFirstDown(requireUnconsumed = false, pass = PointerEventPass.Initial)
                         val pointerId = down.id
                         val downX = down.position.x
                         val touchSlop = viewConfiguration.touchSlop
 
                         var change: PointerInputChange
                         while (true) {
-                            val event = awaitPointerEvent()
+                            val event = awaitPointerEvent(PointerEventPass.Initial)
                             change = event.changes.firstOrNull { it.id == pointerId } ?: return@awaitEachGesture
-                            if (!change.pressed) return@awaitEachGesture
+                            if (!change.pressed) {
+                                return@awaitEachGesture
+                            }
                             if (abs(change.position.x - downX) >= touchSlop) break
                         }
 
@@ -163,7 +173,7 @@ fun VideoScrubber(
                         applyDrag(fractionAt(change.position.x, size.width), forceSeek = true)
 
                         while (true) {
-                            val event = awaitPointerEvent()
+                            val event = awaitPointerEvent(PointerEventPass.Initial)
                             val nextChange = event.changes.firstOrNull { it.id == pointerId } ?: break
 
                             if (!nextChange.pressed) {

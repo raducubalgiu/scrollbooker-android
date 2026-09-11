@@ -2,8 +2,7 @@ package com.example.scrollbooker.components.customized.post.components
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
-import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.width
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -65,7 +64,7 @@ fun PostActions(
             )
         }
 
-        Spacer(Modifier.height(SpacingS))
+        TapAbsorbingSpacer(SpacingS, modifier = Modifier.width(65.dp))
 
         PostAction(
             isEnabled = !isSavingLike,
