@@ -42,11 +42,10 @@ import com.example.scrollbooker.core.extensions.toTwoDecimals
 import com.example.scrollbooker.core.util.Dimens.BasePadding
 import com.example.scrollbooker.core.util.Dimens.SpacingS
 import com.example.scrollbooker.core.util.Dimens.SpacingXL
-import com.example.scrollbooker.entity.booking.appointment.data.remote.AppointmentProductOfferingCreateDto
-import com.example.scrollbooker.entity.booking.appointment.data.remote.AppointmentProductVariantCreateDto
 import com.example.scrollbooker.entity.booking.appointment.domain.model.AppointmentOwnClientCreate
 import com.example.scrollbooker.entity.booking.availability.domain.model.CalendarEventsSlot
 import com.example.scrollbooker.entity.booking.availability.domain.model.Slot
+import com.example.scrollbooker.ui.booking.toProductVariantsDto
 import com.example.scrollbooker.ui.myBusiness.myCalendar.MyCalendarViewModel
 import com.example.scrollbooker.ui.myBusiness.myCalendar.addOwnClient.sheets.AddOwnClientSheet
 import com.example.scrollbooker.ui.myBusiness.myCalendar.addOwnClient.sheets.OwnClientSheets
@@ -55,6 +54,7 @@ import com.example.scrollbooker.ui.myBusiness.myCalendar.addOwnClient.sheets.han
 import com.example.scrollbooker.ui.myBusiness.myCalendar.addOwnClient.sheets.selectDateTime.DateTimeSummaryButton
 import com.example.scrollbooker.ui.theme.Background
 import com.example.scrollbooker.ui.theme.Divider
+import com.example.scrollbooker.ui.theme.Error
 import com.example.scrollbooker.ui.theme.bodyMedium
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.filter
@@ -91,7 +91,7 @@ fun AddOwnClientScreen(
     val isSaving by myCalendarViewModel.isSaving.collectAsStateWithLifecycle()
     val selectedOwnClientSlot by myCalendarViewModel.selectedOwnClient.collectAsStateWithLifecycle()
     val successTick by myCalendarViewModel.actionSucceededTick.collectAsStateWithLifecycle()
-    val providerUserId by myCalendarViewModel.userId.collectAsStateWithLifecycle()
+    val targetUserId by myCalendarViewModel.calendarTargetUserId.collectAsStateWithLifecycle()
 
     val clientQuery by viewModel.query.collectAsStateWithLifecycle()
     val clientSearchState by viewModel.searchState.collectAsStateWithLifecycle()
@@ -99,7 +99,7 @@ fun AddOwnClientScreen(
     val isCreatingClient by viewModel.isCreating.collectAsStateWithLifecycle()
 
     val userProducts by viewModel.userProducts.collectAsStateWithLifecycle()
-    val linkedProducts by viewModel.linkedProducts.collectAsStateWithLifecycle()
+    val linkedItems by viewModel.linkedItems.collectAsStateWithLifecycle()
 
     val calendarHeaderState by viewModel.calendarHeader.collectAsStateWithLifecycle()
     val selectedCalendarDay by viewModel.selectedCalendarDay.collectAsStateWithLifecycle()
@@ -111,8 +111,11 @@ fun AddOwnClientScreen(
     val sheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
     val servicesSheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
 
-    LaunchedEffect(Unit) {
-        viewModel.loadUserProducts()
+    LaunchedEffect(targetUserId) {
+        targetUserId?.let {
+            viewModel.setTargetUserId(it)
+            viewModel.loadUserProducts()
+        }
     }
 
     val imeInsets = WindowInsets.ime
@@ -157,15 +160,18 @@ fun AddOwnClientScreen(
 
     val slot = selectedOwnClientSlot
 
+    val slotDurationMinutes = if (slot?.startDateLocale != null && slot.endDateLocale != null) {
+        Duration.between(slot.startDateLocale, slot.endDateLocale).toMinutes().toInt()
+    } else null
+
     val dateTimeSummary = slot?.startDateLocale?.let { start ->
         val datePart = start.toLocalDate().toDayMonthShort()
         val startTime = parseTimeStringFromLocalDateTimeString(start)
         val end = slot.endDateLocale
 
-        if (end != null) {
+        if (end != null && slotDurationMinutes != null) {
             val endTime = parseTimeStringFromLocalDateTimeString(end)
-            val duration = Duration.between(start, end).toMinutes().toInt()
-            "$datePart, $startTime - $endTime ${stringResource(R.string.durationInMinutesParens, duration)}"
+            "$datePart, $startTime - $endTime ${stringResource(R.string.durationInMinutesParens, slotDurationMinutes)}"
         } else {
             "$datePart, $startTime"
         }
@@ -181,30 +187,29 @@ fun AddOwnClientScreen(
         currentSheet = AddOwnClientSheet.DateTime
     }
 
-    val totalDurationMinutes = linkedProducts.sumOf { it.startingOffering.duration }
-    val totalPrice = linkedProducts.fold(BigDecimal.ZERO) { acc, product ->
-        acc + product.startingOffering.priceWithDiscount
+    val totalDurationMinutes = linkedItems.sumOf { it.variantDuration }
+    val totalPrice = linkedItems.fold(BigDecimal.ZERO) { acc, item ->
+        acc + (item.offerings.firstOrNull()?.priceWithDiscount ?: BigDecimal.ZERO)
     }
 
-    val isFormValid = selectedClient != null && linkedProducts.isNotEmpty() && slot != null
+    val durationMismatch = slotDurationMinutes != null &&
+        totalDurationMinutes > 0 &&
+        slotDurationMinutes != totalDurationMinutes
+
+    val isFormValid = selectedClient != null && linkedItems.isNotEmpty() && slot != null && !durationMismatch
 
     fun buildOwnClientRequest(): AppointmentOwnClientCreate? {
         val client = selectedClient ?: return null
         val pickedSlot = slot ?: return null
-        val currentUserId = providerUserId ?: return null
-        if (linkedProducts.isEmpty()) return null
+        val currentUserId = targetUserId ?: return null
+        if (linkedItems.isEmpty()) return null
 
         return AppointmentOwnClientCreate(
             startDate = pickedSlot.startDateUtc,
             endDate = pickedSlot.endDateUtc,
             userId = currentUserId,
             businessClientId = client.id,
-            productVariants = linkedProducts.map { product ->
-                AppointmentProductVariantCreateDto(
-                    id = product.startingOffering.variantId,
-                    offering = AppointmentProductOfferingCreateDto(userId = product.startingOffering.userId)
-                )
-            }
+            productVariants = linkedItems.toProductVariantsDto()
         )
     }
 
@@ -217,7 +222,7 @@ fun AddOwnClientScreen(
             clientSearchState = clientSearchState,
             selectedClient = selectedClient,
             isCreatingClient = isCreatingClient,
-            linkedProducts = linkedProducts,
+            linkedItems = linkedItems,
             userProducts = userProducts,
             calendarHeaderState = calendarHeaderState,
             selectedCalendarDay = selectedCalendarDay,
@@ -275,6 +280,22 @@ fun AddOwnClientScreen(
                     onClick = ::openDateTimePicker
                 )
 
+                if (durationMismatch) {
+                    Text(
+                        modifier = Modifier.padding(
+                            horizontal = BasePadding,
+                            vertical = SpacingS
+                        ),
+                        text = stringResource(
+                            R.string.appointmentDurationMismatch,
+                            totalDurationMinutes,
+                            slotDurationMinutes
+                        ),
+                        style = bodyMedium,
+                        color = Error
+                    )
+                }
+
                 MainButton(
                     modifier = Modifier.padding(BasePadding),
                     title = stringResource(R.string.saveAppointment),
@@ -300,9 +321,9 @@ fun AddOwnClientScreen(
                 onAddNewClient = { currentSheet = AddOwnClientSheet.AddClient },
                 onSelectClient = { currentSheet = AddOwnClientSheet.SelectClient },
                 onRemoveClient = { viewModel.selectClient(null) },
-                linkedProducts = linkedProducts,
+                linkedItems = linkedItems,
                 onOpenServicesSheet = { currentSheet = AddOwnClientSheet.Services },
-                onRemoveProduct = { viewModel.removeLinkedProduct(it) }
+                onRemoveItem = { viewModel.removeLinkedItem(it) }
             )
         }
     }

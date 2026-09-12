@@ -5,16 +5,17 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import com.example.scrollbooker.ui.camera.UserProductsSheet
 import com.example.scrollbooker.ui.myBusiness.myCalendar.addOwnClient.sheets.createClient.AddBusinessClientSheet
 import com.example.scrollbooker.ui.myBusiness.myCalendar.addOwnClient.sheets.selectClient.BusinessClientSelectSheet
 import com.example.scrollbooker.ui.myBusiness.myCalendar.addOwnClient.sheets.selectDateTime.DateTimePickerSheet
+import com.example.scrollbooker.ui.myBusiness.myCalendar.addOwnClient.sheets.selectServices.ServicesSelectSheet
 import com.example.scrollbooker.ui.theme.Background
 
 // Single host for every AddOwnClientScreen sheet, mirroring PostSheets: SelectClient/AddClient/
-// DateTime are bare content sharing one ModalBottomSheet + SheetState; Services (UserProductsSheet)
-// is a component reused elsewhere (CreatePostScreen) with its own wrapper/styling, so it keeps its
-// own SheetState, but still lives here alongside the others.
+// DateTime are bare content sharing one ModalBottomSheet + SheetState; Services (ServicesSelectSheet)
+// wraps its own reused Sheet (same component CreatePostScreen's sheets use) with its own
+// styling/nested ProductDetailSheet, so it keeps its own SheetState, but still lives here
+// alongside the others.
 //
 // Takes one state bundle + one action callback (see OwnClientSheetsState/Action and
 // handleOwnClientSheetsAction) instead of ~20 individual props, matching the state/action split
@@ -73,11 +74,11 @@ fun OwnClientSheets(
     }
 
     if (state.currentSheet == AddOwnClientSheet.Services) {
-        UserProductsSheet(
+        ServicesSelectSheet(
             sheetState = state.servicesSheetState,
-            linkedProducts = state.linkedProducts,
             userProducts = state.userProducts,
-            onConfirmSelection = { onAction(OwnClientSheetsAction.ConfirmServices(it)) },
+            linkedItems = state.linkedItems,
+            onConfirm = { onAction(OwnClientSheetsAction.ConfirmServices(it)) },
             onClose = { onAction(OwnClientSheetsAction.Dismiss) }
         )
     }

@@ -10,7 +10,8 @@ data class SelectedBookingItem(
     val variantDuration: Int,
     val offerings: List<ProductOffering>,
     val productName: String,
-    val variantName: String
+    val variantName: String,
+    val filtersSummary: String
 )
 
 fun List<SelectedBookingItem>.toProductVariantsDto(): List<AppointmentProductVariantCreateDto> {

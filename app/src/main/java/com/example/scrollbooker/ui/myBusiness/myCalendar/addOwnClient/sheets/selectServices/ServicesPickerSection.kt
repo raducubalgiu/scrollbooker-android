@@ -19,8 +19,7 @@ import com.example.scrollbooker.R
 import com.example.scrollbooker.components.customized.placeholderActionBox.PlaceholderActionBox
 import com.example.scrollbooker.core.util.Dimens.BasePadding
 import com.example.scrollbooker.core.util.Dimens.SpacingM
-import com.example.scrollbooker.entity.booking.products.domain.model.Product
-import com.example.scrollbooker.ui.editPost.LinkedProductRow
+import com.example.scrollbooker.ui.booking.SelectedBookingItem
 import com.example.scrollbooker.ui.theme.Divider
 import com.example.scrollbooker.ui.theme.Primary
 import com.example.scrollbooker.ui.theme.labelLarge
@@ -28,9 +27,9 @@ import com.example.scrollbooker.ui.theme.titleLarge
 
 @Composable
 fun ServicesPickerSection(
-    linkedProducts: Set<Product>,
+    linkedItems: List<SelectedBookingItem>,
     onOpenSheet: () -> Unit,
-    onRemoveProduct: (Product) -> Unit,
+    onRemoveItem: (SelectedBookingItem) -> Unit,
 ) {
     Column {
         Row(
@@ -46,7 +45,7 @@ fun ServicesPickerSection(
                 fontWeight = FontWeight.ExtraBold
             )
 
-            if (linkedProducts.isNotEmpty()) {
+            if (linkedItems.isNotEmpty()) {
                 TextButton(onClick = onOpenSheet) {
                     Text(
                         text = stringResource(R.string.change),
@@ -58,7 +57,7 @@ fun ServicesPickerSection(
             }
         }
 
-        if (linkedProducts.isEmpty()) {
+        if (linkedItems.isEmpty()) {
             PlaceholderActionBox(
                 modifier = Modifier.padding(bottom = BasePadding),
                 description = stringResource(R.string.selectServicesDescription),
@@ -66,16 +65,14 @@ fun ServicesPickerSection(
                 onClick = onOpenSheet
             )
         } else {
-            val products = linkedProducts.toList()
-
-            products.forEachIndexed { index, product ->
-                LinkedProductRow(
+            linkedItems.forEachIndexed { index, item ->
+                LinkedServiceItemRow(
                     modifier = Modifier.padding(vertical = BasePadding),
-                    product = product,
-                    onRemove = onRemoveProduct
+                    item = item,
+                    onRemove = onRemoveItem
                 )
 
-                if (index < products.size - 1) {
+                if (index < linkedItems.size - 1) {
                     HorizontalDivider(thickness = 0.55.dp, color = Divider)
                 }
             }

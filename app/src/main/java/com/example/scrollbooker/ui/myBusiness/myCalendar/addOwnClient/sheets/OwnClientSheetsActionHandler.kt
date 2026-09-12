@@ -18,7 +18,7 @@ fun handleOwnClientSheetsAction(
         is OwnClientSheetsAction.SaveNewClient -> viewModel.createClient(action.fullname, action.phone)
 
         is OwnClientSheetsAction.ConfirmServices -> {
-            viewModel.setLinkedProducts(action.products)
+            viewModel.setLinkedItems(action.items)
             onCloseSheet()
         }
 

@@ -5,8 +5,8 @@ import com.example.scrollbooker.components.customized.calendar.CalendarHeaderSta
 import com.example.scrollbooker.core.util.FeatureState
 import com.example.scrollbooker.entity.booking.availability.domain.model.AvailableDay
 import com.example.scrollbooker.entity.booking.businessClient.domain.model.BusinessClient
-import com.example.scrollbooker.entity.booking.products.domain.model.Product
 import com.example.scrollbooker.entity.booking.products.domain.model.UserProducts
+import com.example.scrollbooker.ui.booking.SelectedBookingItem
 import org.threeten.bp.LocalDate
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -21,7 +21,7 @@ data class OwnClientSheetsState(
     // add client
     val isCreatingClient: Boolean,
     // services
-    val linkedProducts: Set<Product>,
+    val linkedItems: List<SelectedBookingItem>,
     val userProducts: FeatureState<UserProducts>,
     // date time
     val calendarHeaderState: FeatureState<CalendarHeaderState>,

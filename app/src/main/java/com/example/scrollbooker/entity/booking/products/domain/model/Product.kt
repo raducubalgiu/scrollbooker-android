@@ -103,6 +103,7 @@ fun ProductVariant.toBookingItem(product: Product): SelectedBookingItem {
         variantDuration = this.duration,
         offerings = this.offerings,
         productName = product.name,
-        variantName = this.name
+        variantName = this.name,
+        filtersSummary = product.getFiltersSummary()
     )
 }

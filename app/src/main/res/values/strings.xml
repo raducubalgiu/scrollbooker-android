@@ -353,6 +353,7 @@
     <string name="newAppointment">Programare nouă</string>
     <string name="addAppointment">Adaugă o programare</string>
     <string name="durationInMinutesParens">(%1$d min)</string>
+    <string name="appointmentDurationMismatch">Durata serviciilor selectate (%1$d min) nu se potrivește cu intervalul ales (%2$d min). Alege un alt interval sau modifică serviciile.</string>
     <string name="client">Client</string>
     <string name="selectClient">Selectează clientul</string>
     <string name="searchClientByNameOrPhone">Caută client după nume sau telefon</string>

@@ -13,10 +13,10 @@ import com.example.scrollbooker.entity.booking.businessClient.domain.model.Busin
 import com.example.scrollbooker.entity.booking.businessClient.domain.model.BusinessClientCreate
 import com.example.scrollbooker.entity.booking.businessClient.domain.useCase.CreateBusinessClientUseCase
 import com.example.scrollbooker.entity.booking.businessClient.domain.useCase.SearchBusinessClientsUseCase
-import com.example.scrollbooker.entity.booking.products.domain.model.Product
 import com.example.scrollbooker.entity.booking.products.domain.model.UserProducts
 import com.example.scrollbooker.entity.booking.products.domain.useCase.GetProductsByBusinessIdAndEmployeeIdUseCase
 import com.example.scrollbooker.store.AuthDataStore
+import com.example.scrollbooker.ui.booking.SelectedBookingItem
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.FlowPreview
@@ -61,14 +61,14 @@ class AddOwnClientViewModel @Inject constructor(
 ): BaseCalendarViewModel(getCalendarAvailableDaysUseCase) {
     private val userIdFlow: Flow<Int?> = authDataStore.getUserId().distinctUntilChanged()
     private val businessIdFlow: Flow<Int?> = authDataStore.getBusinessId().distinctUntilChanged()
-    private val businessOwnerIdFlow: Flow<Int?> = authDataStore.getBusinessOwnerId().distinctUntilChanged()
 
-    private val employeeIdFlow: Flow<Int?> = combine(
-        businessOwnerIdFlow,
-        userIdFlow
-    ) { businessOwnerId, userId ->
-        if (businessOwnerId != null && userId != null && businessOwnerId != userId) userId else null
-    }.distinctUntilChanged()
+    // Whichever calendar this screen operates on (self, or the employee selected in
+    // MyCalendarViewModel) - set externally by the screen from MyCalendarViewModel.calendarTargetUserId
+    // rather than re-derived here, so both screens always agree on the same target.
+    private val _targetUserId = MutableStateFlow<Int?>(null)
+    fun setTargetUserId(id: Int) {
+        _targetUserId.value = id
+    }
 
     private val _query = MutableStateFlow("")
     val query: StateFlow<String> = _query.asStateFlow()
@@ -85,8 +85,8 @@ class AddOwnClientViewModel @Inject constructor(
     private val _userProducts = MutableStateFlow<FeatureState<UserProducts>>(FeatureState.Loading)
     val userProducts: StateFlow<FeatureState<UserProducts>> = _userProducts.asStateFlow()
 
-    private val _linkedProducts = MutableStateFlow<Set<Product>>(emptySet())
-    val linkedProducts: StateFlow<Set<Product>> = _linkedProducts.asStateFlow()
+    private val _linkedItems = MutableStateFlow<List<SelectedBookingItem>>(emptyList())
+    val linkedItems: StateFlow<List<SelectedBookingItem>> = _linkedItems.asStateFlow()
 
     private val _events = MutableSharedFlow<SnackBarUiEvent.Show>(
         extraBufferCapacity = 1,
@@ -95,18 +95,18 @@ class AddOwnClientViewModel @Inject constructor(
     val events: SharedFlow<SnackBarUiEvent.Show> = _events.asSharedFlow()
 
     // No fallback duration - the date/time picker is disabled by the screen until at least one
-    // service is selected, so this only ever drives a real fetch once linkedProducts is non-empty.
-    private val slotDurationFlow: StateFlow<Int> = _linkedProducts
-        .map { products -> products.sumOf { it.startingOffering.duration } }
+    // service is selected, so this only ever drives a real fetch once linkedItems is non-empty.
+    private val slotDurationFlow: StateFlow<Int> = _linkedItems
+        .map { items -> items.sumOf { it.variantDuration } }
         .stateIn(viewModelScope, SharingStarted.Eagerly, 0)
 
     override val calendarContextFlow: Flow<CalendarContext> = combine(
         userIdFlow.filterNotNull(),
         businessIdFlow.filterNotNull(),
-        employeeIdFlow,
+        _targetUserId.filterNotNull(),
         slotDurationFlow
-    ) { userId, businessId, employeeId, duration ->
-        CalendarContext(userId, businessId, employeeId, duration)
+    ) { userId, businessId, targetUserId, duration ->
+        CalendarContext(userId, businessId, targetUserId, duration)
     }.distinctUntilChanged()
 
     override fun calendarWindow(currentMonday: LocalDate): Pair<LocalDate, LocalDate> =
@@ -120,14 +120,14 @@ class AddOwnClientViewModel @Inject constructor(
     val daySlots: StateFlow<FeatureState<AvailableDay>?> = combine(
         _selectedCalendarDay,
         slotDurationFlow,
-        employeeIdFlow
-    ) { day, duration, employeeId -> Triple(day, duration, employeeId) }
-        .flatMapLatest { (day, duration, employeeId) ->
+        _targetUserId
+    ) { day, duration, targetUserId -> Triple(day, duration, targetUserId) }
+        .flatMapLatest { (day, duration, targetUserId) ->
             if (day == null) {
                 flow { emit(null) }
             } else {
                 flow {
-                    val cacheKey = Triple(day, duration, employeeId)
+                    val cacheKey = Triple(day, duration, targetUserId)
                     val cached = daySlotsCache[cacheKey]
 
                     if (cached != null) {
@@ -146,7 +146,7 @@ class AddOwnClientViewModel @Inject constructor(
                     val result = withVisibleLoading {
                         getUserAvailableTimeslotsUseCase(
                             businessId = businessId,
-                            employeeId = employeeId,
+                            employeeId = targetUserId,
                             slotDuration = duration,
                             day = day.toString()
                         )
@@ -248,27 +248,28 @@ class AddOwnClientViewModel @Inject constructor(
             _userProducts.value = FeatureState.Loading
 
             val businessId = businessIdFlow.first()
-            if (businessId == null) {
-                _userProducts.value = FeatureState.Error(IllegalStateException("Missing businessId"))
+            val targetUserId = _targetUserId.first()
+            if (businessId == null || targetUserId == null) {
+                _userProducts.value = FeatureState.Error(IllegalStateException("Missing businessId or targetUserId"))
                 return@launch
             }
 
-            val employeeId = employeeIdFlow.first()
-
             _userProducts.value = getProductsByBusinessIdAndEmployeeIdUseCase(
                 businessId = businessId,
-                employeeId = employeeId,
+                employeeId = targetUserId,
                 onlyServicesWithProducts = true,
                 productsLimitPerService = null
             )
         }
     }
 
-    fun setLinkedProducts(products: Set<Product>) {
-        _linkedProducts.value = products
+    // Selection itself happens locally in ServicesSelectSheet (staged, discarded on cancel) - this
+    // only commits the final list once the sheet's own "Adaugă" button is pressed.
+    fun setLinkedItems(items: List<SelectedBookingItem>) {
+        _linkedItems.value = items
     }
 
-    fun removeLinkedProduct(product: Product) {
-        _linkedProducts.value = _linkedProducts.value - product
+    fun removeLinkedItem(item: SelectedBookingItem) {
+        _linkedItems.value = _linkedItems.value.filterNot { it.productId == item.productId }
     }
 }

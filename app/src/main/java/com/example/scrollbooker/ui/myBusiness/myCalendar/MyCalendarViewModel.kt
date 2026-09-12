@@ -254,6 +254,11 @@ class MyCalendarViewModel @Inject constructor(
         employeeIdFlow
     ) { userId, employeeId -> employeeId ?: userId }.distinctUntilChanged()
 
+    // Public read of the same resolution, for screens (e.g. AddOwnClientScreen) that need to
+    // scope their own requests/fetches to whichever calendar is currently displayed.
+    val calendarTargetUserId: StateFlow<Int?> =
+        calendarTargetUserIdFlow.stateIn(viewModelScope, SharingStarted.Eagerly, null)
+
     @OptIn(ExperimentalCoroutinesApi::class)
     private val schedules: StateFlow<FeatureState<List<Schedule>>> = calendarTargetUserIdFlow
         .filterNotNull()
