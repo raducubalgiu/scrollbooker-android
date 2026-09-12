@@ -163,6 +163,9 @@ class ProfileNavigator (
     fun toAddOwnClientAppointment() {
         navController.navigate(MainRoute.AddOwnClientAppointment.route)
     }
+    fun toMyCalendarSettings() {
+        navController.navigate(MainRoute.MyCalendarSettings.route)
+    }
     fun toAppointmentDetails(appointmentId: Int) {
         navController.navigate("${MainRoute.AppointmentDetails.route}/$appointmentId") {
             launchSingleTop = true

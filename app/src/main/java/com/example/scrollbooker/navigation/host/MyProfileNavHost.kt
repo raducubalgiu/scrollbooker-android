@@ -37,7 +37,8 @@ private fun isStaticRoute(route: String?): Boolean =
     route != null && (
         route.startsWith(MainRoute.Camera.route) ||
         route.startsWith(MainRoute.MyProfilePostDetail.route) ||
-        route.startsWith(MainRoute.AddOwnClientAppointment.route)
+        route.startsWith(MainRoute.AddOwnClientAppointment.route) ||
+        route.startsWith(MainRoute.MyCalendarSettings.route)
     )
 
 private fun isPostUtilityRoute(route: String?): Boolean =

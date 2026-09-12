@@ -124,6 +124,7 @@ sealed class MainRoute(val route: String) {
     object MyCalendarNavigator: MainRoute(route = "myCalendarNavigator")
     object MyCalendar: MainRoute(route = "myCalendar")
     object AddOwnClientAppointment: MainRoute(route = "addOwnClientAppointment")
+    object MyCalendarSettings: MainRoute(route = "myCalendarSettings")
 
     object MyProductsNavigator: MainRoute(route = "myProductsNavigator")
     object MyProducts: MainRoute(route = "myProducts")

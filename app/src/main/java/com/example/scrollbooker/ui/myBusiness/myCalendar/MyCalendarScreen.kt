@@ -153,6 +153,7 @@ fun MyCalendarScreen(
                             onBack = onBack,
                             onNavigateToAddOwnClient = { profileNavigate.toAddOwnClientAppointment() },
                             onNavigateToAppointmentDetails = { profileNavigate.toAppointmentDetails(it) },
+                            onNavigateToSettings = { profileNavigate.toMyCalendarSettings() },
                             scope = scope
                         )
                     },

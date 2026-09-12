@@ -51,7 +51,6 @@ import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
-import org.threeten.bp.DayOfWeek
 import org.threeten.bp.LocalDate
 import org.threeten.bp.LocalDateTime
 import org.threeten.bp.LocalTime
@@ -182,8 +181,6 @@ class MyCalendarViewModel @Inject constructor(
     }.stateIn(viewModelScope, SharingStarted.Eagerly, null)
 
     init {
-        // Defaults to the first employee once the list loads, so the calendar isn't left blank
-        // for an owner-with-employees who hasn't explicitly picked one yet.
         employees
             .onEach { state ->
                 if (state is FeatureState.Success && _selectedEmployeeId.value == null) {
@@ -197,9 +194,6 @@ class MyCalendarViewModel @Inject constructor(
         _selectedEmployeeId.value = employeeId
     }
 
-    // - Employee themselves (not the owner): always their own calendar.
-    // - Owner with employees: must resolve to whichever employee is currently selected.
-    // - Owner without employees: their own calendar, same as before.
     private val employeeIdFlow: Flow<Int?> = combine(
         businessOwnerIdFlow,
         userIdFlow,
@@ -216,9 +210,6 @@ class MyCalendarViewModel @Inject constructor(
 
     private val dateFmt = DateTimeFormatter.ISO_LOCAL_DATE
     private val cache = ConcurrentHashMap<String, FeatureState<CalendarEvents>>()
-
-    // Keys pending a forced re-fetch (via refreshCurrentDay) whose cached value must still be
-    // kept around and shown while that re-fetch is in flight, so the screen never blanks out.
     private val staleKeys = ConcurrentHashMap.newKeySet<String>()
 
     private fun cacheKey(userId: Int, businessId: Int, employeeId: Int?, day: LocalDate, slot: Int): String =
@@ -253,18 +244,11 @@ class MyCalendarViewModel @Inject constructor(
             )
         }.distinctUntilChanged()
 
-    // Whichever person's calendar is actually being displayed - the auth user themselves
-    // (employee or owner-without-employees), or the currently selected employee when the owner
-    // has employees. Schedules, and any write action (block/own-client/etc.), must target this,
-    // not the raw auth user, or an owner viewing an employee's calendar would read/write that
-    // employee's calendar using their own id instead of the employee's.
     private val calendarTargetUserIdFlow: Flow<Int?> = combine(
         userIdFlow,
         employeeIdFlow
     ) { userId, employeeId -> employeeId ?: userId }.distinctUntilChanged()
 
-    // Public read of the same resolution, for screens (e.g. AddOwnClientScreen) that need to
-    // scope their own requests/fetches to whichever calendar is currently displayed.
     val calendarTargetUserId: StateFlow<Int?> =
         calendarTargetUserIdFlow.stateIn(viewModelScope, SharingStarted.Eagerly, null)
 
@@ -300,11 +284,6 @@ class MyCalendarViewModel @Inject constructor(
         allSchedules.firstOrNull { it.dayOfWeek == dayName }
     }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5_000), null)
 
-    // Widest [start, end] across every employee of the business for the selected day - only
-    // relevant when the business has employees. Used so the calendar's visible time range stays
-    // consistent across employee switches instead of resizing to each one's own (possibly
-    // shorter) schedule; the gap between an employee's own hours and this wider window is what
-    // gets rendered as a "Closed" block on the timeline.
     @OptIn(ExperimentalCoroutinesApi::class)
     val businessDayWindow: StateFlow<Pair<LocalTime, LocalTime>?> = combine(
         hasEmployeesFlow,
@@ -350,8 +329,6 @@ class MyCalendarViewModel @Inject constructor(
                 val isStale = staleKeys.contains(key)
 
                 if(cached is FeatureState.Success) {
-                    // Keep showing the last known data (even if stale) instead of blanking the
-                    // screen with a full loading state while a forced refresh is in flight.
                     emit(cached)
                 } else {
                     emit(FeatureState.Loading)
@@ -385,8 +362,6 @@ class MyCalendarViewModel @Inject constructor(
 
                 staleKeys.remove(key)
 
-                // Only cache successes - a transient failure during a background refresh
-                // shouldn't poison the last known good data for this day.
                 if (state is FeatureState.Success) {
                     cache[key] = state
                 }
@@ -449,10 +424,8 @@ class MyCalendarViewModel @Inject constructor(
         _selectedDay.value = day
     }
 
-    fun setSlotDuration(duration: String?) {
-        if(duration?.isNotEmpty() == true) {
-            _slotDuration.value = duration.toInt()
-        }
+    fun setSlotDuration(duration: Int) {
+        _slotDuration.value = duration
     }
 
     suspend fun refreshCurrentDay() {
@@ -460,8 +433,6 @@ class MyCalendarViewModel @Inject constructor(
         val day = selectedDay.value ?: return
         val key = cacheKey(context.userId, context.businessId, context.employeeId, day, context.slotDuration)
 
-        // Marked stale (not removed) so calendarEvents keeps showing the current data while it
-        // silently re-fetches, instead of blanking the whole day out to a loading state.
         staleKeys.add(key)
         refreshTick.update { it + 1 }
     }

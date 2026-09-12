@@ -1,4 +1,4 @@
-package com.example.scrollbooker.ui.myBusiness.myCalendar.sheets.settings
+package com.example.scrollbooker.ui.myBusiness.myCalendar.settings
 
 import android.app.Activity
 import android.content.Intent
@@ -29,8 +29,6 @@ import kotlinx.coroutines.launch
 import timber.log.Timber
 import javax.inject.Inject
 
-// Same "Web application" OAuth client used for Credential Manager sign-in (see LoginScreen) -
-// the backend must hold this client's secret to exchange the serverAuthCode for tokens.
 private const val GOOGLE_CALENDAR_WEB_CLIENT_ID =
     "596516500254-k2smqkd2e42urfhbad7e66q6bpcqfmei.apps.googleusercontent.com"
 

@@ -35,6 +35,7 @@ import com.example.scrollbooker.ui.myBusiness.myCalendar.MyCalendarScreen
 import com.example.scrollbooker.ui.myBusiness.myCalendar.MyCalendarViewModel
 import com.example.scrollbooker.ui.myBusiness.myCalendar.addOwnClient.AddOwnClientScreen
 import com.example.scrollbooker.ui.myBusiness.myCalendar.addOwnClient.AddOwnClientViewModel
+import com.example.scrollbooker.ui.myBusiness.myCalendar.settings.MyCalendarSettingsScreen
 import com.example.scrollbooker.ui.myBusiness.myDashboard.MyDashboardScreen
 import com.example.scrollbooker.ui.myBusiness.myDashboard.MyDashboardViewModel
 import com.example.scrollbooker.ui.myBusiness.myEmployees.MyEmployeesViewModel
@@ -231,6 +232,24 @@ fun NavGraphBuilder.myBusinessGraph(
                 AddOwnClientScreen(
                     myCalendarViewModel = myCalendarViewModel,
                     viewModel = viewModel,
+                    onBack = { navController.popBackStack() }
+                )
+            }
+
+            composable(
+                route = MainRoute.MyCalendarSettings.route,
+                enterTransition = { slideInVertically(pushSpec) { it } + fadeIn(fadeInSpec) },
+                exitTransition = { ExitTransition.None },
+                popEnterTransition = { EnterTransition.None },
+                popExitTransition = { slideOutVertically(popSpec) { it } + fadeOut(fadeOutSpec) }
+            ) { backStackEntry ->
+                val parentEntry = remember(backStackEntry) {
+                    navController.getBackStackEntry(MainRoute.MyCalendarNavigator.route)
+                }
+                val myCalendarViewModel = hiltViewModel<MyCalendarViewModel>(parentEntry)
+
+                MyCalendarSettingsScreen(
+                    myCalendarViewModel = myCalendarViewModel,
                     onBack = { navController.popBackStack() }
                 )
             }

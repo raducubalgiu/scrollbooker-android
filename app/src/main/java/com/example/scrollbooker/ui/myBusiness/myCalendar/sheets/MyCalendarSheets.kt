@@ -10,7 +10,6 @@ import com.example.scrollbooker.ui.myBusiness.myCalendar.sheets.block.BlockSlots
 import com.example.scrollbooker.ui.myBusiness.myCalendar.sheets.block.BlockSlotsSheetState
 import com.example.scrollbooker.ui.myBusiness.myCalendar.sheets.employee.EmployeeSelectSheet
 import com.example.scrollbooker.ui.myBusiness.myCalendar.sheets.employee.EmployeeSheetAction
-import com.example.scrollbooker.ui.myBusiness.myCalendar.sheets.settings.MyCalendarSettingsSheet
 import com.example.scrollbooker.core.util.FeatureState
 import com.example.scrollbooker.entity.booking.employee.domain.model.Employee
 import com.example.scrollbooker.ui.theme.Background
@@ -36,10 +35,6 @@ fun MyCalendarSheets(
         dragHandle = {}
     ) {
         when (current) {
-            MyCalendarSheet.Settings -> MyCalendarSettingsSheet(
-                onClose = { controller.close() }
-            )
-
             MyCalendarSheet.Block -> BlockSlotsSheet(
                 state = blockState,
                 onAction = onBlockAction

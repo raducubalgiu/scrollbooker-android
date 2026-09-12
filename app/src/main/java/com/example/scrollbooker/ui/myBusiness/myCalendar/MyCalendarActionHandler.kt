@@ -15,6 +15,7 @@ fun handleMyCalendarAction(
     onBack: () -> Unit,
     onNavigateToAddOwnClient: () -> Unit,
     onNavigateToAppointmentDetails: (Int) -> Unit,
+    onNavigateToSettings: () -> Unit,
     scope: CoroutineScope
 ) {
     when (action) {
@@ -28,7 +29,7 @@ fun handleMyCalendarAction(
 
         MyCalendarAction.Back -> onBack()
 
-        MyCalendarAction.Settings -> sheets.open(MyCalendarSheet.Settings)
+        MyCalendarAction.Settings -> onNavigateToSettings()
 
         MyCalendarAction.OnBlockToggle -> viewModel.toggleBlocking()
 

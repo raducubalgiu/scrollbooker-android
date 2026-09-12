@@ -586,4 +586,19 @@
     <string name="calendarNotConnected">Neconectat</string>
     <string name="disconnectGoogleCalendarConfirm">Sigur vrei să deconectezi Google Calendar? Programările nu se vor mai sincroniza.</string>
     <string name="calendarConnectionLoadFailed">Nu am putut încărca starea conexiunii cu Google Calendar.</string>
+
+    <!-- Calendar Settings -->
+    <string name="calendarSettings">Setări calendar</string>
+    <string name="slotDurationSectionTitle">Durata implicită a sloturilor</string>
+    <string name="slotDurationSectionDescription">Alege la cât timp să fie afișate sloturile disponibile în calendar.</string>
+    <string name="appointmentGapSectionTitle">Pauză între programări</string>
+    <string name="appointmentGapSectionDescription">Adaugă automat un interval liber după fiecare programare.</string>
+    <string name="noGap">Fără pauză</string>
+    <string name="minutes30">30 min</string>
+    <string name="minutes45">45 min</string>
+    <string name="minutes5">5 min</string>
+    <string name="minutes10">10 min</string>
+    <string name="minutes15">15 min</string>
+    <string name="hour1">1 oră</string>
+    <string name="hour1Minutes30">1 oră 30 min</string>
 </resources>
