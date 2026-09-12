@@ -15,16 +15,17 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
 import com.example.scrollbooker.core.snackbar.CustomSnackBar
 import com.example.scrollbooker.core.snackbar.rememberSnackBarController
+import com.example.scrollbooker.core.util.FeatureState
 import com.example.scrollbooker.navigation.navigators.ProfileNavigator
 import com.example.scrollbooker.ui.myBusiness.myCalendar.sheets.block.BlockSlotsAction
 import com.example.scrollbooker.ui.myBusiness.myCalendar.sheets.block.BlockSlotsSheetState
-import com.example.scrollbooker.ui.myBusiness.myCalendar.sheets.duration.DurationSheetAction
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.example.scrollbooker.ui.myBusiness.myCalendar.components.header.MyCalendarBlockAction
 import com.example.scrollbooker.ui.myBusiness.myCalendar.components.MyCalendarFab
 import com.example.scrollbooker.ui.myBusiness.myCalendar.components.MyCalendarScaffoldContent
 import com.example.scrollbooker.ui.myBusiness.myCalendar.sheets.MyCalendarSheet
 import com.example.scrollbooker.ui.myBusiness.myCalendar.sheets.MyCalendarSheets
+import com.example.scrollbooker.ui.myBusiness.myCalendar.sheets.employee.EmployeeSheetAction
 import com.example.scrollbooker.ui.myBusiness.myCalendar.sheets.rememberMyCalendarSheetController
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -41,6 +42,7 @@ fun MyCalendarScreen(
     val daySchedule by viewModel.daySchedule.collectAsStateWithLifecycle()
     val selectedDay by viewModel.selectedDay.collectAsStateWithLifecycle()
     val slotDuration by viewModel.slotDuration.collectAsStateWithLifecycle()
+    val businessDayWindow by viewModel.businessDayWindow.collectAsStateWithLifecycle()
 
     val isBlocking by viewModel.isBlocking.collectAsStateWithLifecycle()
     val defaultBlockedLocalDates by viewModel.defaultBlockedStartLocale.collectAsStateWithLifecycle()
@@ -49,6 +51,11 @@ fun MyCalendarScreen(
     val isSaving by viewModel.isSaving.collectAsStateWithLifecycle()
     val actionSucceededTick by viewModel.actionSucceededTick.collectAsStateWithLifecycle()
     val isRefreshingCurrentDay by viewModel.isRefreshingCurrentDay.collectAsStateWithLifecycle()
+
+    val employees by viewModel.employees.collectAsStateWithLifecycle()
+    val selectedEmployeeId by viewModel.selectedEmployeeId.collectAsStateWithLifecycle()
+    val selectedEmployee by viewModel.selectedEmployee.collectAsStateWithLifecycle()
+    val hasEmployees = (employees as? FeatureState.Success)?.data?.isNotEmpty() == true
 
     val snackbarHostState = remember { SnackbarHostState() }
     val snackBarController = rememberSnackBarController(snackbarHostState)
@@ -85,14 +92,15 @@ fun MyCalendarScreen(
                 BlockSlotsAction.Dismiss -> sheets.close()
             }
         },
-        selectedDuration = slotDuration.toString(),
-        onDurationAction = { action ->
+        employees = employees,
+        selectedEmployeeId = selectedEmployeeId,
+        onEmployeeAction = { action ->
             when(action) {
-                is DurationSheetAction.Select -> {
-                    viewModel.setSlotDuration(action.value)
+                is EmployeeSheetAction.Select -> {
+                    viewModel.selectEmployee(action.employeeId)
                     sheets.close()
                 }
-                DurationSheetAction.Close -> sheets.close()
+                EmployeeSheetAction.Close -> sheets.close()
             }
         }
     )
@@ -127,8 +135,11 @@ fun MyCalendarScreen(
                     calendarEvents = calendarEvents,
                     daySchedule = daySchedule,
                     slotDuration = slotDuration,
+                    businessDayWindow = businessDayWindow,
                     blockUiState = blockUiState,
                     isRefreshing = isRefreshingCurrentDay,
+                    hasEmployees = hasEmployees,
+                    selectedEmployee = selectedEmployee,
                     onAction = { action ->
                         handleMyCalendarAction(
                             action = action,

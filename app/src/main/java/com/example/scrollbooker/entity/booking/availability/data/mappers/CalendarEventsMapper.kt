@@ -3,12 +3,16 @@ package com.example.scrollbooker.entity.booking.availability.data.mappers
 import com.example.scrollbooker.core.enums.AppointmentChannelEnum
 import com.example.scrollbooker.core.enums.BusinessShortDomainEnum
 import com.example.scrollbooker.core.extensions.parseDateTimeStringToLocalDateTime
+import com.example.scrollbooker.entity.booking.availability.data.remote.CalendarEventsBusinessEmployeeDto
+import com.example.scrollbooker.entity.booking.availability.data.remote.CalendarEventsBusinessResponseDto
 import com.example.scrollbooker.entity.booking.availability.data.remote.CalendarEventsCustomerDto
 import com.example.scrollbooker.entity.booking.availability.data.remote.CalendarEventsDayDto
 import com.example.scrollbooker.entity.booking.availability.data.remote.CalendarEventsDto
 import com.example.scrollbooker.entity.booking.availability.data.remote.CalendarEventsInfoDto
 import com.example.scrollbooker.entity.booking.availability.data.remote.CalendarEventsSlotDto
 import com.example.scrollbooker.entity.booking.availability.domain.model.CalendarEvents
+import com.example.scrollbooker.entity.booking.availability.domain.model.CalendarEventsBusinessDay
+import com.example.scrollbooker.entity.booking.availability.domain.model.CalendarEventsBusinessEmployee
 import com.example.scrollbooker.entity.booking.availability.domain.model.CalendarEventsCustomer
 import com.example.scrollbooker.entity.booking.availability.domain.model.CalendarEventsDay
 import com.example.scrollbooker.entity.booking.availability.domain.model.CalendarEventsInfo
@@ -53,6 +57,24 @@ fun CalendarEventsCustomerDto.toDomain(): CalendarEventsCustomer {
         fullname = fullname,
         username = username,
         avatar = avatar
+    )
+}
+
+fun CalendarEventsBusinessResponseDto.toDomain(): CalendarEventsBusinessDay {
+    return CalendarEventsBusinessDay(
+        businessShortDomain = businessShortDomain,
+        employees = employees.map { it.toDomain() }
+    )
+}
+
+fun CalendarEventsBusinessEmployeeDto.toDomain(): CalendarEventsBusinessEmployee {
+    return CalendarEventsBusinessEmployee(
+        id = id,
+        fullname = fullname,
+        username = username,
+        avatar = avatar,
+        profession = profession,
+        slots = slots.map { it.toDomain() }
     )
 }
 

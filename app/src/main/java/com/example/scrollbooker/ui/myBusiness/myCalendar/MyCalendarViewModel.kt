@@ -14,10 +14,14 @@ import com.example.scrollbooker.entity.booking.appointment.domain.useCase.Create
 import com.example.scrollbooker.entity.booking.availability.domain.model.CalendarEvents
 import com.example.scrollbooker.entity.booking.availability.domain.model.CalendarEventsSlot
 import com.example.scrollbooker.entity.booking.availability.domain.model.blockedStartLocale
+import com.example.scrollbooker.entity.booking.availability.domain.useCase.GetBusinessEmployeesCalendarEventsByDayUseCase
 import com.example.scrollbooker.entity.booking.availability.domain.useCase.GetCalendarAvailableDaysUseCase
 import com.example.scrollbooker.entity.booking.availability.domain.useCase.GetUserCalendarEventsUseCase
+import com.example.scrollbooker.entity.booking.employee.domain.model.Employee
+import com.example.scrollbooker.entity.booking.employee.domain.useCase.GetAllEmployeesByOwnerUseCase
 import com.example.scrollbooker.entity.booking.schedule.domain.model.Schedule
 import com.example.scrollbooker.entity.booking.schedule.domain.useCase.GetSchedulesByUserIdUseCase
+import com.example.scrollbooker.core.util.runSuspendCatching
 import com.example.scrollbooker.store.AuthDataStore
 import com.example.scrollbooker.components.customized.calendar.BaseCalendarViewModel
 import com.example.scrollbooker.components.customized.calendar.CalendarContext
@@ -39,13 +43,18 @@ import kotlinx.coroutines.flow.filterNotNull
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.flow
+import kotlinx.coroutines.flow.flowOf
+import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.onCompletion
+import kotlinx.coroutines.flow.onEach
+import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import org.threeten.bp.DayOfWeek
 import org.threeten.bp.LocalDate
 import org.threeten.bp.LocalDateTime
+import org.threeten.bp.LocalTime
 import org.threeten.bp.format.DateTimeFormatter
 import org.threeten.bp.format.TextStyle
 import timber.log.Timber
@@ -61,7 +70,9 @@ class MyCalendarViewModel @Inject constructor(
     private val getCalendarEventsUseCase: GetUserCalendarEventsUseCase,
     private val createBlockAppointmentsUseCase: CreateBlockAppointmentsUseCase,
     private val createOwnClientAppointmentUseCase: CreateOwnClientAppointmentUseCase,
-    private val createLastMinuteAppointmentUseCase: CreateLastMinuteAppointmentUseCase
+    private val createLastMinuteAppointmentUseCase: CreateLastMinuteAppointmentUseCase,
+    private val getAllEmployeesByOwnerUseCase: GetAllEmployeesByOwnerUseCase,
+    private val getBusinessEmployeesCalendarEventsByDayUseCase: GetBusinessEmployeesCalendarEventsByDayUseCase
 ): BaseCalendarViewModel(getCalendarAvailableDaysUseCase) {
     private val _selectedDay = MutableStateFlow<LocalDate?>(LocalDate.now())
     val selectedDay: StateFlow<LocalDate?> = _selectedDay.asStateFlow()
@@ -104,11 +115,94 @@ class MyCalendarViewModel @Inject constructor(
     private val businessIdFlow: Flow<Int?> = authDataStore.getBusinessId().distinctUntilChanged()
     private val businessOwnerIdFlow: Flow<Int?> = authDataStore.getBusinessOwnerId().distinctUntilChanged()
 
+    private val hasEmployeesFlow: Flow<Boolean> = authDataStore.getHasEmployees()
+        .map { it == true }
+        .distinctUntilChanged()
+
+    // Whether the logged-in user IS the business owner (as opposed to being an employee
+    // themselves) - only an owner with employees needs to pick which employee's calendar to view.
+    private val isOwnerFlow: Flow<Boolean> = combine(
+        businessOwnerIdFlow.filterNotNull(),
+        userIdFlow.filterNotNull()
+    ) { businessOwnerId, userId -> businessOwnerId == userId }.distinctUntilChanged()
+
+    @OptIn(ExperimentalCoroutinesApi::class)
+    val employees: StateFlow<FeatureState<List<Employee>>> = combine(
+        isOwnerFlow,
+        hasEmployeesFlow
+    ) { isOwner, hasEmployees -> isOwner && hasEmployees }
+        .distinctUntilChanged()
+        .flatMapLatest { shouldLoad ->
+            if (!shouldLoad) {
+                flowOf(FeatureState.Success(emptyList()))
+            } else {
+                flow {
+                    emit(FeatureState.Loading)
+
+                    val ownerId = businessOwnerIdFlow.first()
+                    if (ownerId == null) {
+                        emit(FeatureState.Error(IllegalStateException("Missing businessOwnerId")))
+                        return@flow
+                    }
+
+                    val result = runSuspendCatching { getAllEmployeesByOwnerUseCase(ownerId) }
+
+                    emit(
+                        result.fold(
+                            onSuccess = { FeatureState.Success(it) },
+                            onFailure = { e ->
+                                Timber.tag("Employees").e("ERROR: on Fetching Employees $e")
+                                FeatureState.Error(e)
+                            }
+                        )
+                    )
+                }
+            }
+        }
+        .catch { e -> emit(FeatureState.Error(e)) }
+        .stateIn(viewModelScope, SharingStarted.Eagerly, FeatureState.Loading)
+
+    private val _selectedEmployeeId = MutableStateFlow<Int?>(null)
+    val selectedEmployeeId: StateFlow<Int?> = _selectedEmployeeId.asStateFlow()
+
+    val selectedEmployee: StateFlow<Employee?> = combine(
+        employees,
+        _selectedEmployeeId
+    ) { state, selectedId ->
+        (state as? FeatureState.Success)?.data?.firstOrNull { it.id == selectedId }
+    }.stateIn(viewModelScope, SharingStarted.Eagerly, null)
+
+    init {
+        // Defaults to the first employee once the list loads, so the calendar isn't left blank
+        // for an owner-with-employees who hasn't explicitly picked one yet.
+        employees
+            .onEach { state ->
+                if (state is FeatureState.Success && _selectedEmployeeId.value == null) {
+                    state.data.firstOrNull()?.let { _selectedEmployeeId.value = it.id }
+                }
+            }
+            .launchIn(viewModelScope)
+    }
+
+    fun selectEmployee(employeeId: Int) {
+        _selectedEmployeeId.value = employeeId
+    }
+
+    // - Employee themselves (not the owner): always their own calendar.
+    // - Owner with employees: must resolve to whichever employee is currently selected.
+    // - Owner without employees: their own calendar, same as before.
     private val employeeIdFlow: Flow<Int?> = combine(
         businessOwnerIdFlow,
-        userIdFlow
-    ) { businessOwnerId, userId ->
-        if (businessOwnerId != null && userId != null && businessOwnerId != userId) userId else null
+        userIdFlow,
+        hasEmployeesFlow,
+        _selectedEmployeeId
+    ) { businessOwnerId, userId, hasEmployees, selectedEmployeeId ->
+        when {
+            businessOwnerId == null || userId == null -> null
+            businessOwnerId != userId -> userId
+            hasEmployees -> selectedEmployeeId
+            else -> null
+        }
     }.distinctUntilChanged()
 
     private val dateFmt = DateTimeFormatter.ISO_LOCAL_DATE
@@ -150,15 +244,24 @@ class MyCalendarViewModel @Inject constructor(
             )
         }.distinctUntilChanged()
 
+    // Whichever person's calendar is actually being displayed - the auth user themselves
+    // (employee or owner-without-employees), or the currently selected employee when the owner
+    // has employees. Schedules must follow this, not the raw auth user, or an owner viewing an
+    // employee's calendar would see their own personal hours instead of that employee's.
+    private val scheduleTargetUserIdFlow: Flow<Int?> = combine(
+        userIdFlow,
+        employeeIdFlow
+    ) { userId, employeeId -> employeeId ?: userId }.distinctUntilChanged()
+
     @OptIn(ExperimentalCoroutinesApi::class)
-    private val schedules: StateFlow<FeatureState<List<Schedule>>> = userIdFlow
+    private val schedules: StateFlow<FeatureState<List<Schedule>>> = scheduleTargetUserIdFlow
         .filterNotNull()
         .distinctUntilChanged()
-        .flatMapLatest { userId ->
+        .flatMapLatest { targetUserId ->
             flow {
                 emit(FeatureState.Loading)
 
-                val result = getSchedulesByUserIdUseCase(userId)
+                val result = getSchedulesByUserIdUseCase(targetUserId)
 
                 emit(
                     result.fold(
@@ -181,6 +284,45 @@ class MyCalendarViewModel @Inject constructor(
         val dayName = day.dayOfWeek.getDisplayName(TextStyle.FULL, Locale.ENGLISH)
         allSchedules.firstOrNull { it.dayOfWeek == dayName }
     }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5_000), null)
+
+    // Widest [start, end] across every employee of the business for the selected day - only
+    // relevant when the business has employees. Used so the calendar's visible time range stays
+    // consistent across employee switches instead of resizing to each one's own (possibly
+    // shorter) schedule; the gap between an employee's own hours and this wider window is what
+    // gets rendered as a "Closed" block on the timeline.
+    @OptIn(ExperimentalCoroutinesApi::class)
+    val businessDayWindow: StateFlow<Pair<LocalTime, LocalTime>?> = combine(
+        hasEmployeesFlow,
+        selectedDay.filterNotNull(),
+        slotDuration
+    ) { hasEmployees, day, duration -> Triple(hasEmployees, day, duration) }
+        .distinctUntilChanged()
+        .flatMapLatest { (hasEmployees, day, duration) ->
+            if (!hasEmployees) {
+                flowOf<Pair<LocalTime, LocalTime>?>(null)
+            } else {
+                flow {
+                    val result = getBusinessEmployeesCalendarEventsByDayUseCase(day.toString(), duration)
+
+                    val window = result.fold(
+                        onSuccess = { businessDay ->
+                            val allSlots = businessDay.employees.flatMap { it.slots }
+                            val start = allSlots.mapNotNull { it.startDateLocale?.toLocalTime() }.minOrNull()
+                            val end = allSlots.mapNotNull { it.endDateLocale?.toLocalTime() }.maxOrNull()
+                            if (start != null && end != null) start to end else null
+                        },
+                        onFailure = { e ->
+                            Timber.tag("Calendar").e("ERROR: on Fetching Business Employees Calendar Events $e")
+                            null
+                        }
+                    )
+
+                    emit(window)
+                }
+            }
+        }
+        .catch { emit(null) }
+        .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5_000), null)
 
     @OptIn(ExperimentalCoroutinesApi::class)
     val calendarEvents: StateFlow<FeatureState<CalendarEvents>> =

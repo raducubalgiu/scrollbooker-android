@@ -106,6 +106,7 @@
     <string name="sharePost">Distribuie postarea</string>
     <string name="scheduleShort">Program</string>
     <string name="employees">Angajați</string>
+    <string name="employee">Angajat</string>
     <string name="employmentRequests">Cereri de angajare</string>
     <string name="selectOneService">Selectează un serviciu</string>
     <string name="editService">Editează serviciul</string>

@@ -15,6 +15,7 @@ import com.example.scrollbooker.entity.booking.availability.domain.model.Calenda
 import com.example.scrollbooker.entity.booking.availability.domain.model.SlotUiStyle
 import com.example.scrollbooker.ui.myBusiness.myCalendar.BlockUiState
 import com.example.scrollbooker.ui.myBusiness.myCalendar.components.slot.CalendarSlot
+import com.example.scrollbooker.ui.myBusiness.myCalendar.components.slot.ClosedRangeSlot
 import com.example.scrollbooker.ui.myBusiness.myCalendar.util.generateTicks
 import com.example.scrollbooker.ui.myBusiness.myCalendar.util.rememberHourHeight
 import org.threeten.bp.LocalTime
@@ -24,6 +25,7 @@ fun DayTimeline(
     dayStart: LocalTime,
     dayEnd: LocalTime,
     slots: List<CalendarEventsSlot>,
+    closedRanges: List<Pair<LocalTime, LocalTime>> = emptyList(),
     slotDuration: Int,
     blockUiState: BlockUiState,
     onStyleResolver: @Composable (CalendarEventsSlot) -> SlotUiStyle,
@@ -67,6 +69,21 @@ fun DayTimeline(
                 dayStart = dayStart,
                 hourHeight = hourHeight,
             )
+
+            closedRanges.forEach { (rangeStart, rangeEnd) ->
+                val startMinute = kotlin.math.max(0, minutesBetween(dayStart, maxOf(dayStart, rangeStart)))
+                val endMinute = kotlin.math.min(totalMinutes, minutesBetween(dayStart, minOf(dayEnd, rangeEnd)))
+
+                val durationMinutes = (endMinute - startMinute).coerceAtLeast(0)
+                if (durationMinutes == 0) return@forEach
+
+                val gap = 6.dp
+
+                ClosedRangeSlot(
+                    height = (dpPerMinute * durationMinutes) - gap,
+                    offsetY = (dpPerMinute * startMinute) + gap / 2
+                )
+            }
 
             slots.forEach { slot ->
                 val slotStart = slot.startDateLocale?.toLocalTime() ?: return@forEach

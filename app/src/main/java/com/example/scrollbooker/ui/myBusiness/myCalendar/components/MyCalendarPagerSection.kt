@@ -26,6 +26,7 @@ import com.example.scrollbooker.entity.booking.availability.domain.model.Calenda
 import com.example.scrollbooker.entity.booking.availability.domain.model.CalendarEventsSlot
 import com.example.scrollbooker.entity.booking.schedule.domain.model.Schedule
 import com.example.scrollbooker.ui.myBusiness.myCalendar.BlockUiState
+import org.threeten.bp.LocalTime
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -34,6 +35,7 @@ fun MyCalendarPagerSection(
     calendarEvents: FeatureState<CalendarEvents>,
     daySchedule: Schedule?,
     slotDuration: Int,
+    businessDayWindow: Pair<LocalTime, LocalTime>?,
     blockUiState: BlockUiState,
     isRefreshing: Boolean,
     onSlotClick: (CalendarEventsSlot) -> Unit,
@@ -67,8 +69,25 @@ fun MyCalendarPagerSection(
                     val slotsStart = remember(slots) { slots.mapNotNull { it.startDateLocale?.toLocalTime() }.minOrNull() }
                     val slotsEnd = remember(slots) { slots.mapNotNull { it.endDateLocale?.toLocalTime() }.maxOrNull() }
 
-                    val dayStart = listOfNotNull(scheduleStart, slotsStart).minOrNull()
-                    val dayEnd = listOfNotNull(scheduleEnd, slotsEnd).maxOrNull()
+                    val dayStart = listOfNotNull(scheduleStart, slotsStart, businessDayWindow?.first).minOrNull()
+                    val dayEnd = listOfNotNull(scheduleEnd, slotsEnd, businessDayWindow?.second).maxOrNull()
+
+                    // The business-wide window can be wider than this specific person's own
+                    // schedule (e.g. other employees work later) - the leftover hours outside
+                    // their own schedule render as explicit "Closed" blocks rather than staying
+                    // blank, so switching employees doesn't resize the grid.
+                    val closedRanges = remember(dayStart, dayEnd, scheduleStart, scheduleEnd, businessDayWindow) {
+                        if (businessDayWindow == null || dayStart == null || dayEnd == null) {
+                            emptyList()
+                        } else if (scheduleStart == null && scheduleEnd == null) {
+                            listOf(dayStart to dayEnd)
+                        } else {
+                            buildList {
+                                if (scheduleStart != null && scheduleStart > dayStart) add(dayStart to scheduleStart)
+                                if (scheduleEnd != null && scheduleEnd < dayEnd) add(scheduleEnd to dayEnd)
+                            }
+                        }
+                    }
 
                     if(dayStart != null && dayEnd != null) {
                         PullToRefreshBox(
@@ -85,6 +104,7 @@ fun MyCalendarPagerSection(
                                     dayStart = dayStart,
                                     dayEnd = dayEnd,
                                     slots = slots,
+                                    closedRanges = closedRanges,
                                     slotDuration = slotDuration,
                                     blockUiState = blockUiState,
                                     onStyleResolver = { slot -> with(calendarEvents) { slot.resolveUiStyle() } },

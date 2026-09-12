@@ -14,6 +14,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.example.scrollbooker.R
+import com.example.scrollbooker.components.core.dropdown.EmployeeSelectDropdown
 import com.example.scrollbooker.components.customized.placeholderActionBox.PlaceholderActionBox
 import com.example.scrollbooker.core.util.Dimens.BasePadding
 import com.example.scrollbooker.entity.booking.booking.domain.model.BookingFlow
@@ -65,7 +66,9 @@ fun BookingSpecialistsList(
     }
 
     EmployeeSelectDropdown(
-        selectedEmployee = selectedEmployee,
+        avatarUrl = selectedEmployee?.avatar,
+        name = selectedEmployee?.fullName,
+        placeholder = stringResource(R.string.chooseSpecialist),
         onClick = { scope.launch { sheetState.show() } }
     )
 

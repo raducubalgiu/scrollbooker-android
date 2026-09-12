@@ -9,13 +9,16 @@ data class MyCalendarHeaderState(
     val weekPagerState: PagerState,
     val selectedTabIndex: Int,
     val period: String,
-    val slotDuration: Int,
     val isBlocking: Boolean,
     val enableBack: Boolean,
     val enableNext: Boolean,
     val availableDays: List<LocalDate>,
     val calendarDays:  List<LocalDate>,
-    val hasFreeSlots: Boolean
+    val hasFreeSlots: Boolean,
+    val hasEmployees: Boolean,
+    val selectedEmployeeName: String?,
+    val selectedEmployeeAvatar: String?,
+    val isRefreshing: Boolean
 )
 
 sealed interface MyCalendarHeaderStateAction {
@@ -24,6 +27,6 @@ sealed interface MyCalendarHeaderStateAction {
     data object HandlePreviousWeek: MyCalendarHeaderStateAction
     data object HandleNextWeek: MyCalendarHeaderStateAction
     data object OnBlockToggle: MyCalendarHeaderStateAction
-    data object OpenDurationSheet: MyCalendarHeaderStateAction
+    data object OpenEmployeeSheet: MyCalendarHeaderStateAction
     data class OnChangeTab(val date: LocalDate, val index: Int): MyCalendarHeaderStateAction
 }

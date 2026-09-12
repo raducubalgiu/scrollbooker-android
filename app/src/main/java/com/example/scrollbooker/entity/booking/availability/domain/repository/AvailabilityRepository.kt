@@ -2,6 +2,7 @@ package com.example.scrollbooker.entity.booking.availability.domain.repository
 
 import com.example.scrollbooker.entity.booking.availability.domain.model.AvailableDay
 import com.example.scrollbooker.entity.booking.availability.domain.model.CalendarEvents
+import com.example.scrollbooker.entity.booking.availability.domain.model.CalendarEventsBusinessDay
 
 interface AvailabilityRepository {
     suspend fun getUserCalendarAvailableDays(
@@ -26,4 +27,9 @@ interface AvailabilityRepository {
         endDate: String,
         slotDuration: Int
     ): CalendarEvents
+
+    suspend fun getBusinessEmployeesCalendarEventsByDay(
+        day: String,
+        slotDuration: Int
+    ): CalendarEventsBusinessDay
 }

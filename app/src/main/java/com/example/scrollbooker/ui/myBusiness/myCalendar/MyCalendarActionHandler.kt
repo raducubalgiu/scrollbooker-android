@@ -22,7 +22,7 @@ fun handleMyCalendarAction(
             if (isBlocking) viewModel.resetSelectedLocalDates()
         }
 
-        MyCalendarAction.OpenDurationSheet -> sheets.open(MyCalendarSheet.Duration)
+        MyCalendarAction.OpenEmployeeSheet -> sheets.open(MyCalendarSheet.Employee)
 
         is MyCalendarAction.SlotClick ->
             handleSlotClick(action.slot, viewModel, sheets, isBlocking, onNavigateToAddOwnClient)
@@ -45,7 +45,7 @@ private fun handleSlotClick(
     onNavigateToAddOwnClient: () -> Unit,
 ) {
     when {
-        slot.isBooked -> sheets.open(MyCalendarSheet.Detail)
+        slot.isBooked -> {}
 
         isBlocking && slot.isFreeSlot() -> viewModel.setBlockDate(slot.startDateLocale!!)
 

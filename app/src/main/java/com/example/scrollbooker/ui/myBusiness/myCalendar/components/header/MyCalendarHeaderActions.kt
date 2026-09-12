@@ -1,8 +1,7 @@
 package com.example.scrollbooker.ui.myBusiness.myCalendar.components.header
 
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -12,19 +11,18 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowForwardIos
 import androidx.compose.material.icons.filled.ArrowBackIosNew
-import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.IconButtonDefaults
-import androidx.compose.material3.ShapeDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.example.scrollbooker.R
-import com.example.scrollbooker.components.core.buttons.MainButton
+import com.example.scrollbooker.components.core.dropdown.EmployeeSelectDropdown
 import com.example.scrollbooker.core.util.Dimens.BasePadding
 import com.example.scrollbooker.core.util.Dimens.SpacingM
 import com.example.scrollbooker.core.util.Dimens.SpacingS
@@ -32,7 +30,7 @@ import com.example.scrollbooker.core.util.Dimens.SpacingXS
 import com.example.scrollbooker.ui.myBusiness.myCalendar.components.header.MyCalendarHeaderActionsStateAction.HandleNextWeek
 import com.example.scrollbooker.ui.myBusiness.myCalendar.components.header.MyCalendarHeaderActionsStateAction.HandlePreviousWeek
 import com.example.scrollbooker.ui.myBusiness.myCalendar.components.header.MyCalendarHeaderActionsStateAction.OnBlockToggle
-import com.example.scrollbooker.ui.myBusiness.myCalendar.components.header.MyCalendarHeaderActionsStateAction.OpenDurationSheet
+import com.example.scrollbooker.ui.myBusiness.myCalendar.components.header.MyCalendarHeaderActionsStateAction.OpenEmployeeSheet
 import com.example.scrollbooker.ui.theme.Divider
 import com.example.scrollbooker.ui.theme.Error
 import com.example.scrollbooker.ui.theme.OnSurfaceBG
@@ -52,27 +50,34 @@ fun MyCalendarHeaderActions(
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.SpaceBetween
     ) {
-        Column(Modifier.weight(0.5f)) {
-            MyCalendarDurationAction(
-                label = stringResource(R.string.interval),
-                selectedSlot = state.slotDuration.toString(),
-                onClick = { onAction(OpenDurationSheet) }
-            )
+        Box(Modifier.weight(1f)) {
+            if (state.hasEmployees) {
+                EmployeeSelectDropdown(
+                    avatarUrl = state.selectedEmployeeAvatar,
+                    name = state.selectedEmployeeName,
+                    placeholder = stringResource(R.string.selectEmployee),
+                    compact = true,
+                    onClick = { onAction(OpenEmployeeSheet) }
+                )
+            }
         }
 
         Spacer(Modifier.width(SpacingS))
 
-        Column(Modifier.weight(0.5f)) {
-            MainButton(
-                colors = ButtonDefaults.buttonColors(
-                    containerColor = if(state.isBlocking) Error.copy(alpha = 0.2f) else SurfaceBG,
-                    contentColor = if(state.isBlocking) Error else OnSurfaceBG,
-                ),
-                contentPadding = PaddingValues(BasePadding),
-                shape = ShapeDefaults.Medium,
-                title = stringResource(R.string.blockSlots),
-                onClick = { onAction(OnBlockToggle) },
-                enabled = state.hasFreeSlots
+        IconButton(
+            onClick = { onAction(OnBlockToggle) },
+            enabled = state.hasFreeSlots,
+            colors = IconButtonDefaults.iconButtonColors(
+                containerColor = if(state.isBlocking) Error.copy(alpha = 0.2f) else SurfaceBG,
+                contentColor = if(state.isBlocking) Error else OnSurfaceBG,
+                disabledContainerColor = SurfaceBG,
+                disabledContentColor = OnSurfaceBG.copy(alpha = 0.4f)
+            )
+        ) {
+            Icon(
+                modifier = Modifier.size(20.dp),
+                painter = painterResource(R.drawable.ic_lock_closed_outline),
+                contentDescription = stringResource(R.string.blockSlots),
             )
         }
 

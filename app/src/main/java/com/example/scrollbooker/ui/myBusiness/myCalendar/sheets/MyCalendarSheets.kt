@@ -8,10 +8,11 @@ import androidx.compose.ui.Modifier
 import com.example.scrollbooker.ui.myBusiness.myCalendar.sheets.block.BlockSlotsAction
 import com.example.scrollbooker.ui.myBusiness.myCalendar.sheets.block.BlockSlotsSheet
 import com.example.scrollbooker.ui.myBusiness.myCalendar.sheets.block.BlockSlotsSheetState
-import com.example.scrollbooker.ui.myBusiness.myCalendar.sheets.detail.MyCalendarAppointmentDetailSheet
-import com.example.scrollbooker.ui.myBusiness.myCalendar.sheets.duration.DurationSheetAction
-import com.example.scrollbooker.ui.myBusiness.myCalendar.sheets.duration.MyCalendarDurationSheet
+import com.example.scrollbooker.ui.myBusiness.myCalendar.sheets.employee.EmployeeSelectSheet
+import com.example.scrollbooker.ui.myBusiness.myCalendar.sheets.employee.EmployeeSheetAction
 import com.example.scrollbooker.ui.myBusiness.myCalendar.sheets.settings.MyCalendarSettingsSheet
+import com.example.scrollbooker.core.util.FeatureState
+import com.example.scrollbooker.entity.booking.employee.domain.model.Employee
 import com.example.scrollbooker.ui.theme.Background
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -21,8 +22,9 @@ fun MyCalendarSheets(
     controller: MyCalendarSheetController,
     blockState: BlockSlotsSheetState,
     onBlockAction: (BlockSlotsAction) -> Unit,
-    selectedDuration: String,
-    onDurationAction: (DurationSheetAction) -> Unit,
+    employees: FeatureState<List<Employee>>,
+    selectedEmployeeId: Int?,
+    onEmployeeAction: (EmployeeSheetAction) -> Unit,
 ) {
     val current = controller.currentSheet ?: return
 
@@ -38,16 +40,15 @@ fun MyCalendarSheets(
                 onClose = { controller.close() }
             )
 
-            MyCalendarSheet.Detail -> MyCalendarAppointmentDetailSheet()
-
             MyCalendarSheet.Block -> BlockSlotsSheet(
                 state = blockState,
                 onAction = onBlockAction
             )
 
-            MyCalendarSheet.Duration -> MyCalendarDurationSheet(
-                selected = selectedDuration,
-                onAction = onDurationAction
+            MyCalendarSheet.Employee -> EmployeeSelectSheet(
+                employees = employees,
+                selectedEmployeeId = selectedEmployeeId,
+                onAction = onEmployeeAction
             )
         }
     }

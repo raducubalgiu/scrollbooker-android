@@ -24,7 +24,7 @@ import com.example.scrollbooker.core.util.Dimens.BasePadding
 import com.example.scrollbooker.ui.myBusiness.myCalendar.components.header.MyCalendarHeaderActionsStateAction.HandleNextWeek
 import com.example.scrollbooker.ui.myBusiness.myCalendar.components.header.MyCalendarHeaderActionsStateAction.HandlePreviousWeek
 import com.example.scrollbooker.ui.myBusiness.myCalendar.components.header.MyCalendarHeaderActionsStateAction.OnBlockToggle
-import com.example.scrollbooker.ui.myBusiness.myCalendar.components.header.MyCalendarHeaderActionsStateAction.OpenDurationSheet
+import com.example.scrollbooker.ui.myBusiness.myCalendar.components.header.MyCalendarHeaderActionsStateAction.OpenEmployeeSheet
 import com.example.scrollbooker.components.customized.calendar.CalendarDayTab
 import com.example.scrollbooker.ui.theme.OnBackground
 import com.example.scrollbooker.ui.theme.Primary
@@ -38,10 +38,12 @@ fun MyCalendarHeader(
 ) {
     val actionsState = MyCalendarHeaderActionsState(
         isBlocking = state.isBlocking,
-        slotDuration = state.slotDuration.toString(),
         enableBack = state.enableBack,
         enableNext = state.enableNext,
         hasFreeSlots = state.hasFreeSlots,
+        hasEmployees = state.hasEmployees,
+        selectedEmployeeName = state.selectedEmployeeName,
+        selectedEmployeeAvatar = state.selectedEmployeeAvatar,
     )
 
     Header(
@@ -62,7 +64,7 @@ fun MyCalendarHeader(
                 HandlePreviousWeek -> { onAction(MyCalendarHeaderStateAction.HandlePreviousWeek) }
                 HandleNextWeek -> { onAction(MyCalendarHeaderStateAction.HandleNextWeek) }
                 OnBlockToggle -> { onAction(MyCalendarHeaderStateAction.OnBlockToggle) }
-                OpenDurationSheet -> { onAction(MyCalendarHeaderStateAction.OpenDurationSheet) }
+                OpenEmployeeSheet -> { onAction(MyCalendarHeaderStateAction.OpenEmployeeSheet) }
             }
         }
     )
@@ -92,10 +94,14 @@ fun MyCalendarHeader(
                 CalendarDayTab(
                     date = date,
                     isCurrentTab = isCurrentTab,
-                    onChangeTab = { onAction(MyCalendarHeaderStateAction.OnChangeTab(date, index)) },
+                    onChangeTab = {
+                        if (!state.isRefreshing) {
+                            onAction(MyCalendarHeaderStateAction.OnChangeTab(date, index))
+                        }
+                    },
                     bgColor = if(isCurrentTab) Primary else Color.Transparent,
                     label = displayShortDayOfWeek(date, AppLocaleProvider.current()),
-                    isLoading = false,
+                    isLoading = state.isRefreshing,
                     isDayAvailable = isAvailable
                 )
             }
