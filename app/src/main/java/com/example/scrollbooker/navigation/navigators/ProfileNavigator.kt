@@ -163,6 +163,11 @@ class ProfileNavigator (
     fun toAddOwnClientAppointment() {
         navController.navigate(MainRoute.AddOwnClientAppointment.route)
     }
+    fun toAppointmentDetails(appointmentId: Int) {
+        navController.navigate("${MainRoute.AppointmentDetails.route}/$appointmentId") {
+            launchSingleTop = true
+        }
+    }
     fun toMyEmployees() {
         navController.navigate(MainRoute.MyEmployees.route)
     }

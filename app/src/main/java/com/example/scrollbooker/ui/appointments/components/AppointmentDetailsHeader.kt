@@ -28,6 +28,7 @@ import com.example.scrollbooker.core.util.Dimens.SpacingS
 import com.example.scrollbooker.core.util.Dimens.SpacingXL
 import com.example.scrollbooker.core.util.Dimens.SpacingXS
 import com.example.scrollbooker.entity.booking.appointment.domain.model.Appointment
+import com.example.scrollbooker.entity.booking.appointment.domain.model.displayedPerson
 import com.example.scrollbooker.entity.booking.appointment.domain.model.getStatusColor
 import com.example.scrollbooker.entity.booking.appointment.domain.model.getStatusRes
 import com.example.scrollbooker.ui.theme.bodyLarge
@@ -74,16 +75,18 @@ fun AppointmentDetailsHeader(
 
         Spacer(Modifier.height(SpacingXL))
 
+        val displayedPerson = appointment.displayedPerson()
+
         Row(verticalAlignment = Alignment.CenterVertically) {
-            if(appointment.user.ratingsAverage != null) {
+            if(displayedPerson.ratingsAverage != null) {
                 AvatarWithRating(
-                    url = appointment.user.avatar ?: "",
+                    url = displayedPerson.avatar ?: "",
                     onClick = {},
-                    rating = appointment.user.ratingsAverage,
+                    rating = displayedPerson.ratingsAverage,
                 )
             } else {
                 Avatar(
-                    url = appointment.user.avatar ?: "",
+                    url = displayedPerson.avatar ?: "",
                     onClick = {},
                 )
             }
@@ -92,19 +95,26 @@ fun AppointmentDetailsHeader(
 
             Column {
                 Text(
-                    text = appointment.user.fullName,
+                    text = displayedPerson.fullName,
                     style = titleMedium,
                     fontWeight = FontWeight.SemiBold,
                     maxLines = 1,
                     overflow = TextOverflow.Ellipsis
                 )
-                Text(
-                    text = "${appointment.user.profession} • ${appointment.user.ratingsCount} ${stringResource(R.string.reviews)}",
-                    style = bodyMedium,
-                    color = Color.Gray,
-                    maxLines = 1,
-                    overflow = TextOverflow.Ellipsis
-                )
+
+                if (!displayedPerson.profession.isNullOrBlank()) {
+                    Text(
+                        text = if (displayedPerson.ratingsCount != null) {
+                            "${displayedPerson.profession} • ${displayedPerson.ratingsCount} ${stringResource(R.string.reviews)}"
+                        } else {
+                            displayedPerson.profession.orEmpty()
+                        },
+                        style = bodyMedium,
+                        color = Color.Gray,
+                        maxLines = 1,
+                        overflow = TextOverflow.Ellipsis
+                    )
+                }
             }
         }
     }

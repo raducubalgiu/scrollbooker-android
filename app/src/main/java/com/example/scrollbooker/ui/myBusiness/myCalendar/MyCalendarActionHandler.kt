@@ -14,6 +14,7 @@ fun handleMyCalendarAction(
     isBlocking: Boolean,
     onBack: () -> Unit,
     onNavigateToAddOwnClient: () -> Unit,
+    onNavigateToAppointmentDetails: (Int) -> Unit,
     scope: CoroutineScope
 ) {
     when (action) {
@@ -22,16 +23,16 @@ fun handleMyCalendarAction(
             if (isBlocking) viewModel.resetSelectedLocalDates()
         }
 
-        MyCalendarAction.OpenEmployeeSheet -> sheets.open(MyCalendarSheet.Employee)
-
         is MyCalendarAction.SlotClick ->
-            handleSlotClick(action.slot, viewModel, sheets, isBlocking, onNavigateToAddOwnClient)
+            handleSlotClick(action.slot, viewModel, isBlocking, onNavigateToAddOwnClient, onNavigateToAppointmentDetails)
 
         MyCalendarAction.Back -> onBack()
 
         MyCalendarAction.Settings -> sheets.open(MyCalendarSheet.Settings)
 
         MyCalendarAction.OnBlockToggle -> viewModel.toggleBlocking()
+
+        MyCalendarAction.OpenEmployeeSheet -> sheets.open(MyCalendarSheet.Employee)
 
         MyCalendarAction.DayRefresh -> scope.launch { viewModel.refreshCurrentDay() }
     }
@@ -40,12 +41,12 @@ fun handleMyCalendarAction(
 private fun handleSlotClick(
     slot: CalendarEventsSlot,
     viewModel: MyCalendarViewModel,
-    sheets: MyCalendarSheetController,
     isBlocking: Boolean,
     onNavigateToAddOwnClient: () -> Unit,
+    onNavigateToAppointmentDetails: (Int) -> Unit,
 ) {
     when {
-        slot.isBooked -> {}
+        slot.isBooked -> slot.id?.let(onNavigateToAppointmentDetails)
 
         isBlocking && slot.isFreeSlot() -> viewModel.setBlockDate(slot.startDateLocale!!)
 

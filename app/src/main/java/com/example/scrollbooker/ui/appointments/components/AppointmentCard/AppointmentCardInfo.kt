@@ -29,6 +29,7 @@ import com.example.scrollbooker.core.util.Dimens.BasePadding
 import com.example.scrollbooker.core.util.Dimens.SpacingM
 import com.example.scrollbooker.core.util.Dimens.SpacingS
 import com.example.scrollbooker.entity.booking.appointment.domain.model.Appointment
+import com.example.scrollbooker.entity.booking.appointment.domain.model.displayedPerson
 import com.example.scrollbooker.entity.booking.appointment.domain.model.getProductNames
 import com.example.scrollbooker.ui.theme.Error
 import com.example.scrollbooker.ui.theme.bodyLarge
@@ -38,22 +39,20 @@ import java.math.BigDecimal
 
 @Composable
 fun AppointmentCardInfo(appointment: Appointment) {
-    val user = appointment.user
-    val customer = appointment.customer
-    val ratingsAverage = appointment.user.ratingsAverage
+    val displayedPerson = appointment.displayedPerson()
 
     Column {
         Row(verticalAlignment = Alignment.CenterVertically) {
-            if(appointment.isCustomer && ratingsAverage != null) {
+            if(displayedPerson.ratingsAverage != null) {
                 AvatarWithRating(
-                    url = user.avatar ?: "",
+                    url = displayedPerson.avatar ?: "",
                     onClick = {},
-                    rating = ratingsAverage,
+                    rating = displayedPerson.ratingsAverage,
                     size = 55.dp,
                 )
             } else {
                 Avatar(
-                    url = customer.avatar ?: "",
+                    url = displayedPerson.avatar ?: "",
                     size = 55.dp,
                 )
             }
@@ -61,19 +60,21 @@ fun AppointmentCardInfo(appointment: Appointment) {
 
             Column {
                 Text(
-                    text = if(appointment.isCustomer) user.fullName else customer.fullName,
+                    text = displayedPerson.fullName,
                     style = bodyLarge,
                     fontWeight = FontWeight.SemiBold,
                     maxLines = 1,
                     overflow = TextOverflow.Ellipsis
                 )
-                Text(
-                    text = (if(appointment.isCustomer) user.profession else customer.profession).toString(),
-                    style = bodyMedium,
-                    color = Color.Gray,
-                    maxLines = 1,
-                    overflow = TextOverflow.Ellipsis
-                )
+                if (!displayedPerson.profession.isNullOrBlank()) {
+                    Text(
+                        text = displayedPerson.profession.orEmpty(),
+                        style = bodyMedium,
+                        color = Color.Gray,
+                        maxLines = 1,
+                        overflow = TextOverflow.Ellipsis
+                    )
+                }
             }
         }
 

@@ -246,15 +246,16 @@ class MyCalendarViewModel @Inject constructor(
 
     // Whichever person's calendar is actually being displayed - the auth user themselves
     // (employee or owner-without-employees), or the currently selected employee when the owner
-    // has employees. Schedules must follow this, not the raw auth user, or an owner viewing an
-    // employee's calendar would see their own personal hours instead of that employee's.
-    private val scheduleTargetUserIdFlow: Flow<Int?> = combine(
+    // has employees. Schedules, and any write action (block/own-client/etc.), must target this,
+    // not the raw auth user, or an owner viewing an employee's calendar would read/write that
+    // employee's calendar using their own id instead of the employee's.
+    private val calendarTargetUserIdFlow: Flow<Int?> = combine(
         userIdFlow,
         employeeIdFlow
     ) { userId, employeeId -> employeeId ?: userId }.distinctUntilChanged()
 
     @OptIn(ExperimentalCoroutinesApi::class)
-    private val schedules: StateFlow<FeatureState<List<Schedule>>> = scheduleTargetUserIdFlow
+    private val schedules: StateFlow<FeatureState<List<Schedule>>> = calendarTargetUserIdFlow
         .filterNotNull()
         .distinctUntilChanged()
         .flatMapLatest { targetUserId ->
@@ -499,7 +500,10 @@ class MyCalendarViewModel @Inject constructor(
         viewModelScope.launch {
             _isSaving.value = true
 
-            val userId = userIdFlow.first() ?: run {
+            // Must target whichever calendar is actually displayed (the selected employee, when
+            // the owner has employees), not the raw auth user - the backend checks
+            // _is_slot_booked against exactly this id per slot ("Provider ocupat" otherwise).
+            val userId = calendarTargetUserIdFlow.first() ?: run {
                 _isSaving.value = false
                 return@launch
             }

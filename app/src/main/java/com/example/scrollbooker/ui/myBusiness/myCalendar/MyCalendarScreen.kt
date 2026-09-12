@@ -148,6 +148,7 @@ fun MyCalendarScreen(
                             isBlocking = isBlocking,
                             onBack = onBack,
                             onNavigateToAddOwnClient = { profileNavigate.toAddOwnClientAppointment() },
+                            onNavigateToAppointmentDetails = { profileNavigate.toAppointmentDetails(it) },
                             scope = scope
                         )
                     },

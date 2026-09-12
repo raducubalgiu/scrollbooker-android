@@ -19,10 +19,12 @@ import androidx.compose.animation.EnterTransition
 import androidx.compose.animation.ExitTransition
 import androidx.compose.runtime.remember
 import androidx.hilt.navigation.compose.hiltViewModel
+import com.example.scrollbooker.navigation.graphs.appointmentsGraph
 import com.example.scrollbooker.navigation.graphs.bookingGraph
 import com.example.scrollbooker.navigation.graphs.postUtilityGraph
 import com.example.scrollbooker.navigation.graphs.reviewsGraph
 import com.example.scrollbooker.navigation.graphs.socialGraph
+import com.example.scrollbooker.navigation.navigators.AppointmentsNavigator
 import com.example.scrollbooker.navigation.navigators.BookingNavigator
 import com.example.scrollbooker.navigation.navigators.ProfileNavigator
 import com.example.scrollbooker.navigation.navigators.ReviewsNavigator
@@ -50,6 +52,7 @@ fun MyProfileNavHost(
     val profileNavigate = remember(navController) { ProfileNavigator(navController) }
     val bookingNavigate = remember(navController) { BookingNavigator(navController) }
     val reviewsNavigate = remember(navController) { ReviewsNavigator(navController) }
+    val appointmentsNavigate = remember(navController) { AppointmentsNavigator(navController) }
 
     Box(
         modifier = Modifier
@@ -95,6 +98,7 @@ fun MyProfileNavHost(
             userProfileGraph(navController, profileNavigate)
 
             myBusinessGraph(navController, profileNavigate)
+            appointmentsGraph(appointmentsNavigate)
             settingsGraph(
                 navController = navController,
                 onLogout = onLogout,
