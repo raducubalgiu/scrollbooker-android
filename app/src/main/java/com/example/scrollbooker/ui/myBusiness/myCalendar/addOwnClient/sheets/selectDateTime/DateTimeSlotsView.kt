@@ -11,6 +11,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import com.example.scrollbooker.components.core.layout.ErrorScreen
+import com.example.scrollbooker.components.customized.Refresh
 import com.example.scrollbooker.components.customized.calendar.FullyBookedDayMessage
 import com.example.scrollbooker.components.customized.calendar.SlotItem
 import com.example.scrollbooker.components.customized.calendar.SlotsShimmer
@@ -28,8 +29,10 @@ import toPrettyDate
 fun DateTimeSlotsView(
     day: LocalDate?,
     daySlots: FeatureState<AvailableDay>?,
+    isRefreshing: Boolean,
     pendingSlotUtc: String?,
-    onSlotSelected: (Slot) -> Unit
+    onSlotSelected: (Slot) -> Unit,
+    onRefresh: () -> Unit
 ) {
     Column(Modifier.fillMaxSize()) {
         if (day != null) {
@@ -41,26 +44,28 @@ fun DateTimeSlotsView(
             )
         }
 
-        when (val slots = daySlots) {
-            null, is FeatureState.Loading -> SlotsShimmer()
-            is FeatureState.Error -> ErrorScreen()
-            is FeatureState.Success -> {
-                val availableSlotsList = slots.data.availableSlots
+        Refresh(isRefreshing = isRefreshing, onRefresh = onRefresh) {
+            when (val slots = daySlots) {
+                null, is FeatureState.Loading -> SlotsShimmer()
+                is FeatureState.Error -> ErrorScreen()
+                is FeatureState.Success -> {
+                    val availableSlotsList = slots.data.availableSlots
 
-                if (availableSlotsList.isEmpty()) {
-                    FullyBookedDayMessage()
-                } else {
-                    LazyColumn(
-                        modifier = Modifier.fillMaxSize(),
-                        contentPadding = PaddingValues(bottom = BasePadding),
-                        verticalArrangement = Arrangement.spacedBy(SpacingS)
-                    ) {
-                        items(availableSlotsList) { slot ->
-                            SlotItem(
-                                slot = slot,
-                                isSelected = slot.startDateUtc == pendingSlotUtc,
-                                onSelectSlot = onSlotSelected
-                            )
+                    if (availableSlotsList.isEmpty()) {
+                        FullyBookedDayMessage()
+                    } else {
+                        LazyColumn(
+                            modifier = Modifier.fillMaxSize(),
+                            contentPadding = PaddingValues(bottom = BasePadding),
+                            verticalArrangement = Arrangement.spacedBy(SpacingS)
+                        ) {
+                            items(availableSlotsList) { slot ->
+                                SlotItem(
+                                    slot = slot,
+                                    isSelected = slot.startDateUtc == pendingSlotUtc,
+                                    onSelectSlot = onSlotSelected
+                                )
+                            }
                         }
                     }
                 }

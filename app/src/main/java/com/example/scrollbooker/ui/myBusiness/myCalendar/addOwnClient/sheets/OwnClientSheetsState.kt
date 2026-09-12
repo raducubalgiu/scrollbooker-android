@@ -27,6 +27,7 @@ data class OwnClientSheetsState(
     val calendarHeaderState: FeatureState<CalendarHeaderState>,
     val selectedCalendarDay: LocalDate?,
     val daySlots: FeatureState<AvailableDay>?,
+    val isRefreshingDaySlots: Boolean,
     val startOnSlotsStep: Boolean,
     val initialPendingSlotUtc: String?,
 )

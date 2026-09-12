@@ -19,6 +19,7 @@ import androidx.compose.ui.unit.dp
 import com.example.scrollbooker.R
 import com.example.scrollbooker.components.core.layout.ErrorScreen
 import com.example.scrollbooker.components.core.layout.MessageScreen
+import com.example.scrollbooker.components.customized.Refresh
 import com.example.scrollbooker.core.extensions.parseTimeStringToLocalTime
 import com.example.scrollbooker.core.util.Dimens.BasePadding
 import com.example.scrollbooker.core.util.FeatureState
@@ -63,19 +64,12 @@ fun MyCalendarPagerSection(
                     val calendarEvents = events.data
                     val slots = calendarEvents.days.firstOrNull()?.slots ?: emptyList()
 
-                    // The schedule's open/close hours are only a lower bound on the visible range:
-                    // real slots (e.g. a booking taken outside business hours) must never be
-                    // clipped out of the timeline, so we widen the range to cover them too.
                     val slotsStart = remember(slots) { slots.mapNotNull { it.startDateLocale?.toLocalTime() }.minOrNull() }
                     val slotsEnd = remember(slots) { slots.mapNotNull { it.endDateLocale?.toLocalTime() }.maxOrNull() }
 
                     val dayStart = listOfNotNull(scheduleStart, slotsStart, businessDayWindow?.first).minOrNull()
                     val dayEnd = listOfNotNull(scheduleEnd, slotsEnd, businessDayWindow?.second).maxOrNull()
 
-                    // The business-wide window can be wider than this specific person's own
-                    // schedule (e.g. other employees work later) - the leftover hours outside
-                    // their own schedule render as explicit "Closed" blocks rather than staying
-                    // blank, so switching employees doesn't resize the grid.
                     val closedRanges = remember(dayStart, dayEnd, scheduleStart, scheduleEnd, businessDayWindow) {
                         if (businessDayWindow == null || dayStart == null || dayEnd == null) {
                             emptyList()
@@ -90,12 +84,12 @@ fun MyCalendarPagerSection(
                     }
 
                     if(dayStart != null && dayEnd != null) {
-                        PullToRefreshBox(
+                        Refresh(
                             isRefreshing = isRefreshing,
                             onRefresh = onDayRefresh,
                             // The default circular indicator doesn't read well here - the
                             // shimmer on the slots themselves is the refresh feedback instead.
-                            indicator = {}
+                            //indicator = {}
                         ) {
                             if (isRefreshing) {
                                 DayTimelineShimmer(slotDuration = slotDuration)

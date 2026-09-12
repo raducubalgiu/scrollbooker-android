@@ -104,6 +104,7 @@ fun AddOwnClientScreen(
     val calendarHeaderState by viewModel.calendarHeader.collectAsStateWithLifecycle()
     val selectedCalendarDay by viewModel.selectedCalendarDay.collectAsStateWithLifecycle()
     val daySlots by viewModel.daySlots.collectAsStateWithLifecycle()
+    val isRefreshingDaySlots by viewModel.isRefreshingDaySlots.collectAsStateWithLifecycle()
 
     var previousIsSaving by rememberSaveable { mutableStateOf(false) }
 
@@ -227,6 +228,7 @@ fun AddOwnClientScreen(
             calendarHeaderState = calendarHeaderState,
             selectedCalendarDay = selectedCalendarDay,
             daySlots = daySlots,
+            isRefreshingDaySlots = isRefreshingDaySlots,
             startOnSlotsStep = slot != null,
             initialPendingSlotUtc = slot?.startDateUtc,
         ),

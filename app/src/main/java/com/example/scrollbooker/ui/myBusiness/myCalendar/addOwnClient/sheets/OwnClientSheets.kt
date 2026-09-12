@@ -61,9 +61,11 @@ fun OwnClientSheets(
                     calendarHeaderState = state.calendarHeaderState,
                     selectedDay = state.selectedCalendarDay,
                     daySlots = state.daySlots,
+                    isRefreshingDaySlots = state.isRefreshingDaySlots,
                     startOnSlotsStep = state.startOnSlotsStep,
                     initialPendingSlotUtc = state.initialPendingSlotUtc,
                     onDayClick = { onAction(OwnClientSheetsAction.DayClick(it)) },
+                    onRefreshDaySlots = { onAction(OwnClientSheetsAction.RefreshDaySlots) },
                     onConfirm = { onAction(OwnClientSheetsAction.ConfirmSlot(it)) },
                     onDismiss = { onAction(OwnClientSheetsAction.Dismiss) }
                 )

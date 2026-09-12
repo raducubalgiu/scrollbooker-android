@@ -2,8 +2,11 @@ package com.example.scrollbooker.ui.myBusiness.myCalendar.addOwnClient.sheets.se
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.WindowInsets
+import androidx.compose.foundation.layout.asPaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.navigationBars
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.GridItemSpan
@@ -58,12 +61,19 @@ fun DateTimeCalendarView(
                     .toList()
             }
 
+            // No bottomBar exists for this step (see DateTimePickerSheet), so Scaffold's
+            // innerPadding doesn't account for the gesture nav bar here - add it explicitly
+            // so the last row of days isn't flush against/behind it.
+            val navigationBarBottomPadding = WindowInsets.navigationBars.asPaddingValues().calculateBottomPadding()
+
             LazyVerticalGrid(
                 columns = GridCells.Fixed(7),
                 modifier = Modifier.fillMaxSize(),
                 contentPadding = PaddingValues(
-                    horizontal = SpacingXL,
-                    vertical = BasePadding
+                    start = SpacingXL,
+                    end = SpacingXL,
+                    top = BasePadding,
+                    bottom = BasePadding + navigationBarBottomPadding
                 ),
                 horizontalArrangement = Arrangement.spacedBy(SpacingXS),
                 verticalArrangement = Arrangement.spacedBy(SpacingXS)

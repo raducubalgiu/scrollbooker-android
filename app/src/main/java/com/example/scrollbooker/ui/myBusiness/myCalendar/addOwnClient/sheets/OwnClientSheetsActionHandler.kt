@@ -25,5 +25,7 @@ fun handleOwnClientSheetsAction(
         is OwnClientSheetsAction.DayClick -> viewModel.selectCalendarDay(action.date)
 
         is OwnClientSheetsAction.ConfirmSlot -> onSlotConfirmed(action.slot)
+
+        OwnClientSheetsAction.RefreshDaySlots -> viewModel.refreshDaySlots()
     }
 }

@@ -50,11 +50,6 @@ fun MyCalendarScaffoldContent(
     val scope = rememberCoroutineScope()
     val hasFreeSlots = (calendarEvents as? FeatureState.Success)?.data?.hasDayFreeSlots() == true
 
-    // Keeps the last successfully loaded header (week/day tabs, available days) mounted across a
-    // context change (e.g. switching employee) instead of tearing the whole screen down to a
-    // blank loading state - that used to also reset the week/day pager position, since the
-    // composable subtree (and its rememberPagerState) was fully removed while headerState was
-    // Loading. Only the slots below (MyCalendarPagerSection) actually need to reload per employee.
     var cachedHeader by remember { mutableStateOf<CalendarHeaderState?>(null) }
     LaunchedEffect(headerState) {
         if (headerState is FeatureState.Success) cachedHeader = headerState.data

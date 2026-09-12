@@ -38,11 +38,14 @@ import kotlinx.coroutines.flow.filterNotNull
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.flow
+import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.mapLatest
+import kotlinx.coroutines.flow.onCompletion
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.stateIn
+import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import org.threeten.bp.LocalDate
 import timber.log.Timber
@@ -117,25 +120,39 @@ class AddOwnClientViewModel @Inject constructor(
 
     private val daySlotsCache = ConcurrentHashMap<Triple<LocalDate, Int, Int?>, AvailableDay>()
 
+    // Keys pending a forced re-fetch (via refreshDaySlots) whose cached value must still be kept
+    // around and shown while that re-fetch is in flight, so the sheet never blanks out on pull-to-refresh.
+    private val staleDaySlotKeys = ConcurrentHashMap.newKeySet<Triple<LocalDate, Int, Int?>>()
+    private val daySlotsRefreshTick = MutableStateFlow(0)
+
+    private val _isRefreshingDaySlots = MutableStateFlow(false)
+    val isRefreshingDaySlots: StateFlow<Boolean> = _isRefreshingDaySlots.asStateFlow()
+
     val daySlots: StateFlow<FeatureState<AvailableDay>?> = combine(
         _selectedCalendarDay,
         slotDurationFlow,
-        _targetUserId
-    ) { day, duration, targetUserId -> Triple(day, duration, targetUserId) }
+        _targetUserId,
+        daySlotsRefreshTick
+    ) { day, duration, targetUserId, _ -> Triple(day, duration, targetUserId) }
         .flatMapLatest { (day, duration, targetUserId) ->
             if (day == null) {
-                flow { emit(null) }
+                flowOf<FeatureState<AvailableDay>?>(null)
             } else {
                 flow {
                     val cacheKey = Triple(day, duration, targetUserId)
                     val cached = daySlotsCache[cacheKey]
+                    val isStale = staleDaySlotKeys.contains(cacheKey)
 
                     if (cached != null) {
                         emit(FeatureState.Success(cached))
-                        return@flow
+                        if (!isStale) return@flow
+                    } else {
+                        emit(FeatureState.Loading)
                     }
 
-                    emit(FeatureState.Loading)
+                    if (isStale) {
+                        _isRefreshingDaySlots.value = true
+                    }
 
                     val businessId = businessIdFlow.first()
                     if (businessId == null) {
@@ -152,6 +169,8 @@ class AddOwnClientViewModel @Inject constructor(
                         )
                     }
 
+                    staleDaySlotKeys.remove(cacheKey)
+
                     emit(
                         result.fold(
                             onSuccess = { availableDay ->
@@ -164,7 +183,7 @@ class AddOwnClientViewModel @Inject constructor(
                             }
                         )
                     )
-                }
+                }.onCompletion { _isRefreshingDaySlots.value = false }
             }
         }
         .catch { e -> emit(FeatureState.Error(e)) }
@@ -172,6 +191,14 @@ class AddOwnClientViewModel @Inject constructor(
 
     fun selectCalendarDay(day: LocalDate) {
         _selectedCalendarDay.value = day
+    }
+
+    fun refreshDaySlots() {
+        val day = _selectedCalendarDay.value ?: return
+        val cacheKey = Triple(day, slotDurationFlow.value, _targetUserId.value)
+
+        staleDaySlotKeys.add(cacheKey)
+        daySlotsRefreshTick.update { it + 1 }
     }
 
     init {

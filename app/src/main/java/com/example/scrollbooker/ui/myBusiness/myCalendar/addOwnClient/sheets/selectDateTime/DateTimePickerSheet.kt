@@ -57,9 +57,11 @@ fun DateTimePickerSheet(
     calendarHeaderState: FeatureState<CalendarHeaderState>,
     selectedDay: LocalDate?,
     daySlots: FeatureState<AvailableDay>?,
+    isRefreshingDaySlots: Boolean,
     startOnSlotsStep: Boolean,
     initialPendingSlotUtc: String?,
     onDayClick: (LocalDate) -> Unit,
+    onRefreshDaySlots: () -> Unit,
     onConfirm: (Slot) -> Unit,
     onDismiss: () -> Unit,
 ) {
@@ -159,8 +161,10 @@ fun DateTimePickerSheet(
                     DateTimeStep.SLOTS -> DateTimeSlotsView(
                         day = selectedDay,
                         daySlots = daySlots,
+                        isRefreshing = isRefreshingDaySlots,
                         pendingSlotUtc = pendingSlotUtc,
-                        onSlotSelected = { pendingSlotUtc = it.startDateUtc }
+                        onSlotSelected = { pendingSlotUtc = it.startDateUtc },
+                        onRefresh = onRefreshDaySlots
                     )
                 }
             }

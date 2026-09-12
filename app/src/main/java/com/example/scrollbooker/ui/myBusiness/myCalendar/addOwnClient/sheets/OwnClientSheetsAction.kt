@@ -12,4 +12,5 @@ sealed interface OwnClientSheetsAction {
     data class ConfirmServices(val items: List<SelectedBookingItem>): OwnClientSheetsAction
     data class DayClick(val date: LocalDate): OwnClientSheetsAction
     data class ConfirmSlot(val slot: Slot): OwnClientSheetsAction
+    data object RefreshDaySlots: OwnClientSheetsAction
 }
