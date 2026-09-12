@@ -28,6 +28,7 @@ class SaveUserSessionUseCase @Inject constructor(
                 userId = userInfo.id,
                 username = userInfo.username,
                 fullName = userInfo.fullname,
+                avatar = userInfo.avatar,
                 businessId = userInfo.businessId,
                 businessOwnerId = userInfo.businessOwnerId,
                 businessTypeId = userInfo.businessTypeId,

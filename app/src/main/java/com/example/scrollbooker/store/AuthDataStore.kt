@@ -28,6 +28,7 @@ class AuthDataStore(private val context: Context) {
         val USER_ID = intPreferencesKey("userId")
         val USERNAME = stringPreferencesKey("username")
         val FULLNAME = stringPreferencesKey("fullName")
+        val AVATAR = stringPreferencesKey("avatar")
         val BUSINESS_ID = intPreferencesKey("businessId")
         val BUSINESS_OWNER_ID = intPreferencesKey("businessOwnerId")
         val BUSINESS_TYPE_ID = intPreferencesKey("businessTypeId")
@@ -41,6 +42,7 @@ class AuthDataStore(private val context: Context) {
         userId: Int,
         username: String,
         fullName: String,
+        avatar: String?,
         businessId: Int?,
         businessOwnerId: Int?,
         businessTypeId: Int?,
@@ -56,9 +58,16 @@ class AuthDataStore(private val context: Context) {
             prefs[HAS_EMPLOYEES] = hasEmployees
             prefs[PERMISSIONS] = permissions.toSet()
 
+            if (avatar != null) prefs[AVATAR] = avatar else prefs.remove(AVATAR)
             if (businessId != null) prefs[BUSINESS_ID] = businessId else prefs.remove(BUSINESS_ID)
             if (businessOwnerId != null) prefs[BUSINESS_OWNER_ID] = businessOwnerId else prefs.remove(BUSINESS_OWNER_ID)
             if (businessTypeId != null) prefs[BUSINESS_TYPE_ID] = businessTypeId else prefs.remove(BUSINESS_TYPE_ID)
+        }
+    }
+
+    suspend fun setAvatar(avatar: String?) {
+        context.dataStore.edit { prefs ->
+            if (avatar != null) prefs[AVATAR] = avatar else prefs.remove(AVATAR)
         }
     }
 
@@ -115,6 +124,7 @@ class AuthDataStore(private val context: Context) {
     fun getUserId(): Flow<Int?> = context.dataStore.data.map { it[USER_ID] }
     fun getUserUsername(): Flow<String?> = context.dataStore.data.map { it[USERNAME] }
     fun getUserFullName(): Flow<String?> = context.dataStore.data.map { it[FULLNAME] }
+    fun getUserAvatar(): Flow<String?> = context.dataStore.data.map { it[AVATAR] }
     fun getBusinessId(): Flow<Int?> = context.dataStore.data.map { it[BUSINESS_ID] }
     fun getBusinessOwnerId(): Flow<Int?> = context.dataStore.data.map { it[BUSINESS_OWNER_ID] }
     fun getBusinessTypeId(): Flow<Int?> = context.dataStore.data.map { it[BUSINESS_TYPE_ID] }

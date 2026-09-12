@@ -36,6 +36,7 @@ fun CommentsSheet(
     val likeOverrides by viewModel.likeOverrides.collectAsStateWithLifecycle()
     val repliesState by viewModel.repliesState.collectAsStateWithLifecycle()
     val replyTarget by viewModel.replyTarget.collectAsStateWithLifecycle()
+    val currentUser by viewModel.currentUser.collectAsStateWithLifecycle()
 
     val refreshState = comments.loadState.refresh
     val isInitialLoading = refreshState is LoadState.Loading && comments.itemCount == 0
@@ -91,6 +92,7 @@ fun CommentsSheet(
             }
 
             CommentFooter(
+                avatar = currentUser?.avatar,
                 replyTarget = replyTarget,
                 onCancelReply = { viewModel.clearReplyTarget() },
                 onCreateComment = { text ->

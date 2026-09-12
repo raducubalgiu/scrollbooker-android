@@ -18,6 +18,8 @@ data class MyCalendarHeaderState(
     val hasEmployees: Boolean,
     val selectedEmployeeName: String?,
     val selectedEmployeeAvatar: String?,
+    val ownFullName: String?,
+    val ownAvatar: String?,
     val isRefreshing: Boolean
 )
 

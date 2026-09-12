@@ -76,19 +76,21 @@ class CommentsViewModel @Inject constructor(
     }
 
     private val _currentUser = MutableStateFlow<CommentUser?>(null)
+    val currentUser: StateFlow<CommentUser?> = _currentUser.asStateFlow()
 
     init {
         combine(
             authDataStore.getUserId(),
             authDataStore.getUserUsername(),
-            authDataStore.getUserFullName()
-        ) { id, username, fullName ->
+            authDataStore.getUserFullName(),
+            authDataStore.getUserAvatar()
+        ) { id, username, fullName, avatar ->
             if (id == null || username == null) null
             else CommentUser(
                 id = id,
                 username = username,
                 fullname = fullName ?: username,
-                avatar = null,
+                avatar = avatar,
                 profession = ""
             )
         }.onEach { _currentUser.value = it }.launchIn(viewModelScope)

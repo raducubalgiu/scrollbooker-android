@@ -7,7 +7,9 @@ data class MyCalendarHeaderActionsState(
     val hasFreeSlots: Boolean,
     val hasEmployees: Boolean,
     val selectedEmployeeName: String?,
-    val selectedEmployeeAvatar: String?
+    val selectedEmployeeAvatar: String?,
+    val ownFullName: String?,
+    val ownAvatar: String?
 )
 
 sealed interface MyCalendarHeaderActionsStateAction {

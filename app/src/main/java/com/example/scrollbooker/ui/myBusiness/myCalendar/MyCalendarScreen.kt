@@ -56,6 +56,8 @@ fun MyCalendarScreen(
     val selectedEmployeeId by viewModel.selectedEmployeeId.collectAsStateWithLifecycle()
     val selectedEmployee by viewModel.selectedEmployee.collectAsStateWithLifecycle()
     val hasEmployees = (employees as? FeatureState.Success)?.data?.isNotEmpty() == true
+    val ownFullName by viewModel.ownFullName.collectAsStateWithLifecycle()
+    val ownAvatar by viewModel.ownAvatar.collectAsStateWithLifecycle()
 
     val snackbarHostState = remember { SnackbarHostState() }
     val snackBarController = rememberSnackBarController(snackbarHostState)
@@ -140,6 +142,8 @@ fun MyCalendarScreen(
                     isRefreshing = isRefreshingCurrentDay,
                     hasEmployees = hasEmployees,
                     selectedEmployee = selectedEmployee,
+                    ownFullName = ownFullName,
+                    ownAvatar = ownAvatar,
                     onAction = { action ->
                         handleMyCalendarAction(
                             action = action,

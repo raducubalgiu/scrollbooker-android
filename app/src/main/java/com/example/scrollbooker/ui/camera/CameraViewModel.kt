@@ -63,6 +63,13 @@ private const val DEFAULT_COVER_TIME_US = 500_000L
 private const val FILMSTRIP_FRAME_HEIGHT = 220
 private const val PREVIEW_FRAME_HEIGHT = 720
 
+data class CameraCurrentUser(
+    val id: Int,
+    val username: String,
+    val fullName: String,
+    val avatar: String?
+)
+
 @HiltViewModel
 class CameraViewModel @Inject constructor(
     private val permissionRepository: PermissionRepository,
@@ -148,6 +155,22 @@ class CameraViewModel @Inject constructor(
             started = SharingStarted.WhileSubscribed(5000),
             initialValue = FeatureState.Loading
         )
+
+    // Own identity for the local (not-yet-uploaded) post preview - PostOverlay needs a real
+    // Post, so the preview builds one locally with these values instead of hardcoded placeholders.
+    val currentUser: StateFlow<CameraCurrentUser?> = combine(
+        authDataStore.getUserId(),
+        authDataStore.getUserUsername(),
+        authDataStore.getUserFullName(),
+        authDataStore.getUserAvatar()
+    ) { id, username, fullName, avatar ->
+        if (id == null || username == null) null
+        else CameraCurrentUser(id = id, username = username, fullName = fullName ?: username, avatar = avatar)
+    }.stateIn(
+        scope = viewModelScope,
+        started = SharingStarted.WhileSubscribed(5000),
+        initialValue = null
+    )
 
     private val _isSaving = MutableStateFlow<FeatureState<Unit>?>(null)
     val isSaving: StateFlow<FeatureState<Unit>?> = _isSaving

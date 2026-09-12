@@ -45,6 +45,8 @@ fun MyCalendarScaffoldContent(
     isRefreshing: Boolean,
     hasEmployees: Boolean,
     selectedEmployee: Employee?,
+    ownFullName: String?,
+    ownAvatar: String?,
     onAction: (MyCalendarAction) -> Unit
 ) {
     val scope = rememberCoroutineScope()
@@ -116,6 +118,8 @@ fun MyCalendarScaffoldContent(
                         hasEmployees = hasEmployees,
                         selectedEmployeeName = selectedEmployee?.fullName,
                         selectedEmployeeAvatar = selectedEmployee?.avatar,
+                        ownFullName = ownFullName,
+                        ownAvatar = ownAvatar,
                         isRefreshing = isHeaderRefreshing
                     ),
                     onAction = { action ->

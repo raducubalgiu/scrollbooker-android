@@ -73,6 +73,7 @@ fun CreatePostPreviewScreen(
     val cameraVideoUiState by viewModel.cameraVideoUiState.collectAsStateWithLifecycle()
     val editUiState by viewModel.editUiState.collectAsStateWithLifecycle()
     val player by viewModel.player.collectAsStateWithLifecycle()
+    val currentUser by viewModel.currentUser.collectAsStateWithLifecycle()
 
     val context = LocalContext.current
 
@@ -206,23 +207,23 @@ fun CreatePostPreviewScreen(
                                 id = 1,
                                 description = uiState.description,
                                 user = PostUser(
-                                    id = 1,
-                                    fullName = "Numele meu",
-                                    username = "numele_meu",
-                                    avatar = null,
+                                    id = currentUser?.id ?: 0,
+                                    fullName = currentUser?.fullName ?: "",
+                                    username = currentUser?.username ?: "",
+                                    avatar = currentUser?.avatar,
                                     isFollow = false,
                                     profession = "Creator",
                                     ratingsAverage = 4.5f,
                                     ratingsCount = 100
                                 ),
                                 businessOwner = PostBusinessOwner(
-                                    id = 1,
-                                    fullName = "Numele meu",
+                                    id = currentUser?.id ?: 0,
+                                    fullName = currentUser?.fullName ?: "",
                                     ratingsAverage = 4.5f,
                                     ratingsCount = 100,
                                     profession = "Creator",
-                                    username = "numele_meu",
-                                    avatar = null
+                                    username = currentUser?.username ?: "",
+                                    avatar = currentUser?.avatar
                                 ),
                                 employee = null,
                                 businessLocation = null,

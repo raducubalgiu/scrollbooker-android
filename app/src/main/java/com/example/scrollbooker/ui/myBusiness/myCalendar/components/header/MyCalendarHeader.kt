@@ -44,6 +44,8 @@ fun MyCalendarHeader(
         hasEmployees = state.hasEmployees,
         selectedEmployeeName = state.selectedEmployeeName,
         selectedEmployeeAvatar = state.selectedEmployeeAvatar,
+        ownFullName = state.ownFullName,
+        ownAvatar = state.ownAvatar,
     )
 
     Header(

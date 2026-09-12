@@ -59,6 +59,7 @@ import com.example.scrollbooker.ui.theme.bodyMedium
 
 @Composable
 fun CommentFooter(
+    avatar: String?,
     replyTarget: ReplyTarget?,
     onCancelReply: () -> Unit,
     onCreateComment: (text: String) -> Unit
@@ -154,7 +155,7 @@ fun CommentFooter(
         }
 
         TextFieldComment(
-            avatar = "",
+            avatar = avatar ?: "",
             value = fieldValue,
             isEnabled = fieldValue.text.isNotEmpty(),
             onValueChange = { fieldValue = it },

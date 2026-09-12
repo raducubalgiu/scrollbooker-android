@@ -119,6 +119,15 @@ class MyCalendarViewModel @Inject constructor(
         .map { it == true }
         .distinctUntilChanged()
 
+    // Own identity (not the currently viewed employee's) - used by the header's employee slot
+    // when there's no one else to switch to (solo employee, or business without employees).
+    val ownFullName: StateFlow<String?> = authDataStore.getUserFullName()
+        .distinctUntilChanged()
+        .stateIn(viewModelScope, SharingStarted.Eagerly, null)
+    val ownAvatar: StateFlow<String?> = authDataStore.getUserAvatar()
+        .distinctUntilChanged()
+        .stateIn(viewModelScope, SharingStarted.Eagerly, null)
+
     // Whether the logged-in user IS the business owner (as opposed to being an employee
     // themselves) - only an owner with employees needs to pick which employee's calendar to view.
     private val isOwnerFlow: Flow<Boolean> = combine(

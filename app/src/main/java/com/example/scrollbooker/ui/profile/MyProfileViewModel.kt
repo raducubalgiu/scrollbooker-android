@@ -50,7 +50,7 @@ import javax.inject.Inject
 
 @HiltViewModel
 class MyProfileViewModel @Inject constructor(
-    authDataStore: AuthDataStore,
+    private val authDataStore: AuthDataStore,
     private val updateFullNameUseCase: UpdateFullNameUseCase,
     private val updateUsernameUseCase: UpdateUsernameUseCase,
     private val updateBioUseCase: UpdateBioUseCase,
@@ -382,6 +382,11 @@ class MyProfileViewModel @Inject constructor(
                         val updatedProfile = currentProfile.copy(avatar = uri.toString())
                         profileMutations.emit(FeatureState.Success(updatedProfile))
                     }
+
+                    // Keep the persisted session copy (read by other screens - comments, camera
+                    // preview, calendar header) in sync with the edit, not just this screen's state.
+                    authDataStore.setAvatar(uri.toString())
+
                     isSaved = true
                 }
                 .onFailure { error ->

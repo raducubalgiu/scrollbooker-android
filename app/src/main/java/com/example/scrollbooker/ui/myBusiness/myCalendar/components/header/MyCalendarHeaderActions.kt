@@ -23,6 +23,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.example.scrollbooker.R
 import com.example.scrollbooker.components.core.dropdown.EmployeeSelectDropdown
+import com.example.scrollbooker.components.core.dropdown.OwnIdentityChip
 import com.example.scrollbooker.core.util.Dimens.BasePadding
 import com.example.scrollbooker.core.util.Dimens.SpacingM
 import com.example.scrollbooker.core.util.Dimens.SpacingS
@@ -58,6 +59,12 @@ fun MyCalendarHeaderActions(
                     placeholder = stringResource(R.string.selectEmployee),
                     compact = true,
                     onClick = { onAction(OpenEmployeeSheet) }
+                )
+            } else {
+                OwnIdentityChip(
+                    avatarUrl = state.ownAvatar,
+                    name = state.ownFullName,
+                    compact = true
                 )
             }
         }
