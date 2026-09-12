@@ -13,7 +13,6 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.HorizontalDivider
-import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.rememberModalBottomSheetState
@@ -48,12 +47,11 @@ import com.example.scrollbooker.entity.booking.appointment.data.remote.Appointme
 import com.example.scrollbooker.entity.booking.appointment.domain.model.AppointmentOwnClientCreate
 import com.example.scrollbooker.entity.booking.availability.domain.model.CalendarEventsSlot
 import com.example.scrollbooker.entity.booking.availability.domain.model.Slot
-import com.example.scrollbooker.ui.camera.UserProductsSheet
 import com.example.scrollbooker.ui.myBusiness.myCalendar.MyCalendarViewModel
 import com.example.scrollbooker.ui.myBusiness.myCalendar.addOwnClient.sheets.AddOwnClientSheet
-import com.example.scrollbooker.ui.myBusiness.myCalendar.addOwnClient.sheets.createClient.AddBusinessClientSheet
-import com.example.scrollbooker.ui.myBusiness.myCalendar.addOwnClient.sheets.selectClient.BusinessClientSelectSheet
-import com.example.scrollbooker.ui.myBusiness.myCalendar.addOwnClient.sheets.selectDateTime.DateTimePickerSheet
+import com.example.scrollbooker.ui.myBusiness.myCalendar.addOwnClient.sheets.OwnClientSheets
+import com.example.scrollbooker.ui.myBusiness.myCalendar.addOwnClient.sheets.OwnClientSheetsState
+import com.example.scrollbooker.ui.myBusiness.myCalendar.addOwnClient.sheets.handleOwnClientSheetsAction
 import com.example.scrollbooker.ui.myBusiness.myCalendar.addOwnClient.sheets.selectDateTime.DateTimeSummaryButton
 import com.example.scrollbooker.ui.theme.Background
 import com.example.scrollbooker.ui.theme.Divider
@@ -210,64 +208,32 @@ fun AddOwnClientScreen(
         )
     }
 
-    if (currentSheet == AddOwnClientSheet.SelectClient ||
-        currentSheet == AddOwnClientSheet.AddClient ||
-        currentSheet == AddOwnClientSheet.DateTime
-    ) {
-        ModalBottomSheet(
-            modifier = Modifier
-                .fillMaxSize()
-                .statusBarsPadding(),
+    OwnClientSheets(
+        state = OwnClientSheetsState(
+            currentSheet = currentSheet,
             sheetState = sheetState,
-            onDismissRequest = { currentSheet = null },
-            containerColor = Background,
-            dragHandle = {}
-        ) {
-            when (currentSheet) {
-                AddOwnClientSheet.SelectClient -> BusinessClientSelectSheet(
-                    query = clientQuery,
-                    searchState = clientSearchState,
-                    selectedClient = selectedClient,
-                    onQueryChange = viewModel::handleSearch,
-                    onConfirm = { client -> viewModel.selectClient(client) },
-                    onDismiss = { currentSheet = null }
-                )
-
-                AddOwnClientSheet.AddClient -> AddBusinessClientSheet(
-                    isSaving = isCreatingClient,
-                    onSave = { fullname, phone -> viewModel.createClient(fullname, phone) },
-                    onDismiss = { currentSheet = null }
-                )
-
-                AddOwnClientSheet.DateTime -> DateTimePickerSheet(
-                    sheetState = sheetState,
-                    calendarHeaderState = calendarHeaderState,
-                    selectedDay = selectedCalendarDay,
-                    daySlots = daySlots,
-                    startOnSlotsStep = slot != null,
-                    initialPendingSlotUtc = slot?.startDateUtc,
-                    onDayClick = viewModel::selectCalendarDay,
-                    onConfirm = ::handleSlotSelected,
-                    onDismiss = { currentSheet = null }
-                )
-
-                else -> Unit
-            }
-        }
-    }
-
-    if (currentSheet == AddOwnClientSheet.Services) {
-        UserProductsSheet(
-            sheetState = servicesSheetState,
+            servicesSheetState = servicesSheetState,
+            clientQuery = clientQuery,
+            clientSearchState = clientSearchState,
+            selectedClient = selectedClient,
+            isCreatingClient = isCreatingClient,
             linkedProducts = linkedProducts,
             userProducts = userProducts,
-            onConfirmSelection = { products ->
-                viewModel.setLinkedProducts(products)
-                currentSheet = null
-            },
-            onClose = { currentSheet = null }
-        )
-    }
+            calendarHeaderState = calendarHeaderState,
+            selectedCalendarDay = selectedCalendarDay,
+            daySlots = daySlots,
+            startOnSlotsStep = slot != null,
+            initialPendingSlotUtc = slot?.startDateUtc,
+        ),
+        onAction = { action ->
+            handleOwnClientSheetsAction(
+                action = action,
+                viewModel = viewModel,
+                onCloseSheet = { currentSheet = null },
+                onSlotConfirmed = ::handleSlotSelected
+            )
+        }
+    )
 
     Scaffold(
         modifier = Modifier.statusBarsPadding(),
