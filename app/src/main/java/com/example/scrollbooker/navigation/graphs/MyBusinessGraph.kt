@@ -1,7 +1,17 @@
 package com.example.scrollbooker.navigation.graphs
+import androidx.compose.animation.EnterTransition
+import androidx.compose.animation.ExitTransition
+import androidx.compose.animation.core.FiniteAnimationSpec
+import androidx.compose.animation.core.LinearOutSlowInEasing
+import androidx.compose.animation.core.tween
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
+import androidx.compose.animation.slideInVertically
+import androidx.compose.animation.slideOutVertically
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.unit.IntOffset
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.NavGraphBuilder
@@ -23,6 +33,8 @@ import com.example.scrollbooker.ui.myBusiness.myBusinessDetails.MyBusinessDetail
 import com.example.scrollbooker.ui.myBusiness.myBusinessDetails.MyBusinessDetailsViewModel
 import com.example.scrollbooker.ui.myBusiness.myCalendar.MyCalendarScreen
 import com.example.scrollbooker.ui.myBusiness.myCalendar.MyCalendarViewModel
+import com.example.scrollbooker.ui.myBusiness.myCalendar.addOwnClient.AddOwnClientAppointmentScreen
+import com.example.scrollbooker.ui.myBusiness.myCalendar.addOwnClient.AddOwnClientViewModel
 import com.example.scrollbooker.ui.myBusiness.myDashboard.MyDashboardScreen
 import com.example.scrollbooker.ui.myBusiness.myDashboard.MyDashboardViewModel
 import com.example.scrollbooker.ui.myBusiness.myEmployees.MyEmployeesViewModel
@@ -181,13 +193,47 @@ fun NavGraphBuilder.myBusinessGraph(
             )
         }
 
-        composable(MainRoute.MyCalendar.route) { backStackEntry ->
-            val viewModel = hiltViewModel<MyCalendarViewModel>(backStackEntry)
+        navigation(
+            route = MainRoute.MyCalendarNavigator.route,
+            startDestination = MainRoute.MyCalendar.route
+        ) {
+            val pushSpec: FiniteAnimationSpec<IntOffset> = tween(320, easing = LinearOutSlowInEasing)
+            val popSpec: FiniteAnimationSpec<IntOffset> = tween(280, easing = LinearOutSlowInEasing)
+            val fadeInSpec: FiniteAnimationSpec<Float> = tween(220, easing = LinearOutSlowInEasing)
+            val fadeOutSpec: FiniteAnimationSpec<Float> = tween(220, easing = LinearOutSlowInEasing)
 
-            MyCalendarScreen(
-                viewModel = viewModel,
-                onBack = { navController.popBackStack() }
-            )
+            composable(MainRoute.MyCalendar.route) { backStackEntry ->
+                val parentEntry = remember(backStackEntry) {
+                    navController.getBackStackEntry(MainRoute.MyCalendarNavigator.route)
+                }
+                val viewModel = hiltViewModel<MyCalendarViewModel>(parentEntry)
+
+                MyCalendarScreen(
+                    viewModel = viewModel,
+                    profileNavigate = profileNavigate,
+                    onBack = { navController.popBackStack() }
+                )
+            }
+
+            composable(
+                route = MainRoute.AddOwnClientAppointment.route,
+                enterTransition = { slideInVertically(pushSpec) { it } + fadeIn(fadeInSpec) },
+                exitTransition = { ExitTransition.None },
+                popEnterTransition = { EnterTransition.None },
+                popExitTransition = { slideOutVertically(popSpec) { it } + fadeOut(fadeOutSpec) }
+            ) { backStackEntry ->
+                val parentEntry = remember(backStackEntry) {
+                    navController.getBackStackEntry(MainRoute.MyCalendarNavigator.route)
+                }
+                val myCalendarViewModel = hiltViewModel<MyCalendarViewModel>(parentEntry)
+                val viewModel = hiltViewModel<AddOwnClientViewModel>()
+
+                AddOwnClientAppointmentScreen(
+                    myCalendarViewModel = myCalendarViewModel,
+                    viewModel = viewModel,
+                    onBack = { navController.popBackStack() }
+                )
+            }
         }
 
         composable(MainRoute.MyServices.route) { backStackEntry ->

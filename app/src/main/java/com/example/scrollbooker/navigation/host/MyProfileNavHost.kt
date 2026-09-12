@@ -32,7 +32,11 @@ import com.example.scrollbooker.navigation.transition.slideOutToRight
 import com.example.scrollbooker.ui.theme.Background
 
 private fun isStaticRoute(route: String?): Boolean =
-    route != null && (route.startsWith(MainRoute.Camera.route) || route.startsWith(MainRoute.MyProfilePostDetail.route))
+    route != null && (
+        route.startsWith(MainRoute.Camera.route) ||
+        route.startsWith(MainRoute.MyProfilePostDetail.route) ||
+        route.startsWith(MainRoute.AddOwnClientAppointment.route)
+    )
 
 private fun isPostUtilityRoute(route: String?): Boolean =
     route != null && (route.startsWith(MainRoute.EditPost.route) || route.startsWith(MainRoute.PostStatistics.route))

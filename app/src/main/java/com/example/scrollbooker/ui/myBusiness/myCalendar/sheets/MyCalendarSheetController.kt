@@ -16,65 +16,31 @@ import kotlinx.coroutines.launch
 @Stable
 class MyCalendarSheetController(
     private val sheetState: SheetState,
-    private val scope: CoroutineScope,
-    private val onSheetCleared: () -> Unit,
-    private val onDismissEnabledChanged: (Boolean) -> Unit,
-    private val onAllowHideChanged: (Boolean) -> Unit
+    private val scope: CoroutineScope
 ) {
     var currentSheet: MyCalendarSheet? by mutableStateOf(null)
         private set
 
-    private var allowHide: Boolean = false
-        set(value) {
-            field = value
-            onAllowHideChanged(value)
-        }
-
-    fun dismissEnabled(): Boolean = currentSheet != MyCalendarSheet.OwnClient
-
     fun open(sheet: MyCalendarSheet) {
-        if (sheet == MyCalendarSheet.OwnClient) allowHide = false
         currentSheet = sheet
-        onDismissEnabledChanged(dismissEnabled())
         scope.launch { sheetState.show() }
     }
 
     fun close() {
-        allowHide = false
         scope.launch {
             sheetState.hide()
             currentSheet = null
-            onDismissEnabledChanged(true)
-            onSheetCleared()
         }
     }
-
-    fun closeOwnClient() {
-        allowHide = true
-        scope.launch {
-            sheetState.hide()
-            currentSheet = null
-            allowHide = false
-            onDismissEnabledChanged(true)
-            onSheetCleared()
-        }
-    }
-
-    fun canDismissRequest(): Boolean = dismissEnabled()
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun rememberMyCalendarSheetController(
-    sheetState: SheetState,
-    onSheetCleared: () -> Unit,
-    onDismissEnabledChanged: (Boolean) -> Unit,
-    onAllowHideChanged: (Boolean) -> Unit
+    sheetState: SheetState
 ): MyCalendarSheetController {
     val scope = rememberCoroutineScope()
-    return remember(sheetState, scope, onSheetCleared, onDismissEnabledChanged, onAllowHideChanged) {
-        MyCalendarSheetController(
-            sheetState, scope, onSheetCleared, onDismissEnabledChanged, onAllowHideChanged
-        )
+    return remember(sheetState, scope) {
+        MyCalendarSheetController(sheetState, scope)
     }
 }

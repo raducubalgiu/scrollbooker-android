@@ -1,4 +1,4 @@
-package com.example.scrollbooker.ui.myBusiness.myCalendar.sheets.ownClient
+package com.example.scrollbooker.ui.myBusiness.myCalendar.addOwnClient
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -24,7 +24,7 @@ import com.example.scrollbooker.ui.theme.titleMedium
 @Composable
 fun OwnClientHeader(
     title: String,
-    subTitle: String,
+    subTitle: String? = null,
     onClose: () -> Unit
 ) {
     Row(modifier = Modifier
@@ -49,14 +49,16 @@ fun OwnClientHeader(
                 fontSize = 18.sp
             )
 
-            Spacer(Modifier.height(SpacingS))
+            if (!subTitle.isNullOrBlank()) {
+                Spacer(Modifier.height(SpacingS))
 
-            Text(
-                text = subTitle,
-                style = titleMedium,
-                fontWeight = FontWeight.Normal,
-                color = Color.Gray
-            )
+                Text(
+                    text = subTitle,
+                    style = titleMedium,
+                    fontWeight = FontWeight.Normal,
+                    color = Color.Gray
+                )
+            }
         }
 
         CustomIconButton(

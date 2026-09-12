@@ -15,6 +15,7 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.input.ImeAction
 import com.example.scrollbooker.R
@@ -35,6 +36,7 @@ fun SearchBar(
     contentColor: Color = OnSurfaceBG,
     onSearch: (() -> Unit)? = null,
     onClick: (() -> Unit)? = null,
+    shape: Shape = MaterialTheme.shapes.medium,
     keyboardOptions: KeyboardOptions = KeyboardOptions(imeAction = ImeAction.Search),
 ) {
     val interactionSource = remember { MutableInteractionSource() }
@@ -68,7 +70,7 @@ fun SearchBar(
         },
         textStyle = bodyLarge,
         singleLine = true,
-        shape = MaterialTheme.shapes.medium,
+        shape = shape,
         colors = TextFieldDefaults.colors(
             focusedContainerColor = containerColor,
             unfocusedContainerColor = containerColor,

@@ -120,7 +120,10 @@ sealed class MainRoute(val route: String) {
 
     object MySchedules: MainRoute(route = "mySchedules")
     object MyServices: MainRoute(route = "myServices")
+
+    object MyCalendarNavigator: MainRoute(route = "myCalendarNavigator")
     object MyCalendar: MainRoute(route = "myCalendar")
+    object AddOwnClientAppointment: MainRoute(route = "addOwnClientAppointment")
 
     object MyProductsNavigator: MainRoute(route = "myProductsNavigator")
     object MyProducts: MainRoute(route = "myProducts")

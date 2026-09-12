@@ -11,9 +11,6 @@ import com.example.scrollbooker.ui.myBusiness.myCalendar.sheets.block.BlockSlots
 import com.example.scrollbooker.ui.myBusiness.myCalendar.sheets.detail.MyCalendarAppointmentDetailSheet
 import com.example.scrollbooker.ui.myBusiness.myCalendar.sheets.duration.DurationSheetAction
 import com.example.scrollbooker.ui.myBusiness.myCalendar.sheets.duration.MyCalendarDurationSheet
-import com.example.scrollbooker.ui.myBusiness.myCalendar.sheets.ownClient.OwnClientAction
-import com.example.scrollbooker.ui.myBusiness.myCalendar.sheets.ownClient.OwnClientSheet
-import com.example.scrollbooker.ui.myBusiness.myCalendar.sheets.ownClient.OwnClientSheetState
 import com.example.scrollbooker.ui.myBusiness.myCalendar.sheets.settings.MyCalendarSettingsSheet
 import com.example.scrollbooker.ui.theme.Background
 
@@ -22,8 +19,6 @@ import com.example.scrollbooker.ui.theme.Background
 fun MyCalendarSheets(
     sheetState: SheetState,
     controller: MyCalendarSheetController,
-    ownClientState: OwnClientSheetState,
-    onOwnClientAction: (OwnClientAction) -> Unit,
     blockState: BlockSlotsSheetState,
     onBlockAction: (BlockSlotsAction) -> Unit,
     selectedDuration: String,
@@ -34,9 +29,7 @@ fun MyCalendarSheets(
     ModalBottomSheet(
         modifier = Modifier.statusBarsPadding(),
         sheetState = sheetState,
-        onDismissRequest = {
-            if (controller.canDismissRequest()) controller.close()
-        },
+        onDismissRequest = { controller.close() },
         containerColor = Background,
         dragHandle = {}
     ) {
@@ -50,11 +43,6 @@ fun MyCalendarSheets(
             MyCalendarSheet.Block -> BlockSlotsSheet(
                 state = blockState,
                 onAction = onBlockAction
-            )
-
-            MyCalendarSheet.OwnClient -> OwnClientSheet(
-                state = ownClientState,
-                onAction = onOwnClientAction
             )
 
             MyCalendarSheet.Duration -> MyCalendarDurationSheet(

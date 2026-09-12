@@ -10,32 +10,28 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import com.example.scrollbooker.core.snackbar.CustomSnackBar
 import com.example.scrollbooker.core.snackbar.rememberSnackBarController
+import com.example.scrollbooker.navigation.navigators.ProfileNavigator
 import com.example.scrollbooker.ui.myBusiness.myCalendar.sheets.block.BlockSlotsAction
 import com.example.scrollbooker.ui.myBusiness.myCalendar.sheets.block.BlockSlotsSheetState
 import com.example.scrollbooker.ui.myBusiness.myCalendar.sheets.duration.DurationSheetAction
-import androidx.compose.material3.SheetValue
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.rememberUpdatedState
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.example.scrollbooker.ui.myBusiness.myCalendar.components.header.MyCalendarBlockAction
 import com.example.scrollbooker.ui.myBusiness.myCalendar.components.MyCalendarFab
 import com.example.scrollbooker.ui.myBusiness.myCalendar.components.MyCalendarScaffoldContent
 import com.example.scrollbooker.ui.myBusiness.myCalendar.sheets.MyCalendarSheet
 import com.example.scrollbooker.ui.myBusiness.myCalendar.sheets.MyCalendarSheets
-import com.example.scrollbooker.ui.myBusiness.myCalendar.sheets.ownClient.OwnClientAction
-import com.example.scrollbooker.ui.myBusiness.myCalendar.sheets.ownClient.OwnClientSheetState
 import com.example.scrollbooker.ui.myBusiness.myCalendar.sheets.rememberMyCalendarSheetController
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun MyCalendarScreen(
     viewModel: MyCalendarViewModel,
+    profileNavigate: ProfileNavigator,
     onBack: () -> Unit
 ) {
     val scope = rememberCoroutineScope()
@@ -50,10 +46,8 @@ fun MyCalendarScreen(
     val defaultBlockedLocalDates by viewModel.defaultBlockedStartLocale.collectAsStateWithLifecycle()
     val blockedLocalDates by viewModel.selectedStartLocale.collectAsStateWithLifecycle()
 
-    val selectedOwnClient by viewModel.selectedOwnClient.collectAsStateWithLifecycle()
     val isSaving by viewModel.isSaving.collectAsStateWithLifecycle()
     val actionSucceededTick by viewModel.actionSucceededTick.collectAsStateWithLifecycle()
-    val userId by viewModel.userId.collectAsStateWithLifecycle()
     val isRefreshingCurrentDay by viewModel.isRefreshingCurrentDay.collectAsStateWithLifecycle()
 
     val snackbarHostState = remember { SnackbarHostState() }
@@ -69,15 +63,6 @@ fun MyCalendarScreen(
         blockedLocalDates = blockedLocalDates
     )
 
-    val ownClientState = OwnClientSheetState(
-        isSaving = isSaving,
-        userId = userId,
-        selectedDay = selectedDay,
-        selectedOwnClientSlot = selectedOwnClient,
-        slotDuration = slotDuration,
-        successTick = actionSucceededTick
-    )
-
     val blockState = BlockSlotsSheetState(
         slotCount = blockedLocalDates.size - defaultBlockedLocalDates.size,
         selectedSlots = blockedLocalDates - defaultBlockedLocalDates,
@@ -86,40 +71,14 @@ fun MyCalendarScreen(
         successTick = actionSucceededTick
     )
 
-    var dismissEnabledGate by remember { mutableStateOf(true) }
-    var allowHideGate by remember { mutableStateOf(false) }
+    val sheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
 
-    val dismissEnabledState = rememberUpdatedState(dismissEnabledGate)
-    val allowHideState = rememberUpdatedState(allowHideGate)
-
-    val sheetState = rememberModalBottomSheetState(
-        skipPartiallyExpanded = true,
-        confirmValueChange = { newValue ->
-            if(newValue == SheetValue.Hidden) {
-                dismissEnabledState.value || allowHideState.value
-            } else true
-        }
-    )
-
-    val sheets = rememberMyCalendarSheetController(
-        sheetState = sheetState,
-        onSheetCleared = { viewModel.setSelectedOwnClient(null) },
-        onDismissEnabledChanged = { dismissEnabledGate = it },
-        onAllowHideChanged = { allowHideGate = it }
-    )
+    val sheets = rememberMyCalendarSheetController(sheetState = sheetState)
 
     MyCalendarSheets(
         sheetState = sheetState,
         controller = sheets,
-        ownClientState = ownClientState,
         blockState = blockState,
-        onOwnClientAction = { action ->
-            when(action) {
-                is OwnClientAction.CreateOwnClient -> viewModel.createOwnClientAppointment(action.request)
-                is OwnClientAction.CreateLastMinute -> viewModel.createLastMinute(action.request)
-                OwnClientAction.Close -> sheets.closeOwnClient()
-            }
-        },
         onBlockAction = { action ->
             when(action) {
                 is BlockSlotsAction.Confirm -> viewModel.blockAppointments(action.message)
@@ -146,7 +105,7 @@ fun MyCalendarScreen(
                     isBlocking = isBlocking,
                     onClick = {
                         viewModel.setSelectedOwnClient(null)
-                        sheets.open(MyCalendarSheet.OwnClient)
+                        profileNavigate.toAddOwnClientAppointment()
                     }
                 )
             },
@@ -170,7 +129,17 @@ fun MyCalendarScreen(
                     slotDuration = slotDuration,
                     blockUiState = blockUiState,
                     isRefreshing = isRefreshingCurrentDay,
-                    onAction = { action -> handleMyCalendarAction(action, viewModel, sheets, isBlocking, onBack, scope) },
+                    onAction = { action ->
+                        handleMyCalendarAction(
+                            action = action,
+                            viewModel = viewModel,
+                            sheets = sheets,
+                            isBlocking = isBlocking,
+                            onBack = onBack,
+                            onNavigateToAddOwnClient = { profileNavigate.toAddOwnClientAppointment() },
+                            scope = scope
+                        )
+                    },
                 )
             }
         }

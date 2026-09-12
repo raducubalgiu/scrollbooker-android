@@ -1,5 +1,6 @@
 package com.example.scrollbooker.entity.booking.appointment.domain.useCase
 
+import com.example.scrollbooker.core.util.runSuspendCatching
 import com.example.scrollbooker.entity.booking.appointment.domain.model.AppointmentOwnClientCreate
 import com.example.scrollbooker.entity.booking.appointment.domain.repository.AppointmentRepository
 import javax.inject.Inject
@@ -7,7 +8,7 @@ import javax.inject.Inject
 class CreateOwnClientAppointmentUseCase @Inject constructor(
     private val repository: AppointmentRepository
 ) {
-    suspend operator fun invoke(request: AppointmentOwnClientCreate): Result<Unit> = runCatching {
+    suspend operator fun invoke(request: AppointmentOwnClientCreate): Result<Unit> = runSuspendCatching {
         repository.createOwnClientAppointment(request)
     }
 }

@@ -160,6 +160,9 @@ class ProfileNavigator (
     fun toMyCalendar() {
         navController.navigate(MainRoute.MyCalendar.route)
     }
+    fun toAddOwnClientAppointment() {
+        navController.navigate(MainRoute.AddOwnClientAppointment.route)
+    }
     fun toMyEmployees() {
         navController.navigate(MainRoute.MyEmployees.route)
     }

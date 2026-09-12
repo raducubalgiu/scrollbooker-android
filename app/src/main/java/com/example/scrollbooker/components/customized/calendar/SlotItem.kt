@@ -26,12 +26,14 @@ import com.example.scrollbooker.ui.theme.Divider
 import com.example.scrollbooker.ui.theme.Error
 import com.example.scrollbooker.ui.theme.LastMinute
 import com.example.scrollbooker.ui.theme.OnPrimary
+import com.example.scrollbooker.ui.theme.Primary
 import com.example.scrollbooker.ui.theme.SurfaceBG
 import com.example.scrollbooker.ui.theme.bodyLarge
 
 @Composable
 fun SlotItem(
     slot: Slot,
+    isSelected: Boolean = false,
     onSelectSlot: (Slot) -> Unit
 ) {
     Row(
@@ -39,8 +41,8 @@ fun SlotItem(
             .fillMaxWidth()
             .padding(horizontal = BasePadding)
             .clip(shape = ShapeDefaults.Large)
-            .background(SurfaceBG)
-            .border(1.dp, Divider, ShapeDefaults.Large)
+            .background(if (isSelected) Primary.copy(alpha = 0.12f) else SurfaceBG)
+            .border(1.dp, if (isSelected) Primary else Divider, ShapeDefaults.Large)
             .clickable { onSelectSlot(slot) }
             .padding(18.dp),
         verticalAlignment = Alignment.CenterVertically,

@@ -13,6 +13,7 @@ fun handleMyCalendarAction(
     sheets: MyCalendarSheetController,
     isBlocking: Boolean,
     onBack: () -> Unit,
+    onNavigateToAddOwnClient: () -> Unit,
     scope: CoroutineScope
 ) {
     when (action) {
@@ -24,7 +25,7 @@ fun handleMyCalendarAction(
         MyCalendarAction.OpenDurationSheet -> sheets.open(MyCalendarSheet.Duration)
 
         is MyCalendarAction.SlotClick ->
-            handleSlotClick(action.slot, viewModel, sheets, isBlocking)
+            handleSlotClick(action.slot, viewModel, sheets, isBlocking, onNavigateToAddOwnClient)
 
         MyCalendarAction.Back -> onBack()
 
@@ -41,6 +42,7 @@ private fun handleSlotClick(
     viewModel: MyCalendarViewModel,
     sheets: MyCalendarSheetController,
     isBlocking: Boolean,
+    onNavigateToAddOwnClient: () -> Unit,
 ) {
     when {
         slot.isBooked -> sheets.open(MyCalendarSheet.Detail)
@@ -49,7 +51,7 @@ private fun handleSlotClick(
 
         slot.isFreeSlot() -> {
             viewModel.setSelectedOwnClient(slot)
-            sheets.open(MyCalendarSheet.OwnClient)
+            onNavigateToAddOwnClient()
         }
     }
 }
