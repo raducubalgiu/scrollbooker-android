@@ -33,7 +33,7 @@ import com.example.scrollbooker.ui.myBusiness.myBusinessDetails.MyBusinessDetail
 import com.example.scrollbooker.ui.myBusiness.myBusinessDetails.MyBusinessDetailsViewModel
 import com.example.scrollbooker.ui.myBusiness.myCalendar.MyCalendarScreen
 import com.example.scrollbooker.ui.myBusiness.myCalendar.MyCalendarViewModel
-import com.example.scrollbooker.ui.myBusiness.myCalendar.addOwnClient.AddOwnClientAppointmentScreen
+import com.example.scrollbooker.ui.myBusiness.myCalendar.addOwnClient.AddOwnClientScreen
 import com.example.scrollbooker.ui.myBusiness.myCalendar.addOwnClient.AddOwnClientViewModel
 import com.example.scrollbooker.ui.myBusiness.myDashboard.MyDashboardScreen
 import com.example.scrollbooker.ui.myBusiness.myDashboard.MyDashboardViewModel
@@ -228,7 +228,7 @@ fun NavGraphBuilder.myBusinessGraph(
                 val myCalendarViewModel = hiltViewModel<MyCalendarViewModel>(parentEntry)
                 val viewModel = hiltViewModel<AddOwnClientViewModel>()
 
-                AddOwnClientAppointmentScreen(
+                AddOwnClientScreen(
                     myCalendarViewModel = myCalendarViewModel,
                     viewModel = viewModel,
                     onBack = { navController.popBackStack() }

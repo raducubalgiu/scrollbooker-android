@@ -1,4 +1,4 @@
-package com.example.scrollbooker.ui.myBusiness.myCalendar.addOwnClient
+package com.example.scrollbooker.ui.myBusiness.myCalendar.addOwnClient.sheets.selectClient
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement

@@ -13,6 +13,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.HorizontalDivider
+import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.rememberModalBottomSheetState
@@ -49,6 +50,11 @@ import com.example.scrollbooker.entity.booking.availability.domain.model.Calenda
 import com.example.scrollbooker.entity.booking.availability.domain.model.Slot
 import com.example.scrollbooker.ui.camera.UserProductsSheet
 import com.example.scrollbooker.ui.myBusiness.myCalendar.MyCalendarViewModel
+import com.example.scrollbooker.ui.myBusiness.myCalendar.addOwnClient.sheets.AddOwnClientSheet
+import com.example.scrollbooker.ui.myBusiness.myCalendar.addOwnClient.sheets.createClient.AddBusinessClientSheet
+import com.example.scrollbooker.ui.myBusiness.myCalendar.addOwnClient.sheets.selectClient.BusinessClientSelectSheet
+import com.example.scrollbooker.ui.myBusiness.myCalendar.addOwnClient.sheets.selectDateTime.DateTimePickerSheet
+import com.example.scrollbooker.ui.myBusiness.myCalendar.addOwnClient.sheets.selectDateTime.DateTimeSummaryButton
 import com.example.scrollbooker.ui.theme.Background
 import com.example.scrollbooker.ui.theme.Divider
 import com.example.scrollbooker.ui.theme.bodyMedium
@@ -75,7 +81,7 @@ private fun Slot.toCalendarEventsSlot(): CalendarEventsSlot = CalendarEventsSlot
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun AddOwnClientAppointmentScreen(
+fun AddOwnClientScreen(
     myCalendarViewModel: MyCalendarViewModel,
     viewModel: AddOwnClientViewModel,
     onBack: () -> Unit,
@@ -103,14 +109,9 @@ fun AddOwnClientAppointmentScreen(
 
     var previousIsSaving by rememberSaveable { mutableStateOf(false) }
 
-    var showSelectSheet by rememberSaveable { mutableStateOf(false) }
-    var showAddSheet by rememberSaveable { mutableStateOf(false) }
-    var showServicesSheet by rememberSaveable { mutableStateOf(false) }
-    var showDateTimePicker by rememberSaveable { mutableStateOf(false) }
-    val selectSheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
-    val addSheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
+    var currentSheet by remember { mutableStateOf<AddOwnClientSheet?>(null) }
+    val sheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
     val servicesSheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
-    val dateTimeSheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
 
     LaunchedEffect(Unit) {
         viewModel.loadUserProducts()
@@ -149,9 +150,10 @@ fun AddOwnClientAppointmentScreen(
     }
 
     LaunchedEffect(selectedClient) {
-        if (selectedClient != null) {
-            showSelectSheet = false
-            showAddSheet = false
+        if (selectedClient != null &&
+            (currentSheet == AddOwnClientSheet.SelectClient || currentSheet == AddOwnClientSheet.AddClient)
+        ) {
+            currentSheet = null
         }
     }
 
@@ -173,12 +175,12 @@ fun AddOwnClientAppointmentScreen(
 
     fun handleSlotSelected(pickedSlot: Slot) {
         myCalendarViewModel.setSelectedOwnClient(pickedSlot.toCalendarEventsSlot())
-        showDateTimePicker = false
+        currentSheet = null
     }
 
     fun openDateTimePicker() {
         slot?.startDateLocale?.toLocalDate()?.let { viewModel.selectCalendarDay(it) }
-        showDateTimePicker = true
+        currentSheet = AddOwnClientSheet.DateTime
     }
 
     val totalDurationMinutes = linkedProducts.sumOf { it.startingOffering.duration }
@@ -186,8 +188,6 @@ fun AddOwnClientAppointmentScreen(
         acc + product.startingOffering.priceWithDiscount
     }
 
-    // FE validation mirrors the backend contract: a real client, at least one service (to derive
-    // duration/product_variants) and a confirmed slot are all mandatory before Save is enabled.
     val isFormValid = selectedClient != null && linkedProducts.isNotEmpty() && slot != null
 
     fun buildOwnClientRequest(): AppointmentOwnClientCreate? {
@@ -210,51 +210,62 @@ fun AddOwnClientAppointmentScreen(
         )
     }
 
-    if (showSelectSheet) {
-        BusinessClientSelectSheet(
-            sheetState = selectSheetState,
-            query = clientQuery,
-            searchState = clientSearchState,
-            selectedClient = selectedClient,
-            onQueryChange = viewModel::handleSearch,
-            onConfirm = { client -> viewModel.selectClient(client) },
-            onDismiss = { showSelectSheet = false }
-        )
+    if (currentSheet == AddOwnClientSheet.SelectClient ||
+        currentSheet == AddOwnClientSheet.AddClient ||
+        currentSheet == AddOwnClientSheet.DateTime
+    ) {
+        ModalBottomSheet(
+            modifier = Modifier
+                .fillMaxSize()
+                .statusBarsPadding(),
+            sheetState = sheetState,
+            onDismissRequest = { currentSheet = null },
+            containerColor = Background,
+            dragHandle = {}
+        ) {
+            when (currentSheet) {
+                AddOwnClientSheet.SelectClient -> BusinessClientSelectSheet(
+                    query = clientQuery,
+                    searchState = clientSearchState,
+                    selectedClient = selectedClient,
+                    onQueryChange = viewModel::handleSearch,
+                    onConfirm = { client -> viewModel.selectClient(client) },
+                    onDismiss = { currentSheet = null }
+                )
+
+                AddOwnClientSheet.AddClient -> AddBusinessClientSheet(
+                    isSaving = isCreatingClient,
+                    onSave = { fullname, phone -> viewModel.createClient(fullname, phone) },
+                    onDismiss = { currentSheet = null }
+                )
+
+                AddOwnClientSheet.DateTime -> DateTimePickerSheet(
+                    sheetState = sheetState,
+                    calendarHeaderState = calendarHeaderState,
+                    selectedDay = selectedCalendarDay,
+                    daySlots = daySlots,
+                    startOnSlotsStep = slot != null,
+                    initialPendingSlotUtc = slot?.startDateUtc,
+                    onDayClick = viewModel::selectCalendarDay,
+                    onConfirm = ::handleSlotSelected,
+                    onDismiss = { currentSheet = null }
+                )
+
+                else -> Unit
+            }
+        }
     }
 
-    if (showAddSheet) {
-        AddBusinessClientSheet(
-            sheetState = addSheetState,
-            isSaving = isCreatingClient,
-            onSave = { fullname, phone -> viewModel.createClient(fullname, phone) },
-            onDismiss = { showAddSheet = false }
-        )
-    }
-
-    if (showServicesSheet) {
+    if (currentSheet == AddOwnClientSheet.Services) {
         UserProductsSheet(
             sheetState = servicesSheetState,
             linkedProducts = linkedProducts,
             userProducts = userProducts,
             onConfirmSelection = { products ->
                 viewModel.setLinkedProducts(products)
-                showServicesSheet = false
+                currentSheet = null
             },
-            onClose = { showServicesSheet = false }
-        )
-    }
-
-    if (showDateTimePicker) {
-        DateTimePickerSheet(
-            sheetState = dateTimeSheetState,
-            calendarHeaderState = calendarHeaderState,
-            selectedDay = selectedCalendarDay,
-            daySlots = daySlots,
-            startOnSlotsStep = slot != null,
-            initialPendingSlotUtc = slot?.startDateUtc,
-            onDayClick = viewModel::selectCalendarDay,
-            onConfirm = ::handleSlotSelected,
-            onDismiss = { showDateTimePicker = false }
+            onClose = { currentSheet = null }
         )
     }
 
@@ -320,11 +331,11 @@ fun AddOwnClientAppointmentScreen(
         ) {
             AddOwnClientForm(
                 selectedClient = selectedClient,
-                onAddNewClient = { showAddSheet = true },
-                onSelectClient = { showSelectSheet = true },
+                onAddNewClient = { currentSheet = AddOwnClientSheet.AddClient },
+                onSelectClient = { currentSheet = AddOwnClientSheet.SelectClient },
                 onRemoveClient = { viewModel.selectClient(null) },
                 linkedProducts = linkedProducts,
-                onOpenServicesSheet = { showServicesSheet = true },
+                onOpenServicesSheet = { currentSheet = AddOwnClientSheet.Services },
                 onRemoveProduct = { viewModel.removeLinkedProduct(it) }
             )
         }
