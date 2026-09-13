@@ -107,6 +107,8 @@
     <string name="scheduleShort">Program</string>
     <string name="employees">Angajați</string>
     <string name="employee">Angajat</string>
+    <string name="employeeHasAvailability">Are locuri libere</string>
+    <string name="employeeFullyBooked">Nu mai are locuri libere</string>
     <string name="employmentRequests">Cereri de angajare</string>
     <string name="selectOneService">Selectează un serviciu</string>
     <string name="editService">Editează serviciul</string>

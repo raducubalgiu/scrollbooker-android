@@ -15,6 +15,7 @@ import com.example.scrollbooker.entity.booking.availability.domain.model.Calenda
 import com.example.scrollbooker.entity.booking.availability.domain.model.CalendarEventsSlot
 import com.example.scrollbooker.entity.booking.availability.domain.model.blockedStartLocale
 import com.example.scrollbooker.entity.booking.availability.domain.useCase.GetCalendarAvailableDaysUseCase
+import com.example.scrollbooker.entity.booking.availability.domain.useCase.GetEmployeesAvailabilityForDayUseCase
 import com.example.scrollbooker.entity.booking.availability.domain.useCase.GetUserCalendarEventsUseCase
 import com.example.scrollbooker.entity.booking.employee.domain.model.Employee
 import com.example.scrollbooker.entity.booking.employee.domain.useCase.GetAllEmployeesByOwnerUseCase
@@ -72,6 +73,7 @@ class MyCalendarViewModel @Inject constructor(
     private val createOwnClientAppointmentUseCase: CreateOwnClientAppointmentUseCase,
     private val createLastMinuteAppointmentUseCase: CreateLastMinuteAppointmentUseCase,
     private val getAllEmployeesByOwnerUseCase: GetAllEmployeesByOwnerUseCase,
+    private val getEmployeesAvailabilityForDayUseCase: GetEmployeesAvailabilityForDayUseCase,
     private val getUserCalendarSettingsUseCase: GetUserCalendarSettingsUseCase,
     private val updateSlotDurationUseCase: UpdateSlotDurationUseCase,
     private val updateAppointmentGapUseCase: UpdateAppointmentGapUseCase
@@ -105,6 +107,11 @@ class MyCalendarViewModel @Inject constructor(
 
     private val _isRefreshingCurrentDay = MutableStateFlow(false)
     val isRefreshingCurrentDay: StateFlow<Boolean> = _isRefreshingCurrentDay.asStateFlow()
+
+    private val _employeesAvailability = MutableStateFlow<Map<Int, Boolean>>(emptyMap())
+    val employeesAvailability: StateFlow<Map<Int, Boolean>> = _employeesAvailability.asStateFlow()
+
+    private var lastAvailabilityKey: Pair<LocalDate, Int>? = null
 
     private val _events = MutableSharedFlow<SnackBarUiEvent.Show>(
         extraBufferCapacity = 1,
@@ -251,6 +258,25 @@ class MyCalendarViewModel @Inject constructor(
 
     fun selectEmployee(employeeId: Int) {
         _selectedEmployeeId.value = employeeId
+    }
+
+    fun loadEmployeesAvailability() {
+        val day = _selectedDay.value ?: return
+        val duration = _slotDuration.value
+        val key = day to duration
+
+        if (lastAvailabilityKey == key) return
+
+        viewModelScope.launch {
+            getEmployeesAvailabilityForDayUseCase(day.toString(), duration)
+                .onSuccess { list ->
+                    lastAvailabilityKey = key
+                    _employeesAvailability.value = list.associate { it.employeeId to it.hasAvailability }
+                }
+                .onFailure { e ->
+                    Timber.tag("EmployeesAvailability").e(e, "ERROR: on fetching employees availability")
+                }
+        }
     }
 
     private val employeeIdFlow: Flow<Int?> = combine(

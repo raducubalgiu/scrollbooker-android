@@ -152,6 +152,14 @@ data class CalendarEventsInfo(
     val totalDiscount: BigDecimal,
     val totalDuration: Int,
     val paymentCurrency: Currency,
+    val products: List<CalendarEventsProduct> = emptyList(),
+)
+
+data class CalendarEventsProduct(
+    val productName: String,
+    val productFullPrice: BigDecimal,
+    val productPriceWithDiscount: BigDecimal,
+    val productDiscount: BigDecimal,
 )
 
 fun CalendarEvents.hasDayFreeSlots(): Boolean {

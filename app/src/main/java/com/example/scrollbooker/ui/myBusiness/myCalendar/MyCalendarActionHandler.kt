@@ -33,7 +33,10 @@ fun handleMyCalendarAction(
 
         MyCalendarAction.OnBlockToggle -> viewModel.toggleBlocking()
 
-        MyCalendarAction.OpenEmployeeSheet -> sheets.open(MyCalendarSheet.Employee)
+        MyCalendarAction.OpenEmployeeSheet -> {
+            viewModel.loadEmployeesAvailability()
+            sheets.open(MyCalendarSheet.Employee)
+        }
 
         MyCalendarAction.DayRefresh -> scope.launch { viewModel.refreshCurrentDay() }
     }

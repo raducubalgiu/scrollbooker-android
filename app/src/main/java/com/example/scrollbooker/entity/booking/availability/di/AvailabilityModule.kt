@@ -5,6 +5,7 @@ import com.example.scrollbooker.entity.booking.availability.data.remote.Availabi
 import com.example.scrollbooker.entity.booking.availability.data.repository.AvailabilityRepositoryImpl
 import com.example.scrollbooker.entity.booking.availability.domain.repository.AvailabilityRepository
 import com.example.scrollbooker.entity.booking.availability.domain.useCase.GetCalendarAvailableDaysUseCase
+import com.example.scrollbooker.entity.booking.availability.domain.useCase.GetEmployeesAvailabilityForDayUseCase
 import com.example.scrollbooker.entity.booking.availability.domain.useCase.GetUserAvailableTimeslotsUseCase
 import com.example.scrollbooker.entity.booking.availability.domain.useCase.GetUserCalendarEventsUseCase
 import dagger.Module
@@ -60,4 +61,11 @@ object AvailabilityModule {
         return GetUserCalendarEventsUseCase(repository)
     }
 
+    @Provides
+    @Singleton
+    fun provideGetEmployeesAvailabilityForDayUseCase(
+        repository: AvailabilityRepository,
+    ): GetEmployeesAvailabilityForDayUseCase {
+        return GetEmployeesAvailabilityForDayUseCase(repository)
+    }
 }

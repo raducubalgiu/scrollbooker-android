@@ -54,6 +54,7 @@ fun MyCalendarScreen(
     val employees by viewModel.employees.collectAsStateWithLifecycle()
     val selectedEmployeeId by viewModel.selectedEmployeeId.collectAsStateWithLifecycle()
     val selectedEmployee by viewModel.selectedEmployee.collectAsStateWithLifecycle()
+    val employeesAvailability by viewModel.employeesAvailability.collectAsStateWithLifecycle()
     val hasEmployees = (employees as? FeatureState.Success)?.data?.isNotEmpty() == true
     val ownFullName by viewModel.ownFullName.collectAsStateWithLifecycle()
     val ownAvatar by viewModel.ownAvatar.collectAsStateWithLifecycle()
@@ -95,6 +96,7 @@ fun MyCalendarScreen(
         },
         employees = employees,
         selectedEmployeeId = selectedEmployeeId,
+        employeesAvailability = employeesAvailability,
         onEmployeeAction = { action ->
             when(action) {
                 is EmployeeSheetAction.Select -> {

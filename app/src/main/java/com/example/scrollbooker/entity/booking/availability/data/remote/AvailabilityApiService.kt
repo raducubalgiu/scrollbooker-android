@@ -36,4 +36,10 @@ interface AvailabilityApiService {
         @Query("day") day: String,
         @Query("slot_duration") slotDuration: Int
     ): CalendarEventsBusinessResponseDto
+
+    @GET("availability/employees/day-availability")
+    suspend fun getEmployeesAvailabilityForDay(
+        @Query("day") day: String,
+        @Query("slot_duration") slotDuration: Int
+    ): List<EmployeeAvailabilityDto>
 }

@@ -4,6 +4,7 @@ import com.example.scrollbooker.entity.booking.availability.data.remote.Availabi
 import com.example.scrollbooker.entity.booking.availability.domain.model.AvailableDay
 import com.example.scrollbooker.entity.booking.availability.domain.model.CalendarEvents
 import com.example.scrollbooker.entity.booking.availability.domain.model.CalendarEventsBusinessDay
+import com.example.scrollbooker.entity.booking.availability.domain.model.EmployeeAvailability
 import com.example.scrollbooker.entity.booking.availability.domain.repository.AvailabilityRepository
 import javax.inject.Inject
 
@@ -65,5 +66,15 @@ class AvailabilityRepositoryImpl @Inject constructor(
             day = day,
             slotDuration = slotDuration
         ).toDomain()
+    }
+
+    override suspend fun getEmployeesAvailabilityForDay(
+        day: String,
+        slotDuration: Int
+    ): List<EmployeeAvailability> {
+        return apiService.getEmployeesAvailabilityForDay(
+            day = day,
+            slotDuration = slotDuration
+        ).map { it.toDomain() }
     }
 }

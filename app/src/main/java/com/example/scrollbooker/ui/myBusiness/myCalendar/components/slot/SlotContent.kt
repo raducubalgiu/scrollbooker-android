@@ -14,7 +14,6 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
-import androidx.compose.material3.Checkbox
 import androidx.compose.material3.Icon
 import androidx.compose.material3.ShapeDefaults
 import androidx.compose.material3.Text
@@ -130,7 +129,7 @@ fun SlotContent(
                                 )
                             }
 
-                            blockUiState.isBlocking -> null
+                            blockUiState.isBlocking && slot.isFreeSlot() -> null
 
                             slot.isBooked -> SlotIsBooked(slot, maxLines)
 
@@ -148,12 +147,17 @@ fun SlotContent(
                             }
 
                             else -> {
+                                // Scales with the slot's actual height instead of a fixed size -
+                                // a short-duration slot has little room, and a 40.dp icon would
+                                // overflow/clip awkwardly against it.
+                                val iconSize = (height * 0.6f).coerceIn(16.dp, 28.dp)
+
                                 Box(
                                     modifier = Modifier.fillMaxSize(),
                                     contentAlignment = Alignment.Center
                                 ) {
                                     Icon(
-                                        modifier = Modifier.size(40.dp),
+                                        modifier = Modifier.size(iconSize),
                                         painter = painterResource(R.drawable.ic_circle_plus_outline),
                                         contentDescription = null,
                                         tint = Divider

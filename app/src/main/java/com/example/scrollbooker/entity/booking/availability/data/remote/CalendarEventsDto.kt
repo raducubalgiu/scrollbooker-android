@@ -87,4 +87,20 @@ data class CalendarEventsInfoDto(
 
     @SerializedName("payment_currency")
     val paymentCurrency: Currency,
+
+    val products: List<CalendarEventsProductDto> = emptyList(),
+)
+
+data class CalendarEventsProductDto(
+    @SerializedName("product_name")
+    val productName: String,
+
+    @SerializedName("product_full_price")
+    val productFullPrice: BigDecimal,
+
+    @SerializedName("product_price_with_discount")
+    val productPriceWithDiscount: BigDecimal,
+
+    @SerializedName("product_discount")
+    val productDiscount: BigDecimal,
 )

@@ -23,6 +23,7 @@ fun MyCalendarSheets(
     onBlockAction: (BlockSlotsAction) -> Unit,
     employees: FeatureState<List<Employee>>,
     selectedEmployeeId: Int?,
+    employeesAvailability: Map<Int, Boolean>,
     onEmployeeAction: (EmployeeSheetAction) -> Unit,
 ) {
     val current = controller.currentSheet ?: return
@@ -43,6 +44,7 @@ fun MyCalendarSheets(
             MyCalendarSheet.Employee -> EmployeeSelectSheet(
                 employees = employees,
                 selectedEmployeeId = selectedEmployeeId,
+                employeesAvailability = employeesAvailability,
                 onAction = onEmployeeAction
             )
         }

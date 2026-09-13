@@ -9,6 +9,7 @@ import com.example.scrollbooker.entity.booking.availability.data.remote.Calendar
 import com.example.scrollbooker.entity.booking.availability.data.remote.CalendarEventsDayDto
 import com.example.scrollbooker.entity.booking.availability.data.remote.CalendarEventsDto
 import com.example.scrollbooker.entity.booking.availability.data.remote.CalendarEventsInfoDto
+import com.example.scrollbooker.entity.booking.availability.data.remote.CalendarEventsProductDto
 import com.example.scrollbooker.entity.booking.availability.data.remote.CalendarEventsSlotDto
 import com.example.scrollbooker.entity.booking.availability.domain.model.CalendarEvents
 import com.example.scrollbooker.entity.booking.availability.domain.model.CalendarEventsBusinessDay
@@ -16,6 +17,7 @@ import com.example.scrollbooker.entity.booking.availability.domain.model.Calenda
 import com.example.scrollbooker.entity.booking.availability.domain.model.CalendarEventsCustomer
 import com.example.scrollbooker.entity.booking.availability.domain.model.CalendarEventsDay
 import com.example.scrollbooker.entity.booking.availability.domain.model.CalendarEventsInfo
+import com.example.scrollbooker.entity.booking.availability.domain.model.CalendarEventsProduct
 import com.example.scrollbooker.entity.booking.availability.domain.model.CalendarEventsSlot
 
 fun CalendarEventsDto.toDomain(): CalendarEvents {
@@ -87,6 +89,16 @@ fun CalendarEventsInfoDto.toDomain(): CalendarEventsInfo {
         totalPriceWithDiscount = totalPriceWithDiscount,
         totalDiscount = totalDiscount,
         totalDuration = totalDuration,
-        paymentCurrency = paymentCurrency
+        paymentCurrency = paymentCurrency,
+        products = products.map { it.toDomain() }
+    )
+}
+
+fun CalendarEventsProductDto.toDomain(): CalendarEventsProduct {
+    return CalendarEventsProduct(
+        productName = productName,
+        productFullPrice = productFullPrice,
+        productPriceWithDiscount = productPriceWithDiscount,
+        productDiscount = productDiscount
     )
 }
