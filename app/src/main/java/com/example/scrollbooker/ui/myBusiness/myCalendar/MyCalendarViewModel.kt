@@ -42,6 +42,7 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.distinctUntilChanged
+import kotlinx.coroutines.flow.filterIsInstance
 import kotlinx.coroutines.flow.filterNotNull
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.flatMapLatest
@@ -279,19 +280,33 @@ class MyCalendarViewModel @Inject constructor(
         }
     }
 
+    private sealed class EmployeeIdResolution {
+        object Pending : EmployeeIdResolution()
+        data class Resolved(val employeeId: Int?) : EmployeeIdResolution()
+    }
+
+    // Waits for `employees` to actually resolve before emitting, instead of racing the
+    // separate init{} block that auto-selects the first employee into _selectedEmployeeId.
+    // Without this, the very first emission (hasEmployees=true, selectedEmployeeId still null
+    // because employees hasn't loaded yet) sends employeeId=null to the backend, which 422s.
     private val employeeIdFlow: Flow<Int?> = combine(
         businessOwnerIdFlow,
         userIdFlow,
         hasEmployeesFlow,
+        employees,
         _selectedEmployeeId
-    ) { businessOwnerId, userId, hasEmployees, selectedEmployeeId ->
+    ) { businessOwnerId, userId, hasEmployees, employeesState, selectedEmployeeId ->
         when {
-            businessOwnerId == null || userId == null -> null
-            businessOwnerId != userId -> userId
-            hasEmployees -> selectedEmployeeId
-            else -> null
+            businessOwnerId == null || userId == null -> EmployeeIdResolution.Pending
+            businessOwnerId != userId -> EmployeeIdResolution.Resolved(userId)
+            !hasEmployees -> EmployeeIdResolution.Resolved(null)
+            employeesState !is FeatureState.Success -> EmployeeIdResolution.Pending
+            else -> EmployeeIdResolution.Resolved(selectedEmployeeId ?: employeesState.data.firstOrNull()?.id)
         }
-    }.distinctUntilChanged()
+    }
+        .filterIsInstance<EmployeeIdResolution.Resolved>()
+        .map { it.employeeId }
+        .distinctUntilChanged()
 
     private val dateFmt = DateTimeFormatter.ISO_LOCAL_DATE
     private val cache = ConcurrentHashMap<String, FeatureState<CalendarEvents>>()
