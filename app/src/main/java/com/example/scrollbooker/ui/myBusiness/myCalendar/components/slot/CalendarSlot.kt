@@ -64,7 +64,8 @@ fun CalendarSlot(
                 slot = slot,
                 height = visualHeight,
                 isBefore = isBefore,
-                lineColor = style.lineColor
+                lineColor = style.lineColor,
+                onSlotClick = onSlotClick
             )
         }
     }

@@ -32,7 +32,6 @@ import com.example.scrollbooker.ui.myBusiness.myCalendar.components.header.MyCal
 import com.example.scrollbooker.components.customized.calendar.CalendarHeaderState
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
-import org.threeten.bp.LocalTime
 
 @Composable
 fun MyCalendarScaffoldContent(
@@ -40,7 +39,6 @@ fun MyCalendarScaffoldContent(
     calendarEvents: FeatureState<CalendarEvents>,
     daySchedule: Schedule?,
     slotDuration: Int,
-    businessDayWindow: Pair<LocalTime, LocalTime>?,
     blockUiState: BlockUiState,
     isRefreshing: Boolean,
     hasEmployees: Boolean,
@@ -139,7 +137,6 @@ fun MyCalendarScaffoldContent(
                     calendarEvents = calendarEvents,
                     daySchedule = daySchedule,
                     slotDuration = slotDuration,
-                    businessDayWindow = businessDayWindow,
                     blockUiState = blockUiState,
                     isRefreshing = isRefreshing,
                     onSlotClick = { onAction(SlotClick(it)) },

@@ -42,7 +42,6 @@ fun MyCalendarScreen(
     val daySchedule by viewModel.daySchedule.collectAsStateWithLifecycle()
     val selectedDay by viewModel.selectedDay.collectAsStateWithLifecycle()
     val slotDuration by viewModel.slotDuration.collectAsStateWithLifecycle()
-    val businessDayWindow by viewModel.businessDayWindow.collectAsStateWithLifecycle()
 
     val isBlocking by viewModel.isBlocking.collectAsStateWithLifecycle()
     val defaultBlockedLocalDates by viewModel.defaultBlockedStartLocale.collectAsStateWithLifecycle()
@@ -137,7 +136,6 @@ fun MyCalendarScreen(
                     calendarEvents = calendarEvents,
                     daySchedule = daySchedule,
                     slotDuration = slotDuration,
-                    businessDayWindow = businessDayWindow,
                     blockUiState = blockUiState,
                     isRefreshing = isRefreshingCurrentDay,
                     hasEmployees = hasEmployees,

@@ -14,13 +14,15 @@ import com.example.scrollbooker.entity.booking.appointment.domain.useCase.Create
 import com.example.scrollbooker.entity.booking.availability.domain.model.CalendarEvents
 import com.example.scrollbooker.entity.booking.availability.domain.model.CalendarEventsSlot
 import com.example.scrollbooker.entity.booking.availability.domain.model.blockedStartLocale
-import com.example.scrollbooker.entity.booking.availability.domain.useCase.GetBusinessEmployeesCalendarEventsByDayUseCase
 import com.example.scrollbooker.entity.booking.availability.domain.useCase.GetCalendarAvailableDaysUseCase
 import com.example.scrollbooker.entity.booking.availability.domain.useCase.GetUserCalendarEventsUseCase
 import com.example.scrollbooker.entity.booking.employee.domain.model.Employee
 import com.example.scrollbooker.entity.booking.employee.domain.useCase.GetAllEmployeesByOwnerUseCase
 import com.example.scrollbooker.entity.booking.schedule.domain.model.Schedule
 import com.example.scrollbooker.entity.booking.schedule.domain.useCase.GetSchedulesByUserIdUseCase
+import com.example.scrollbooker.entity.booking.userCalendarSettings.domain.useCase.GetUserCalendarSettingsUseCase
+import com.example.scrollbooker.entity.booking.userCalendarSettings.domain.useCase.UpdateAppointmentGapUseCase
+import com.example.scrollbooker.entity.booking.userCalendarSettings.domain.useCase.UpdateSlotDurationUseCase
 import com.example.scrollbooker.core.util.runSuspendCatching
 import com.example.scrollbooker.store.AuthDataStore
 import com.example.scrollbooker.components.customized.calendar.BaseCalendarViewModel
@@ -53,7 +55,6 @@ import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import org.threeten.bp.LocalDate
 import org.threeten.bp.LocalDateTime
-import org.threeten.bp.LocalTime
 import org.threeten.bp.format.DateTimeFormatter
 import org.threeten.bp.format.TextStyle
 import timber.log.Timber
@@ -71,7 +72,9 @@ class MyCalendarViewModel @Inject constructor(
     private val createOwnClientAppointmentUseCase: CreateOwnClientAppointmentUseCase,
     private val createLastMinuteAppointmentUseCase: CreateLastMinuteAppointmentUseCase,
     private val getAllEmployeesByOwnerUseCase: GetAllEmployeesByOwnerUseCase,
-    private val getBusinessEmployeesCalendarEventsByDayUseCase: GetBusinessEmployeesCalendarEventsByDayUseCase
+    private val getUserCalendarSettingsUseCase: GetUserCalendarSettingsUseCase,
+    private val updateSlotDurationUseCase: UpdateSlotDurationUseCase,
+    private val updateAppointmentGapUseCase: UpdateAppointmentGapUseCase
 ): BaseCalendarViewModel(getCalendarAvailableDaysUseCase) {
     private val _selectedDay = MutableStateFlow<LocalDate?>(LocalDate.now())
     val selectedDay: StateFlow<LocalDate?> = _selectedDay.asStateFlow()
@@ -83,7 +86,13 @@ class MyCalendarViewModel @Inject constructor(
     val selectedStartLocale: StateFlow<Set<LocalDateTime>> = _selectedStartLocale.asStateFlow()
 
     private val _slotDuration = MutableStateFlow<Int>(60)
-    val slotDuration: MutableStateFlow<Int> = _slotDuration
+    val slotDuration: StateFlow<Int> = _slotDuration.asStateFlow()
+
+    private val _appointmentGapMinutes = MutableStateFlow(0)
+    val appointmentGapMinutes: StateFlow<Int> = _appointmentGapMinutes.asStateFlow()
+
+    private val _isSavingCalendarSettings = MutableStateFlow(false)
+    val isSavingCalendarSettings: StateFlow<Boolean> = _isSavingCalendarSettings.asStateFlow()
 
     private val _selectedOwnClient = MutableStateFlow<CalendarEventsSlot?>(null)
     val selectedOwnClient: StateFlow<CalendarEventsSlot?> = _selectedOwnClient.asStateFlow()
@@ -94,8 +103,6 @@ class MyCalendarViewModel @Inject constructor(
     private val _isSaving = MutableStateFlow<Boolean>(false)
     val isSaving: StateFlow<Boolean> = _isSaving
 
-    // True only while calendarEvents is silently re-fetching a day that already has data
-    // (stale refresh) - drives the pull-to-refresh spinner without forcing a full loading state.
     private val _isRefreshingCurrentDay = MutableStateFlow(false)
     val isRefreshingCurrentDay: StateFlow<Boolean> = _isRefreshingCurrentDay.asStateFlow()
 
@@ -118,8 +125,6 @@ class MyCalendarViewModel @Inject constructor(
         .map { it == true }
         .distinctUntilChanged()
 
-    // Own identity (not the currently viewed employee's) - used by the header's employee slot
-    // when there's no one else to switch to (solo employee, or business without employees).
     val ownFullName: StateFlow<String?> = authDataStore.getUserFullName()
         .distinctUntilChanged()
         .stateIn(viewModelScope, SharingStarted.Eagerly, null)
@@ -127,12 +132,17 @@ class MyCalendarViewModel @Inject constructor(
         .distinctUntilChanged()
         .stateIn(viewModelScope, SharingStarted.Eagerly, null)
 
-    // Whether the logged-in user IS the business owner (as opposed to being an employee
-    // themselves) - only an owner with employees needs to pick which employee's calendar to view.
     private val isOwnerFlow: Flow<Boolean> = combine(
         businessOwnerIdFlow.filterNotNull(),
         userIdFlow.filterNotNull()
     ) { businessOwnerId, userId -> businessOwnerId == userId }.distinctUntilChanged()
+
+    val canSetAppointmentGap: StateFlow<Boolean> = combine(
+        isOwnerFlow,
+        hasEmployeesFlow
+    ) { isOwner, hasEmployees -> !(isOwner && hasEmployees) }
+        .distinctUntilChanged()
+        .stateIn(viewModelScope, SharingStarted.Eagerly, true)
 
     @OptIn(ExperimentalCoroutinesApi::class)
     val employees: StateFlow<FeatureState<List<Employee>>> = combine(
@@ -188,6 +198,55 @@ class MyCalendarViewModel @Inject constructor(
                 }
             }
             .launchIn(viewModelScope)
+    }
+
+    init {
+        viewModelScope.launch {
+            val ownUserId = userIdFlow.filterNotNull().first()
+
+            getUserCalendarSettingsUseCase(ownUserId)
+                .onSuccess { settings ->
+                    _slotDuration.value = settings.slotDurationMinutes
+                    _appointmentGapMinutes.value = settings.appointmentGapMinutes
+                }
+                .onFailure { e ->
+                    Timber.tag("MyCalendarSettings").e(e, "ERROR: on fetching user calendar settings")
+                }
+        }
+    }
+
+    fun saveSlotDuration(minutes: Int) {
+        viewModelScope.launch {
+            _isSavingCalendarSettings.value = true
+
+            updateSlotDurationUseCase(minutes)
+                .onSuccess { settings ->
+                    _slotDuration.value = settings.slotDurationMinutes
+                    _isSavingCalendarSettings.value = false
+                }
+                .onFailure { e ->
+                    Timber.tag("MyCalendarSettings").e(e, "ERROR: on updating slot duration")
+                    _isSavingCalendarSettings.value = false
+                    _events.tryEmit(SnackBarUiEvent.somethingWentWrong())
+                }
+        }
+    }
+
+    fun saveAppointmentGap(minutes: Int) {
+        viewModelScope.launch {
+            _isSavingCalendarSettings.value = true
+
+            updateAppointmentGapUseCase(minutes)
+                .onSuccess { settings ->
+                    _appointmentGapMinutes.value = settings.appointmentGapMinutes
+                    _isSavingCalendarSettings.value = false
+                }
+                .onFailure { e ->
+                    Timber.tag("MyCalendarSettings").e(e, "ERROR: on updating appointment gap")
+                    _isSavingCalendarSettings.value = false
+                    _events.tryEmit(SnackBarUiEvent.somethingWentWrong())
+                }
+        }
     }
 
     fun selectEmployee(employeeId: Int) {
@@ -283,40 +342,6 @@ class MyCalendarViewModel @Inject constructor(
         val dayName = day.dayOfWeek.getDisplayName(TextStyle.FULL, Locale.ENGLISH)
         allSchedules.firstOrNull { it.dayOfWeek == dayName }
     }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5_000), null)
-
-    @OptIn(ExperimentalCoroutinesApi::class)
-    val businessDayWindow: StateFlow<Pair<LocalTime, LocalTime>?> = combine(
-        hasEmployeesFlow,
-        selectedDay.filterNotNull(),
-        slotDuration
-    ) { hasEmployees, day, duration -> Triple(hasEmployees, day, duration) }
-        .distinctUntilChanged()
-        .flatMapLatest { (hasEmployees, day, duration) ->
-            if (!hasEmployees) {
-                flowOf<Pair<LocalTime, LocalTime>?>(null)
-            } else {
-                flow {
-                    val result = getBusinessEmployeesCalendarEventsByDayUseCase(day.toString(), duration)
-
-                    val window = result.fold(
-                        onSuccess = { businessDay ->
-                            val allSlots = businessDay.employees.flatMap { it.slots }
-                            val start = allSlots.mapNotNull { it.startDateLocale?.toLocalTime() }.minOrNull()
-                            val end = allSlots.mapNotNull { it.endDateLocale?.toLocalTime() }.maxOrNull()
-                            if (start != null && end != null) start to end else null
-                        },
-                        onFailure = { e ->
-                            Timber.tag("Calendar").e("ERROR: on Fetching Business Employees Calendar Events $e")
-                            null
-                        }
-                    )
-
-                    emit(window)
-                }
-            }
-        }
-        .catch { emit(null) }
-        .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5_000), null)
 
     @OptIn(ExperimentalCoroutinesApi::class)
     val calendarEvents: StateFlow<FeatureState<CalendarEvents>> =
@@ -424,10 +449,6 @@ class MyCalendarViewModel @Inject constructor(
         _selectedDay.value = day
     }
 
-    fun setSlotDuration(duration: Int) {
-        _slotDuration.value = duration
-    }
-
     suspend fun refreshCurrentDay() {
         val context = calendarContextFlow.first()
         val day = selectedDay.value ?: return
@@ -485,9 +506,6 @@ class MyCalendarViewModel @Inject constructor(
         viewModelScope.launch {
             _isSaving.value = true
 
-            // Must target whichever calendar is actually displayed (the selected employee, when
-            // the owner has employees), not the raw auth user - the backend checks
-            // _is_slot_booked against exactly this id per slot ("Provider ocupat" otherwise).
             val userId = calendarTargetUserIdFlow.first() ?: run {
                 _isSaving.value = false
                 return@launch

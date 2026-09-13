@@ -4,7 +4,6 @@ import com.example.scrollbooker.BuildConfig
 import com.example.scrollbooker.entity.booking.availability.data.remote.AvailabilityApiService
 import com.example.scrollbooker.entity.booking.availability.data.repository.AvailabilityRepositoryImpl
 import com.example.scrollbooker.entity.booking.availability.domain.repository.AvailabilityRepository
-import com.example.scrollbooker.entity.booking.availability.domain.useCase.GetBusinessEmployeesCalendarEventsByDayUseCase
 import com.example.scrollbooker.entity.booking.availability.domain.useCase.GetCalendarAvailableDaysUseCase
 import com.example.scrollbooker.entity.booking.availability.domain.useCase.GetUserAvailableTimeslotsUseCase
 import com.example.scrollbooker.entity.booking.availability.domain.useCase.GetUserCalendarEventsUseCase
@@ -61,11 +60,4 @@ object AvailabilityModule {
         return GetUserCalendarEventsUseCase(repository)
     }
 
-    @Provides
-    @Singleton
-    fun provideGetBusinessEmployeesCalendarEventsByDayUseCase(
-        repository: AvailabilityRepository,
-    ): GetBusinessEmployeesCalendarEventsByDayUseCase {
-        return GetBusinessEmployeesCalendarEventsByDayUseCase(repository)
-    }
 }

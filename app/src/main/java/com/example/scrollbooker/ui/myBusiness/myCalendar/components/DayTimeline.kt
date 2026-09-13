@@ -1,10 +1,10 @@
 package com.example.scrollbooker.ui.myBusiness.myCalendar.components
+import androidx.compose.foundation.ScrollState
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
@@ -15,7 +15,6 @@ import com.example.scrollbooker.entity.booking.availability.domain.model.Calenda
 import com.example.scrollbooker.entity.booking.availability.domain.model.SlotUiStyle
 import com.example.scrollbooker.ui.myBusiness.myCalendar.BlockUiState
 import com.example.scrollbooker.ui.myBusiness.myCalendar.components.slot.CalendarSlot
-import com.example.scrollbooker.ui.myBusiness.myCalendar.components.slot.ClosedRangeSlot
 import com.example.scrollbooker.ui.myBusiness.myCalendar.util.generateTicks
 import com.example.scrollbooker.ui.myBusiness.myCalendar.util.rememberHourHeight
 import org.threeten.bp.LocalTime
@@ -25,9 +24,9 @@ fun DayTimeline(
     dayStart: LocalTime,
     dayEnd: LocalTime,
     slots: List<CalendarEventsSlot>,
-    closedRanges: List<Pair<LocalTime, LocalTime>> = emptyList(),
     slotDuration: Int,
     blockUiState: BlockUiState,
+    scrollState: ScrollState,
     onStyleResolver: @Composable (CalendarEventsSlot) -> SlotUiStyle,
     onSlotClick: (CalendarEventsSlot) -> Unit,
 ) {
@@ -44,8 +43,6 @@ fun DayTimeline(
             stepMinutes = slotDuration
         )
     }
-
-    val scrollState = rememberScrollState()
 
     Row(
         modifier = Modifier
@@ -69,21 +66,6 @@ fun DayTimeline(
                 dayStart = dayStart,
                 hourHeight = hourHeight,
             )
-
-            closedRanges.forEach { (rangeStart, rangeEnd) ->
-                val startMinute = kotlin.math.max(0, minutesBetween(dayStart, maxOf(dayStart, rangeStart)))
-                val endMinute = kotlin.math.min(totalMinutes, minutesBetween(dayStart, minOf(dayEnd, rangeEnd)))
-
-                val durationMinutes = (endMinute - startMinute).coerceAtLeast(0)
-                if (durationMinutes == 0) return@forEach
-
-                val gap = 6.dp
-
-                ClosedRangeSlot(
-                    height = (dpPerMinute * durationMinutes) - gap,
-                    offsetY = (dpPerMinute * startMinute) + gap / 2
-                )
-            }
 
             slots.forEach { slot ->
                 val slotStart = slot.startDateLocale?.toLocalTime() ?: return@forEach

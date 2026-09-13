@@ -23,7 +23,9 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.example.scrollbooker.R
+import androidx.compose.ui.res.painterResource
 import com.example.scrollbooker.components.core.buttons.MainButton
+import com.example.scrollbooker.components.core.layout.EmptyScreen
 import com.example.scrollbooker.components.core.layout.ErrorScreen
 import com.example.scrollbooker.components.core.sheet.Sheet
 import com.example.scrollbooker.components.core.sheet.SheetHeader
@@ -93,30 +95,39 @@ fun ServicesSelectSheet(
                     is FeatureState.Loading -> ScheduleShimmer()
                     is FeatureState.Error -> ErrorScreen()
                     is FeatureState.Success -> {
-                        BookingProductsList(
-                            state = listState,
-                            serviceGroups = state.data.data,
-                            selectedBookingItems = localLinkedItems,
-                            onOpenProductDetail = { product ->
-                                selectedProduct = product
-                                scope.launch { detailSheetState.show() }
-                            },
-                            onSelect = { product ->
-                                val existing = localLinkedItems.find { it.productId == product.id }
+                        if (state.data.totalCount == 0) {
+                            EmptyScreen(
+                                modifier = Modifier.padding(top = 50.dp),
+                                arrangement = Arrangement.Top,
+                                message = stringResource(R.string.notFoundServices),
+                                icon = painterResource(R.drawable.ic_shopping_outline)
+                            )
+                        } else {
+                            BookingProductsList(
+                                state = listState,
+                                serviceGroups = state.data.data,
+                                selectedBookingItems = localLinkedItems,
+                                onOpenProductDetail = { product ->
+                                    selectedProduct = product
+                                    scope.launch { detailSheetState.show() }
+                                },
+                                onSelect = { product ->
+                                    val existing = localLinkedItems.find { it.productId == product.id }
 
-                                when {
-                                    existing != null -> localLinkedItems = localLinkedItems - existing
+                                    when {
+                                        existing != null -> localLinkedItems = localLinkedItems - existing
 
-                                    product.variants.size > 1 -> {
-                                        selectedProduct = product
-                                        scope.launch { detailSheetState.show() }
+                                        product.variants.size > 1 -> {
+                                            selectedProduct = product
+                                            scope.launch { detailSheetState.show() }
+                                        }
+
+                                        else -> localLinkedItems = localLinkedItems +
+                                            product.variants.first().toBookingItem(product)
                                     }
-
-                                    else -> localLinkedItems = localLinkedItems +
-                                        product.variants.first().toBookingItem(product)
                                 }
-                            }
-                        )
+                            )
+                        }
                     }
                 }
             }

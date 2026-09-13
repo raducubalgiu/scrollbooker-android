@@ -28,6 +28,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import com.example.scrollbooker.R
+import com.example.scrollbooker.components.core.inputs.RoundCheckbox
 import com.example.scrollbooker.core.util.Dimens.SpacingS
 import com.example.scrollbooker.entity.booking.availability.domain.model.BlockStatus
 import com.example.scrollbooker.entity.booking.availability.domain.model.CalendarEventsSlot
@@ -45,6 +46,7 @@ fun SlotContent(
     lineColor: Color,
     height: Dp,
     isBefore: Boolean,
+    onSlotClick: (CalendarEventsSlot) -> Unit,
 ) {
     val isCompact = height < 40.dp
     val isVeryCompact = height < 28.dp
@@ -97,11 +99,13 @@ fun SlotContent(
                         exit = fadeOut()
                     ) {
                         Box(modifier = Modifier.fillMaxWidth()) {
-                            Checkbox(
+                            RoundCheckbox(
                                 modifier = Modifier.align(Alignment.TopEnd),
                                 checked = isCheckboxChecked,
-                                enabled = isCheckboxEnabled,
-                                onCheckedChange = {},
+                                borderColor = if (isCheckboxChecked) Error else Color.Gray,
+                                fillColor = if (isCheckboxChecked) Error else Color.Transparent,
+                                checkmarkColor = Color.White,
+                                onCheckedChange = { onSlotClick(slot) },
                             )
                         }
                     }
