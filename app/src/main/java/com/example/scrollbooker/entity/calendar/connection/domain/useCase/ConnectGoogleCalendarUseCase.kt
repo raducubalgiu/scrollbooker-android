@@ -8,8 +8,8 @@ import javax.inject.Inject
 class ConnectGoogleCalendarUseCase @Inject constructor(
     private val repository: CalendarConnectionRepository
 ) {
-    suspend operator fun invoke(businessId: Int, serverAuthCode: String): Result<CalendarConnection> =
+    suspend operator fun invoke(serverAuthCode: String): Result<CalendarConnection> =
         runSuspendCatching {
-            repository.connectGoogleCalendar(businessId = businessId, serverAuthCode = serverAuthCode)
+            repository.connectGoogleCalendar(serverAuthCode = serverAuthCode)
         }
 }

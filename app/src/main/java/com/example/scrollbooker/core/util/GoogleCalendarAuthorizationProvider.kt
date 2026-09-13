@@ -10,7 +10,10 @@ import com.google.android.gms.common.api.Scope
 import kotlinx.coroutines.tasks.await
 import javax.inject.Inject
 
-private val CALENDAR_SCOPE = Scope("https://www.googleapis.com/auth/calendar")
+// TEMPORARY DIAGNOSTIC - swapped from the real calendar scope to isolate whether serverAuthCode
+// issuance fails specifically for restricted scopes (calendar) or for any scope via this API on
+// this device/account. Revert to "https://www.googleapis.com/auth/calendar" once confirmed.
+private val CALENDAR_SCOPE = Scope("https://www.googleapis.com/auth/userinfo.profile")
 
 sealed interface GoogleCalendarAuthorization {
     data class Authorized(val serverAuthCode: String): GoogleCalendarAuthorization

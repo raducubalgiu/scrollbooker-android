@@ -11,25 +11,24 @@ import javax.inject.Inject
 class CalendarConnectionRepositoryImpl @Inject constructor(
     private val apiService: CalendarConnectionApiService
 ): CalendarConnectionRepository {
-    override suspend fun getCalendarConnection(businessId: Int): CalendarConnection? {
-        val response = apiService.getCalendarConnection(businessId)
+    override suspend fun getCalendarConnection(): CalendarConnection? {
+        val response = apiService.getCalendarConnection()
 
-        // No connection yet is a valid state, not an error - the backend is expected to
-        // respond 404 in that case.
+        // No connection yet is a valid state, not an error - the backend responds 404 in
+        // that case.
         if (response.code() == 404) return null
         if (!response.isSuccessful) throw HttpException(response)
 
         return response.body()?.toDomain()
     }
 
-    override suspend fun connectGoogleCalendar(businessId: Int, serverAuthCode: String): CalendarConnection {
+    override suspend fun connectGoogleCalendar(serverAuthCode: String): CalendarConnection {
         return apiService.connectGoogleCalendar(
-            businessId = businessId,
             request = ConnectGoogleCalendarRequest(serverAuthCode = serverAuthCode)
         ).toDomain()
     }
 
-    override suspend fun disconnectCalendarConnection(businessId: Int, connectionId: Int) {
-        apiService.disconnectCalendarConnection(businessId = businessId, connectionId = connectionId)
+    override suspend fun disconnectCalendarConnection() {
+        apiService.disconnectCalendarConnection()
     }
 }

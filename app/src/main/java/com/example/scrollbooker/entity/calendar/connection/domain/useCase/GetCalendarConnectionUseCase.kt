@@ -8,7 +8,7 @@ import javax.inject.Inject
 class GetCalendarConnectionUseCase @Inject constructor(
     private val repository: CalendarConnectionRepository
 ) {
-    suspend operator fun invoke(businessId: Int): Result<CalendarConnection?> = runSuspendCatching {
-        repository.getCalendarConnection(businessId)
+    suspend operator fun invoke(): Result<CalendarConnection?> = runSuspendCatching {
+        repository.getCalendarConnection()
     }
 }

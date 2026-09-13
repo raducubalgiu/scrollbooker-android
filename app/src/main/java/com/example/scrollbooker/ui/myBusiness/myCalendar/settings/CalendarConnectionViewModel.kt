@@ -13,7 +13,6 @@ import com.example.scrollbooker.entity.calendar.connection.domain.model.Calendar
 import com.example.scrollbooker.entity.calendar.connection.domain.useCase.ConnectGoogleCalendarUseCase
 import com.example.scrollbooker.entity.calendar.connection.domain.useCase.DisconnectCalendarConnectionUseCase
 import com.example.scrollbooker.entity.calendar.connection.domain.useCase.GetCalendarConnectionUseCase
-import com.example.scrollbooker.store.AuthDataStore
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.channels.BufferOverflow
 import kotlinx.coroutines.flow.MutableSharedFlow
@@ -22,26 +21,20 @@ import kotlinx.coroutines.flow.SharedFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.flow.distinctUntilChanged
-import kotlinx.coroutines.flow.filterNotNull
-import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
 import timber.log.Timber
 import javax.inject.Inject
 
 private const val GOOGLE_CALENDAR_WEB_CLIENT_ID =
-    "596516500254-k2smqkd2e42urfhbad7e66q6bpcqfmei.apps.googleusercontent.com"
+    "596516500254-p64hb68ucv96j118frd8pa2ml9s3ksab.apps.googleusercontent.com"
 
 @HiltViewModel
 class CalendarConnectionViewModel @Inject constructor(
-    authDataStore: AuthDataStore,
     private val getCalendarConnectionUseCase: GetCalendarConnectionUseCase,
     private val connectGoogleCalendarUseCase: ConnectGoogleCalendarUseCase,
     private val disconnectCalendarConnectionUseCase: DisconnectCalendarConnectionUseCase,
     private val googleCalendarAuthorizationProvider: GoogleCalendarAuthorizationProvider
 ): ViewModel() {
-    private val businessIdFlow = authDataStore.getBusinessId().distinctUntilChanged()
-
     private val _connectionState = MutableStateFlow<FeatureState<CalendarConnection?>>(FeatureState.Loading)
     val connectionState: StateFlow<FeatureState<CalendarConnection?>> = _connectionState.asStateFlow()
 
@@ -62,10 +55,9 @@ class CalendarConnectionViewModel @Inject constructor(
     }
 
     private suspend fun loadConnection() {
-        val businessId = businessIdFlow.filterNotNull().first()
         _connectionState.value = FeatureState.Loading
 
-        getCalendarConnectionUseCase(businessId)
+        getCalendarConnectionUseCase()
             .onSuccess { _connectionState.value = FeatureState.Success(it) }
             .onFailure { e ->
                 Timber.tag("CalendarConnection").e(e, "ERROR: on fetching calendar connection")
@@ -117,9 +109,7 @@ class CalendarConnectionViewModel @Inject constructor(
     }
 
     private suspend fun finishConnecting(serverAuthCode: String) {
-        val businessId = businessIdFlow.filterNotNull().first()
-
-        connectGoogleCalendarUseCase(businessId, serverAuthCode)
+        connectGoogleCalendarUseCase(serverAuthCode)
             .onSuccess {
                 _connectionState.value = FeatureState.Success(it)
                 _isProcessing.value = false
@@ -133,13 +123,12 @@ class CalendarConnectionViewModel @Inject constructor(
 
     fun disconnect() {
         if (_isProcessing.value) return
-        val connection = (_connectionState.value as? FeatureState.Success)?.data ?: return
+        if ((_connectionState.value as? FeatureState.Success)?.data == null) return
 
         viewModelScope.launch {
             _isProcessing.value = true
-            val businessId = businessIdFlow.filterNotNull().first()
 
-            disconnectCalendarConnectionUseCase(businessId, connection.id)
+            disconnectCalendarConnectionUseCase()
                 .onSuccess {
                     _connectionState.value = FeatureState.Success(null)
                     _isProcessing.value = false

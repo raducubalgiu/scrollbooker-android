@@ -17,6 +17,7 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import retrofit2.HttpException
 import timber.log.Timber
 import java.util.UUID
 import javax.inject.Inject
@@ -193,8 +194,19 @@ class PostViewHeartbeatTracker @Inject constructor(
                         Timber.tag(TAG).w("BATCH partial rejects: %s", response.rejected)
                     }
                 } else {
-                    // Batch-ul rămâne în buffer — reîncercat automat la următorul flush programat.
-                    Timber.tag(TAG).w("BATCH FAILED size=%d — %s", batch.size, result.exceptionOrNull()?.message)
+                    val error = result.exceptionOrNull()
+
+                    if (error is HttpException && error.code() == 401) {
+                        // Neautentificat - o reîncercare nu are cum să reușească până la un login
+                        // nou, iar datele astea nu mai au cui să le fie atribuite. Le aruncăm, ca
+                        // să nu batem endpoint-ul la infinit, la fiecare BATCH_FLUSH_INTERVAL_MS,
+                        // cu același batch care nu se va trimite niciodată.
+                        pendingEvents.removeAll(batch.toSet())
+                        Timber.tag(TAG).w("BATCH DROPPED (401 unauthorized) size=%d", batch.size)
+                    } else {
+                        // Batch-ul rămâne în buffer — reîncercat automat la următorul flush programat.
+                        Timber.tag(TAG).w("BATCH FAILED size=%d — %s", batch.size, error?.message)
+                    }
                 }
                 flushInFlight = false
             }

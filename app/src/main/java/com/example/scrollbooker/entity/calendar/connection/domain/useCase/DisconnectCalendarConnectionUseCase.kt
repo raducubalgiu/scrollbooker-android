@@ -7,7 +7,7 @@ import javax.inject.Inject
 class DisconnectCalendarConnectionUseCase @Inject constructor(
     private val repository: CalendarConnectionRepository
 ) {
-    suspend operator fun invoke(businessId: Int, connectionId: Int): Result<Unit> = runSuspendCatching {
-        repository.disconnectCalendarConnection(businessId = businessId, connectionId = connectionId)
+    suspend operator fun invoke(): Result<Unit> = runSuspendCatching {
+        repository.disconnectCalendarConnection()
     }
 }
