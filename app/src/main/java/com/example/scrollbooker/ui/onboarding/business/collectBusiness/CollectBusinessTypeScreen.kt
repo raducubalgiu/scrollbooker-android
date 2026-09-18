@@ -20,10 +20,7 @@ import com.example.scrollbooker.core.util.Dimens.SpacingXXL
 import com.example.scrollbooker.components.core.layout.ErrorScreen
 import com.example.scrollbooker.components.core.layout.LoadingScreen
 import com.example.scrollbooker.ui.theme.Divider
-import com.example.scrollbooker.components.core.inputs.SearchBar
 import com.example.scrollbooker.components.core.layout.FormLayout
-import com.example.scrollbooker.core.util.Dimens.SpacingXL
-import com.example.scrollbooker.core.util.Dimens.SpacingXXS
 
 @Composable
 fun CollectBusinessTypeScreen(
@@ -49,21 +46,6 @@ fun CollectBusinessTypeScreen(
         }
 
         LazyColumn(Modifier.fillMaxSize()) {
-            item {
-                Box(Modifier.padding(
-                    start = SpacingXL,
-                    end = SpacingXXL,
-                    top = SpacingXXS,
-                    bottom = SpacingXXS
-                )) {
-                    SearchBar(
-                        value = "",
-                        onValueChange = {},
-                        placeholder = "Cauta categorie"
-                    )
-                }
-            }
-
             items(pagingItems.itemCount) { index ->
                 pagingItems[index]?.let { businessType ->
                     val selected = selectedBusinessType?.id == businessType.id

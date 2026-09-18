@@ -73,17 +73,12 @@ data class BusinessCoordinates(
 data class AppointmentBusiness(
     val id: Int,
     val businessOwnerId: Int,
+    val businessOwnerAvatar: String?,
     val address: String,
     val coordinates: BusinessCoordinates,
     val mapUrl: String?
 )
 
-
-
-// Who to show as "the other party" on this appointment: the provider (business/employee) when
-// the logged-in user is the customer, or the customer otherwise - covers business-with-employees
-// too, since isCustomer is purely "is the logged-in user the customer of THIS appointment",
-// independent of whose calendar (owner's or an employee's) it was booked on.
 fun Appointment.displayedPerson(): AppointmentUser =
     if (isCustomer) user else customer
 

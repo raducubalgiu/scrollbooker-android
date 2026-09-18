@@ -89,6 +89,7 @@ fun AppointmentBusinessDto.toDomain(): AppointmentBusiness {
     return AppointmentBusiness(
         id = id,
         businessOwnerId = businessOwnerId,
+        businessOwnerAvatar = businessOwnerAvatar,
         address = address,
         coordinates = coordinates.toDomain(),
         mapUrl = mapUrl

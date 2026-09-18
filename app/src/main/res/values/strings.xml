@@ -20,7 +20,6 @@
     <string name="chooseCover">Alege coperta</string>
     <string name="selectCover">Selectează coperta</string>
     <string name="location">Locație</string>
-    <string name="businessDetails">Detalii business</string>
     <string name="addYourBusinessLocation">Adaugă adresa locației unde vei primi clienții </string>
     <string name="services">Servicii</string>
     <string name="addYourBusinessServices">Adaugă serviciile pe care le desfășori la locație</string>
@@ -167,12 +166,6 @@
     <string name="notFoundWrittenReviews">Nu au fost găsite recenzii scrise</string>
     <string name="notFoundVideoReviews">Nu au fost găsite recenzii video</string>
     <string name="notFoundBookings">Nu au fist găsite rezervări</string>
-    <string name="businessDetailsDescription">Detalii despre afacerea mea</string>
-    <string name="userScheduleDetails">Detalii despre programul meu</string>
-    <string name="categoryservicesDetails">Detalii despre categoriile mele de servicii</string>
-    <string name="servicesDetails">Detalii despre serviciile mele</string>
-    <string name="calendarDetails">Calendarul meu de programări</string>
-    <string name="employeesAndEmploymentRequestsDetails">Angajați și cereri de angajare</string>
     <string name="paymentMethods">Modalități de plată</string>
     <string name="paymentMethodsDetails">Alege valutele acceptate pentru plată</string>
     <string name="collectBusinessTypeHeadline">Ce business ai?</string>
@@ -409,6 +402,7 @@
     <string name="from5">din 5</string>
     <string name="noProductsSelected">Nici un produs selectat</string>
     <string name="chooseServices">Alege serviciile</string>
+    <string name="specialist">Specialist</string>
     <string name="chooseSpecialist">Alege specialistul</string>
     <string name="chooseSpecialistDescription">Selectează un specialist din lista de mai sus pentru a verifica disponibilitatea serviciilor.</string>
     <string name="availableOnSpecialist">Disponibil la acest specialist</string>
@@ -500,9 +494,7 @@
     <string name="leftReviewForPrefix">a lăsat o recenzie pentru </string>
     <string name="startDateLowerThanEndDateValidation">Data de start nu poate fi mai mare decat data de sfârșit</string>
     <string name="unapprovedBusinesses">Afaceri în aprobare</string>
-    <string name="unapprovedBusinessesDescription">Lista de afaceri ce urmează a fi revizuite</string>
     <string name="dashboard">Dashboard</string>
-    <string name="myDashboardDescription">Statistici despre rezervări și postări</string>"
     <string name="notFoundUnapprovedBusinesses">Nu au fost găsite afaceri in aprobare</string>
     <string name="linkedServicesDescription">Niciun produs atașat. Adaugă produse pentru a le permite utilizatorilor să rezerve direct din postare.</string>
     <string name="baseInfo">Informații de bază</string>
@@ -536,6 +528,25 @@
     <string name="notFoundRecentSearches">Încă nu ai efectuat nici o căutare</string>
     <string name="notFoundBusinessMedia">Nu au fost găsite fotografii</string>
     <string name="pickHour">Alege Ora</string>
+
+    <!-- MY BUSINESS SCREEN -->
+    <string name="my_business_title">Afacerea mea</string>
+    <string name="my_business_dashboard">Dashboard</string>
+    <string name="my_business_dashboard_description">Statistici despre rezervări și postări</string>
+    <string name="my_business_details">Detalii business</string>
+    <string name="my_business_details_description">Detalii despre afacerea mea</string>
+    <string name="my_business_schedule">Program</string>
+    <string name="my_business_schedule_description">Detalii despre programul meu</string>
+    <string name="my_business_services">Servicii</string>
+    <string name="my_business_services_description">Detalii despre serviciile mele</string>
+    <string name="my_business_categories">Categorii</string>
+    <string name="my_business_categories_description">Detalii despre categoriile mele de servicii</string>
+    <string name="my_business_calendar">Calendar</string>
+    <string name="my_business_calendar_description">Calendarul meu de programări</string>
+    <string name="my_business_employees">Angajați</string>
+    <string name="my_business_employees_description">Angajați și cereri de angajare</string>
+    <string name="my_business_unapproved">Afaceri în aprobare</string>
+    <string name="my_business_unapproved_description">Lista de afaceri ce urmează a fi revizuite</string>
 
     <!-- Period -->
     <string name="period_seven_days">7 zile</string>

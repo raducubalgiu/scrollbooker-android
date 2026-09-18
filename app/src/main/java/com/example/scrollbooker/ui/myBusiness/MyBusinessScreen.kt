@@ -50,57 +50,57 @@ fun MyBusinessScreen(
 
     val pages = listOf(
         BusinessCard(
-            title = stringResource(R.string.dashboard),
-            description = stringResource(R.string.myDashboardDescription),
+            title = stringResource(R.string.my_business_dashboard),
+            description = stringResource(R.string.my_business_dashboard_description),
             icon = Icons.Outlined.Dashboard,
             permission = PermissionEnum.MY_DASHBOARD_VIEW,
             navigate = { profileNavigate.toMyDashboard() },
         ),
         BusinessCard(
-            title = stringResource(R.string.unapprovedBusinesses),
-            description = stringResource(R.string.unapprovedBusinessesDescription),
+            title = stringResource(R.string.my_business_unapproved),
+            description = stringResource(R.string.my_business_unapproved_description),
             icon = Icons.Outlined.AddBusiness,
             permission = PermissionEnum.NOMENCLATURES_VIEW,
             navigate = { profileNavigate.toUnapprovedBusinesses() },
         ),
         BusinessCard(
-            title = stringResource(R.string.businessDetails),
-            description = stringResource(R.string.businessDetailsDescription),
+            title = stringResource(R.string.my_business_details),
+            description = stringResource(R.string.my_business_details_description),
             icon = Icons.Outlined.LocationOn,
             permission = PermissionEnum.MY_BUSINESS_LOCATION_VIEW,
             navigate = { profileNavigate.toMyBusinessDetails() },
         ),
         BusinessCard(
-            title = stringResource(R.string.scheduleShort),
-            description = stringResource(R.string.userScheduleDetails),
+            title = stringResource(R.string.my_business_schedule),
+            description = stringResource(R.string.my_business_schedule_description),
             icon = Icons.Outlined.Schedule,
             permission = PermissionEnum.MY_SCHEDULES_VIEW,
             navigate = { profileNavigate.toMySchedules() },
         ),
         BusinessCard(
-            title = stringResource(R.string.categories),
-            description = stringResource(R.string.categoryservicesDetails),
+            title = stringResource(R.string.my_business_categories),
+            description = stringResource(R.string.my_business_categories_description),
             icon = Icons.Outlined.Book,
             navigate = { profileNavigate.toMyServices() },
             permission = PermissionEnum.MY_SERVICES_VIEW
         ),
         BusinessCard(
-            title = stringResource(R.string.services),
-            description = stringResource(R.string.servicesDetails),
+            title = stringResource(R.string.my_business_services),
+            description = stringResource(R.string.my_business_services_description),
             icon = Icons.Outlined.ShoppingBag,
             permission = PermissionEnum.MY_PRODUCTS_VIEW,
             navigate = { profileNavigate.toMyProducts() },
         ),
         BusinessCard(
-            title = stringResource(R.string.calendar),
-            description = stringResource(R.string.calendarDetails),
+            title = stringResource(R.string.my_business_calendar),
+            description = stringResource(R.string.my_business_calendar_description),
             icon = Icons.Outlined.CalendarToday,
             navigate = { profileNavigate.toMyCalendar() },
             permission = PermissionEnum.MY_CALENDAR_VIEW,
         ),
         BusinessCard(
-            title = stringResource(R.string.employees),
-            description = stringResource(R.string.employeesAndEmploymentRequestsDetails),
+            title = stringResource(R.string.my_business_employees),
+            description = stringResource(R.string.my_business_employees_description),
             icon = Icons.Outlined.PeopleOutline,
             navigate = { profileNavigate.toMyEmployees() },
             permission = PermissionEnum.MY_EMPLOYEES_VIEW
@@ -124,7 +124,7 @@ fun MyBusinessScreen(
     }
 
     Layout(
-        headerTitle = stringResource(R.string.myBusiness),
+        headerTitle = stringResource(R.string.my_business_title),
         onBack = { profileNavigate.back() }
     ) {
         if(isLoading) {

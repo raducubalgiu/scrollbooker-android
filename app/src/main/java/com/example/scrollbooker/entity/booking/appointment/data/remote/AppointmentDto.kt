@@ -115,6 +115,9 @@ data class AppointmentBusinessDto(
     @SerializedName("business_owner_id")
     val businessOwnerId: Int,
 
+    @SerializedName("business_owner_avatar")
+    val businessOwnerAvatar: String?,
+
     val address: String,
     val coordinates: BusinessCoordinatesDto,
     val mapUrl: String?

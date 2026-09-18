@@ -38,6 +38,9 @@ val fakeAppointmentsList = listOf(
             ratingsCount = 0
         ),
         business = AppointmentBusiness(
+            id = 1,
+            businessOwnerId = 1,
+            businessOwnerAvatar = null,
             address = "Strada Oarecare",
             coordinates = BusinessCoordinates(
                 lat = 45.234f,

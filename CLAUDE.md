@@ -347,3 +347,13 @@ without desugaring wired up for it here).
 - When adding a field to a DTO/domain model that's optional on the backend,
   make it nullable in the DTO and map it with `.orEmpty()`/a sensible default
   in the mapper — don't push null-handling into every call site.
+- **Do not add code comments.** Default to zero comments in new/edited
+  Kotlin code — no KDoc, no inline explanations of what a line does.
+  Well-named classes/properties/functions should make the WHAT
+  self-evident; if they don't, fix the name instead of commenting it. The
+  rare exception is a genuinely non-obvious WHY (a Compose/coroutines
+  quirk, a workaround for a specific library bug, a constraint forced by
+  the backend contract) that a future reader couldn't infer from the code
+  itself — and even then, keep it to one line. Don't restate the
+  task/fix/caller in a comment; that belongs in the commit message, not
+  the file.
