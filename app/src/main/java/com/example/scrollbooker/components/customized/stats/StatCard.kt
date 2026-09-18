@@ -16,6 +16,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
@@ -29,6 +30,8 @@ fun StatCard(
     modifier: Modifier,
     label: String,
     value: String,
+    labelStyle: TextStyle = bodyMedium,
+    valueStyle: TextStyle = titleLarge,
     containerColor: Color = SurfaceBG,
     contentColor: Color = OnSurfaceBG,
     borderColor: Color? = null,
@@ -61,7 +64,7 @@ fun StatCard(
         ) {
             Text(
                 text = label,
-                style = bodyMedium,
+                style = labelStyle,
                 fontWeight = FontWeight.SemiBold,
                 color = contentColor,
                 maxLines = 1,
@@ -70,7 +73,7 @@ fun StatCard(
             Spacer(modifier = Modifier.height(4.dp))
             Text(
                 text = value,
-                style = titleLarge,
+                style = valueStyle,
                 fontWeight = FontWeight.Bold,
                 color = contentColor
             )

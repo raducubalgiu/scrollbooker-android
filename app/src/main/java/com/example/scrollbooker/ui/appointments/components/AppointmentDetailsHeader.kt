@@ -111,7 +111,7 @@ fun AppointmentDetailsHeader(
                         text = if (displayedPerson.ratingsCount != null) {
                             "${displayedPerson.profession} • ${displayedPerson.ratingsCount} ${stringResource(R.string.reviews)}"
                         } else {
-                            displayedPerson.profession.orEmpty()
+                            displayedPerson.profession
                         },
                         style = bodyMedium,
                         color = Color.Gray,

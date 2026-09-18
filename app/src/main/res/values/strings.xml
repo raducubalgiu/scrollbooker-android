@@ -512,11 +512,16 @@
     <string name="filterRequired">Filtrele sunt obligatorii</string>
     <string name="createService">Creează serviciul</string>
     <string name="postStatistics">Statistici postare</string>
+    <string name="postStatisticsSummary">Rezumat</string>
     <string name="views">Vizualizări</string>
     <string name="uniqueViewers">Vizitatori unici</string>
     <string name="watchTime">Timp total</string>
     <string name="averageWatchTime">Medie vizualizare</string>
     <string name="trafficSources">Surse de trafic</string>
+    <string name="totalViews">Vizualizări</string>
+    <string name="likes">Aprecieri</string>
+    <string name="shares">Distribuiri</string>
+    <string name="saves">Salvări</string>
     <string name="bookingsDetails">Detalii rezervări</string>
     <string name="channel">Canal</string>
     <string name="earnings">Încasări</string>

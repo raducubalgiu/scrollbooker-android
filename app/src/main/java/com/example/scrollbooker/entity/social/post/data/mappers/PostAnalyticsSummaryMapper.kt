@@ -9,11 +9,16 @@ import com.example.scrollbooker.entity.social.post.domain.model.PostAnalyticsSum
 fun PostAnalyticsSummaryDto.toDomain(): PostAnalyticsSummary {
     return PostAnalyticsSummary(
         postId = this.postId,
+        thumbnailUrl = this.thumbnailUrl,
         viewsCount = this.viewsCount,
         uniqueViewersCount = this.uniqueViewersCount,
         watchTimeMs = this.watchTimeMs,
         averageWatchTimeMs = this.averageWatchTimeMs,
         completionsCount = this.completionsCount,
+        likeCount = this.likeCount,
+        commentCount = this.commentCount,
+        shareCount = this.shareCount,
+        bookmarkCount = this.bookmarkCount,
         sourceBreakdown = this.sourceBreakdown.map { it.toDomain() }
     )
 }
