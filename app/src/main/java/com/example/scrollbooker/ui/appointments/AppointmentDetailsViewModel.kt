@@ -159,7 +159,9 @@ class AppointmentDetailsViewModel @Inject constructor(
                                 writtenReview = AppointmentWrittenReview(
                                     id = new.id,
                                     review = reviewUpdate.review,
-                                    rating = reviewUpdate.rating
+                                    rating = reviewUpdate.rating,
+                                    isEditable = true,
+                                    createdAt = new.createdAt
                                 ),
                                 hasWrittenReview = true
                             )
@@ -209,7 +211,9 @@ class AppointmentDetailsViewModel @Inject constructor(
                                 writtenReview = AppointmentWrittenReview(
                                     id = update.id,
                                     review = reviewUpdate.review,
-                                    rating = reviewUpdate.rating
+                                    rating = reviewUpdate.rating,
+                                    isEditable = true,
+                                    createdAt = update.createdAt
                                 ),
                                 hasWrittenReview = true
                             )

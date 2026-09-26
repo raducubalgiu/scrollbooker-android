@@ -54,6 +54,7 @@ fun LinkedProductsSection(
                         ProductCard(
                             modifier = Modifier.padding(horizontal = BasePadding),
                             product = product,
+                            shouldToggleDescription = true,
                             onOpenProductDetail = {},
                             onNavigateToBooking = onNavigateToBooking
                         )

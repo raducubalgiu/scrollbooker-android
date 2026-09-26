@@ -30,8 +30,12 @@ import com.example.scrollbooker.core.util.Dimens.BasePadding
 import com.example.scrollbooker.core.util.Dimens.SpacingM
 import com.example.scrollbooker.core.util.Dimens.SpacingS
 import com.example.scrollbooker.core.util.Dimens.SpacingXL
+import androidx.compose.runtime.remember
 import com.example.scrollbooker.ui.theme.OnSurfaceBG
 import com.example.scrollbooker.ui.theme.SurfaceBG
+import com.example.scrollbooker.ui.theme.bodySmall
+import org.threeten.bp.OffsetDateTime
+import org.threeten.bp.format.DateTimeFormatter
 
 @Composable
 fun AppointmentDetailsWrittenReview(
@@ -39,8 +43,15 @@ fun AppointmentDetailsWrittenReview(
     isCustomer: Boolean,
     review: String?,
     rating: Int,
+    isEditable: Boolean,
+    createdAt: String,
     onOpenCancelSheet: () -> Unit
 ) {
+    val formattedCreatedAt = remember(createdAt) {
+        OffsetDateTime.parse(createdAt, DateTimeFormatter.ISO_OFFSET_DATE_TIME)
+            .format(DateTimeFormatter.ofPattern("dd.MM.yyyy • HH:mm"))
+    }
+
     Column(
         modifier = Modifier
             .fillMaxWidth()
@@ -74,7 +85,7 @@ fun AppointmentDetailsWrittenReview(
                 }
             }
 
-            if(isCustomer) {
+            if(isCustomer && isEditable) {
                 IconButton(onClick = onOpenCancelSheet) {
                     Icon(
                         painter = painterResource(R.drawable.ic_elipsis_vertical),
@@ -95,5 +106,13 @@ fun AppointmentDetailsWrittenReview(
                 overflow = TextOverflow.Ellipsis
             )
         }
+
+        Spacer(Modifier.height(SpacingS))
+
+        Text(
+            text = formattedCreatedAt,
+            style = bodySmall,
+            color = Color.Gray
+        )
     }
 }

@@ -23,5 +23,8 @@ data class ReviewMiniDto(
     val productId: Int,
 
     @SerializedName("parent_id")
-    val parentId: Int?
+    val parentId: Int?,
+
+    @SerializedName("created_at")
+    val createdAt: String
 )

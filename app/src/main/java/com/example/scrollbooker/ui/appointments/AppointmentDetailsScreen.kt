@@ -223,6 +223,8 @@ fun AppointmentDetailsScreen(
                                 review = rev.review,
                                 rating = rev.rating,
                                 isCustomer = a.isCustomer,
+                                isEditable = rev.isEditable,
+                                createdAt = rev.createdAt,
                                 onOpenCancelSheet = {
                                     sheetContent = AppointmentSheetsContent.ReviewOptions
                                     scope.launch { sheetState.show() }

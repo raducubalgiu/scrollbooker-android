@@ -13,6 +13,7 @@ fun ReviewMiniDto.toDomain(): ReviewMini {
         serviceId = serviceId,
         productId = productId,
         parentId = parentId,
-        appointmentId = appointmentId
+        appointmentId = appointmentId,
+        createdAt = createdAt
     )
 }

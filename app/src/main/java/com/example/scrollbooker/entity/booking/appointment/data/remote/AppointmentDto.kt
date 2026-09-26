@@ -54,7 +54,13 @@ data class AppointmentDto(
 data class AppointmentWrittenReviewDto(
     val id: Int,
     val review: String?,
-    val rating: Int
+    val rating: Int,
+
+    @SerializedName("is_editable")
+    val isEditable: Boolean,
+
+    @SerializedName("created_at")
+    val createdAt: String
 )
 
 data class AppointmentProductDto(

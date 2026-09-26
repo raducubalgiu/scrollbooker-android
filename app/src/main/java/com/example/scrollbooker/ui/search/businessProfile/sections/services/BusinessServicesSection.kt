@@ -1,4 +1,10 @@
 package com.example.scrollbooker.ui.search.businessProfile.sections.services
+import androidx.compose.animation.AnimatedContent
+import androidx.compose.animation.SizeTransform
+import androidx.compose.animation.core.tween
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
+import androidx.compose.animation.togetherWith
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -8,16 +14,16 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.wrapContentHeight
-import androidx.compose.foundation.pager.HorizontalPager
-import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.ScrollableTabRow
 import androidx.compose.material3.ShapeDefaults
 import androidx.compose.material3.Tab
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.res.stringResource
@@ -38,7 +44,6 @@ import com.example.scrollbooker.ui.theme.OnSurfaceBG
 import com.example.scrollbooker.ui.theme.SurfaceBG
 import com.example.scrollbooker.ui.theme.bodyMedium
 import com.example.scrollbooker.ui.theme.titleLarge
-import kotlinx.coroutines.launch
 
 @Composable
 fun BusinessServicesSection(
@@ -48,7 +53,7 @@ fun BusinessServicesSection(
 ) {
     val serviceGroups = products.data
     val totalCount = products.totalCount
-    val scope = rememberCoroutineScope()
+    var currentPage by remember { mutableStateOf(0) }
 
     Column(modifier = Modifier.padding(BasePadding)) {
         Text(
@@ -60,10 +65,8 @@ fun BusinessServicesSection(
         Spacer(Modifier.height(BasePadding))
 
         if (serviceGroups.isNotEmpty()) {
-            val pagerState = rememberPagerState { serviceGroups.size }
-
             ScrollableTabRow(
-                selectedTabIndex = pagerState.currentPage,
+                selectedTabIndex = currentPage,
                 containerColor = Background,
                 divider = {},
                 indicator = { _ -> Box(Modifier.size(0.dp)) },
@@ -73,15 +76,11 @@ fun BusinessServicesSection(
                     .padding(vertical = 8.dp)
             ) {
                 serviceGroups.forEachIndexed { index, group ->
-                    val isSelected = pagerState.currentPage == index
+                    val isSelected = currentPage == index
 
                     Tab(
                         selected = isSelected,
-                        onClick = {
-                            scope.launch {
-                                pagerState.animateScrollToPage(index)
-                            }
-                        },
+                        onClick = { currentPage = index },
                         modifier = Modifier
                             .clip(ShapeDefaults.ExtraLarge)
                             .background(if (isSelected) SurfaceBG else Background)
@@ -107,11 +106,14 @@ fun BusinessServicesSection(
 
             Spacer(Modifier.height(SpacingS))
 
-            HorizontalPager(
-                state = pagerState,
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .wrapContentHeight()
+            AnimatedContent(
+                targetState = currentPage,
+                modifier = Modifier.fillMaxWidth(),
+                transitionSpec = {
+                    fadeIn(animationSpec = tween(220)) togetherWith fadeOut(animationSpec = tween(220)) using
+                        SizeTransform(clip = false)
+                },
+                label = "BusinessServicesPage"
             ) { page ->
                 val currentGroupProducts = serviceGroups[page].products
 
@@ -123,6 +125,7 @@ fun BusinessServicesSection(
                     currentGroupProducts.forEachIndexed { index, product ->
                         ProductCard(
                             product = product,
+                            shouldToggleDescription = true,
                             onOpenProductDetail = {},
                             onNavigateToBooking = onNavigateToBookingFromProduct
                         )

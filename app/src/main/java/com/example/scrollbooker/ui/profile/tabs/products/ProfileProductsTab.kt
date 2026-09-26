@@ -115,6 +115,7 @@ fun ProfileProductsTab(
                                 ProductCard(
                                     modifier = Modifier.padding(horizontal = BasePadding),
                                     product = product,
+                                    shouldToggleDescription = true,
                                     onOpenProductDetail = {},
                                     onNavigateToBooking = onNavigateToBookingFromProduct
                                 )

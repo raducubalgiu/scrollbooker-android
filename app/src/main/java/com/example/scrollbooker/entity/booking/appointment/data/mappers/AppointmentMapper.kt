@@ -45,7 +45,9 @@ fun AppointmentWrittenReviewDto.toDomain(): AppointmentWrittenReview {
     return AppointmentWrittenReview(
         id = id,
         review = review,
-        rating = rating
+        rating = rating,
+        isEditable = isEditable,
+        createdAt = createdAt
     )
 }
 

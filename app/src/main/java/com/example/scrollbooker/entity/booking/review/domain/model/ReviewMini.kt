@@ -9,5 +9,6 @@ data class ReviewMini(
     val userId: Int,
     val serviceId: Int,
     val productId: Int,
-    val parentId: Int?
+    val parentId: Int?,
+    val createdAt: String
 )

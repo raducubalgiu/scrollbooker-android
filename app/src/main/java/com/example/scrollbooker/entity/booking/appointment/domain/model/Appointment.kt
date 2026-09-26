@@ -37,7 +37,9 @@ data class Appointment(
 data class AppointmentWrittenReview(
     val id: Int,
     val review: String?,
-    val rating: Int
+    val rating: Int,
+    val isEditable: Boolean,
+    val createdAt: String
 )
 
 data class AppointmentProduct(
