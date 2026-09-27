@@ -22,6 +22,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.scrollbooker.core.util.Dimens.SpacingS
@@ -32,6 +33,7 @@ fun PostAction(
     modifier: Modifier = Modifier,
     isEnabled: Boolean = true,
     tint: Color = Color.White,
+    size: Dp = 32.5.dp,
     counter: Int? = null,
     icon: Int,
     onClick: (() -> Unit)? = null
@@ -56,7 +58,7 @@ fun PostAction(
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
             Icon(
-                modifier = Modifier.size(34.dp),
+                modifier = Modifier.size(size),
                 painter = painterResource(icon),
                 contentDescription = null,
                 tint = tint

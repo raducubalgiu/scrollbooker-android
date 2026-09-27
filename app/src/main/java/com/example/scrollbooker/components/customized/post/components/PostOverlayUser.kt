@@ -51,16 +51,17 @@ fun PostOverlayUser(
         Surface(
             modifier = Modifier.padding(bottom = SpacingS),
             shape = ShapeDefaults.Small,
-            color = Color.White.copy(alpha = 0.1f),
+            color = Color.White.copy(alpha = 0.9f),
             contentColor = Color.White
         ) {
             Text(
                 text = stringResource(R.string.videoReview),
                 style = bodySmall,
+                color = Color.Black,
                 fontWeight = FontWeight.SemiBold,
                 modifier = Modifier.padding(
-                    vertical = 6.dp,
-                    horizontal = 8.dp
+                    vertical = 4.dp,
+                    horizontal = 6.dp
                 )
             )
         }
@@ -78,8 +79,8 @@ fun PostOverlayUser(
                 style = bodySmall,
                 fontWeight = FontWeight.SemiBold,
                 modifier = Modifier.padding(
-                    vertical = 6.dp,
-                    horizontal = 8.dp
+                    vertical = 4.dp,
+                    horizontal = 6.dp
                 )
             )
         }

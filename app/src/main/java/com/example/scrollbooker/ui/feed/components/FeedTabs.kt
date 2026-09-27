@@ -35,16 +35,29 @@ fun FeedTabs(
         stringResource(R.string.following)
     )
 
-    Row(
+    Box(
         modifier = modifier
             .fillMaxWidth()
-            .zIndex(2f),
-        verticalAlignment = Alignment.CenterVertically,
-        horizontalArrangement = Arrangement.SpaceBetween
+            .zIndex(2f)
     ) {
         Row(
+            modifier = Modifier.align(Alignment.Center),
             verticalAlignment = Alignment.CenterVertically,
-            horizontalArrangement = Arrangement.Start
+            horizontalArrangement = Arrangement.spacedBy(8.dp)
+        ) {
+            tabs.forEachIndexed { index, title ->
+                FeedTab(
+                    isSelected = selectedTabIndex == index,
+                    onClick = { onChangeTab(index) },
+                    title = title
+                )
+            }
+        }
+
+        Row(
+            modifier = Modifier.fillMaxWidth(),
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.SpaceBetween
         ) {
             Box(modifier = Modifier.clickable(onClick = onOpenDrawer)) {
                 BadgedBox(
@@ -63,31 +76,18 @@ fun FeedTabs(
                 }
             }
 
-            Row(
-                verticalAlignment = Alignment.CenterVertically,
-                horizontalArrangement = Arrangement.spacedBy(2.dp)
-            ) {
-                tabs.forEachIndexed { index, title ->
-                    FeedTab(
-                        isSelected = selectedTabIndex == index,
-                        onClick = { onChangeTab(index) },
-                        title = title
+            Box(modifier = Modifier.clickable { onNavigateSearch() }) {
+                Box(
+                    modifier = Modifier.padding(BasePadding),
+                    contentAlignment = Alignment.Center
+                ) {
+                    Icon(
+                        modifier = Modifier.size(27.5.dp),
+                        painter = painterResource(R.drawable.ic_search),
+                        contentDescription = null,
+                        tint = Color(0xFFE0E0E0),
                     )
                 }
-            }
-        }
-
-        Box(modifier = Modifier.clickable { onNavigateSearch() }) {
-            Box(
-                modifier = Modifier.padding(BasePadding),
-                contentAlignment = Alignment.Center
-            ) {
-                Icon(
-                    modifier = Modifier.size(30.dp),
-                    painter = painterResource(R.drawable.ic_search),
-                    contentDescription = null,
-                    tint = Color(0xFFE0E0E0),
-                )
             }
         }
     }

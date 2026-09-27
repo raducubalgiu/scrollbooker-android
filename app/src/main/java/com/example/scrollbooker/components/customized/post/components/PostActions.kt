@@ -69,7 +69,7 @@ fun PostActions(
         PostAction(
             isEnabled = !isSavingLike,
             counter = counters.likeCount,
-            icon = R.drawable.ic_heart_outlined,
+            icon = if(userActions.isLiked) R.drawable.ic_heart_solid else R.drawable.ic_heart_outlined,
             tint = if (userActions.isLiked) Error
                    else Color.White,
             onClick = onLike
@@ -78,7 +78,7 @@ fun PostActions(
         if(!isVideoReview) {
             PostAction(
                 counter = user.ratingsCount,
-                icon = R.drawable.ic_clipboard_check_solid,
+                icon = R.drawable.ic_clipboard_check_outline,
                 tint = Color.White,
                 onClick = {
                     val isEmployee = user.id != businessOwner.id
@@ -96,7 +96,7 @@ fun PostActions(
 
         PostAction(
             counter = counters.commentCount,
-            icon = R.drawable.ic_comment_solid,
+            icon = R.drawable.ic_comment_outline,
             tint = Color.White,
             onClick = { onAction(PostSheetActionEnum.OPEN_COMMENTS) }
         )
@@ -104,7 +104,7 @@ fun PostActions(
         PostAction(
             isEnabled = !isSavingBookmark,
             counter = counters.bookmarkCount,
-            icon = R.drawable.ic_bookmark_solid,
+            icon = if(userActions.isBookmarked) R.drawable.ic_bookmark_solid else R.drawable.ic_bookmark_outline,
             tint = if (userActions.isBookmarked) Rating else Color.White,
             onClick = onBookmark
         )
@@ -112,8 +112,9 @@ fun PostActions(
         PostAction(
             isEnabled = true,
             counter = counters.shareCount,
-            icon = R.drawable.ic_share,
+            icon = R.drawable.ic_share_outlined,
             tint = Color.White,
+            size = 50.dp,
             onClick = onShare
         )
 
