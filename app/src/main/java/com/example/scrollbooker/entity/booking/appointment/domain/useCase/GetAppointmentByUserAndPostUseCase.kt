@@ -11,9 +11,11 @@ class GetAppointmentByUserAndPostUseCase @Inject constructor(
     suspend operator fun invoke(
         userId: Int,
         postId: Int,
+        lat: Float? = null,
+        lng: Float? = null,
     ): Result<Appointment> {
         return runSuspendCatching {
-            repository.getAppointmentByUserAndPost(userId, postId)
+            repository.getAppointmentByUserAndPost(userId, postId, lat, lng)
         }
     }
 }

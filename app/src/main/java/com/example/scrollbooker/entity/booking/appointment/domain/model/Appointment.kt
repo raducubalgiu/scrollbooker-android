@@ -78,7 +78,8 @@ data class AppointmentBusiness(
     val businessOwnerAvatar: String?,
     val address: String,
     val coordinates: BusinessCoordinates,
-    val mapUrl: String?
+    val mapUrl: String?,
+    val distanceKm: Float?
 )
 
 fun Appointment.displayedPerson(): AppointmentUser =

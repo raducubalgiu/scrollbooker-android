@@ -21,6 +21,7 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -35,7 +36,6 @@ import com.example.scrollbooker.R
 import com.example.scrollbooker.components.core.avatar.Avatar
 import com.example.scrollbooker.components.core.avatar.AvatarWithRating
 import com.example.scrollbooker.components.core.buttons.MainButton
-import com.example.scrollbooker.components.core.buttons.MainButtonOutlined
 import com.example.scrollbooker.components.core.layout.ErrorScreen
 import com.example.scrollbooker.components.core.layout.LoadingScreen
 import com.example.scrollbooker.components.customized.RatingsStars
@@ -111,6 +111,7 @@ fun ColumnScope.VideoReviewSection(
                         reviewer = post.user,
                         provider = provider,
                         businessLocation = post.businessLocation,
+                        distanceKm = appointment.business.distanceKm,
                         appointment = appointment,
                         onNavigateToUserProfile = onNavigateToUserProfile
                     )
@@ -140,6 +141,7 @@ private fun VideoReviewContent(
     reviewer: PostUser,
     provider: ReviewedProvider,
     businessLocation: PostBusinessLocation?,
+    distanceKm: Float?,
     appointment: Appointment,
     onNavigateToUserProfile: (UserProfileParam) -> Unit,
 ) {
@@ -152,6 +154,7 @@ private fun VideoReviewContent(
         ProviderCard(
             provider = provider,
             address = businessLocation?.formattedAddress,
+            distanceKm = distanceKm,
             onNavigateToUserProfile = onNavigateToUserProfile
         )
         ReviewCard(review = review, reviewer = reviewer)
@@ -163,8 +166,17 @@ private fun VideoReviewContent(
 private fun ProviderCard(
     provider: ReviewedProvider,
     address: String?,
+    distanceKm: Float?,
     onNavigateToUserProfile: (UserProfileParam) -> Unit
 ) {
+    val locationText = remember(distanceKm, address) {
+        when {
+            address.isNullOrBlank() -> null
+            distanceKm != null -> "${"%.1f".format(distanceKm)}km • $address"
+            else -> address
+        }
+    }
+
     SectionCard {
         Text(
             text = stringResource(R.string.reviewFor),
@@ -206,7 +218,7 @@ private fun ProviderCard(
             }
         }
 
-        if (!address.isNullOrBlank()) {
+        if (locationText != null) {
             Spacer(Modifier.height(SpacingM))
             HorizontalDivider(color = Divider, thickness = 0.55.dp)
             Spacer(Modifier.height(SpacingM))
@@ -222,7 +234,7 @@ private fun ProviderCard(
                 Spacer(Modifier.width(SpacingS))
 
                 Text(
-                    text = address,
+                    text = locationText,
                     style = bodyMedium,
                     color = Color.Gray,
                     maxLines = 2,

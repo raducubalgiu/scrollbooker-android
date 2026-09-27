@@ -126,5 +126,8 @@ data class AppointmentBusinessDto(
 
     val address: String,
     val coordinates: BusinessCoordinatesDto,
-    val mapUrl: String?
+    val mapUrl: String?,
+
+    @SerializedName("distance_km")
+    val distanceKm: Float?
 )

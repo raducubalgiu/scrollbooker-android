@@ -54,8 +54,10 @@ class AppointmentRepositoryImpl @Inject constructor(
     override suspend fun getAppointmentByUserAndPost(
         userId: Int,
         postId: Int,
+        lat: Float?,
+        lng: Float?,
     ): Appointment {
-        return apiService.getAppointmentByPostAndUser(userId, postId).toDomain()
+        return apiService.getAppointmentByPostAndUser(userId, postId, lat, lng).toDomain()
     }
 
     override suspend fun cancelAppointment(

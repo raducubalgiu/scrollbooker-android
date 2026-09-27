@@ -94,6 +94,7 @@ fun AppointmentBusinessDto.toDomain(): AppointmentBusiness {
         businessOwnerAvatar = businessOwnerAvatar,
         address = address,
         coordinates = coordinates.toDomain(),
-        mapUrl = mapUrl
+        mapUrl = mapUrl,
+        distanceKm = distanceKm
     )
 }

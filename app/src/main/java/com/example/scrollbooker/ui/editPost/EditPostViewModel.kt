@@ -189,7 +189,7 @@ class EditPostViewModel @Inject constructor(
 
             val linkedResult = linkedProductsDeferred.await()
             if (linkedResult.isSuccess) {
-                _linkedProducts.value = linkedResult.getOrDefault(emptyList()).toSet()
+                _linkedProducts.value = linkedResult.getOrNull()?.products.orEmpty().toSet()
             } else {
                 Timber.tag("EditPost").e(linkedResult.exceptionOrNull(), "Failed to load linked products")
                 _linkedProducts.value = emptySet()

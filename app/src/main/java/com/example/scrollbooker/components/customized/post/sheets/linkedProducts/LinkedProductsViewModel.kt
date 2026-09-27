@@ -2,11 +2,12 @@ package com.example.scrollbooker.components.customized.post.sheets.linkedProduct
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.scrollbooker.core.location.UserLocationService
 import com.example.scrollbooker.core.util.FeatureState
 import com.example.scrollbooker.core.util.withVisibleLoading
 import com.example.scrollbooker.entity.booking.appointment.domain.model.Appointment
 import com.example.scrollbooker.entity.booking.appointment.domain.useCase.GetAppointmentByUserAndPostUseCase
-import com.example.scrollbooker.entity.booking.products.domain.model.Product
+import com.example.scrollbooker.entity.booking.products.domain.model.LinkedProducts
 import com.example.scrollbooker.entity.booking.products.domain.useCase.GetPostLinkedProductsUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -31,7 +32,8 @@ private data class LinkedProductsPostRef(
 @HiltViewModel
 class LinkedProductsViewModel @Inject constructor(
     private val getPostLinkedProductsUseCase: GetPostLinkedProductsUseCase,
-    private val getAppointmentByUserAndPostUseCase: GetAppointmentByUserAndPostUseCase
+    private val getAppointmentByUserAndPostUseCase: GetAppointmentByUserAndPostUseCase,
+    private val userLocationService: UserLocationService
 ) : ViewModel() {
 
     private val _postRef = MutableStateFlow<LinkedProductsPostRef?>(null)
@@ -42,7 +44,7 @@ class LinkedProductsViewModel @Inject constructor(
     }
 
     @OptIn(ExperimentalCoroutinesApi::class)
-    val productsState: StateFlow<FeatureState<List<Product>>> = _postRef
+    val productsState: StateFlow<FeatureState<LinkedProducts>> = _postRef
         .filterNotNull()
         .distinctUntilChanged()
         .filter { !it.isVideoReview }
@@ -50,11 +52,19 @@ class LinkedProductsViewModel @Inject constructor(
             flow {
                 emit(FeatureState.Loading)
 
-                val result = withVisibleLoading { getPostLinkedProductsUseCase(postId = ref.postId, allowFallback = true) }
+                val userLocation = userLocationService.currentLocation()
+                val result = withVisibleLoading {
+                    getPostLinkedProductsUseCase(
+                        postId = ref.postId,
+                        allowFallback = true,
+                        lat = userLocation?.lat,
+                        lng = userLocation?.lng
+                    )
+                }
 
                 result
-                    .onSuccess { products ->
-                        emit(FeatureState.Success(products))
+                    .onSuccess { linkedProducts ->
+                        emit(FeatureState.Success(linkedProducts))
                     }
                     .onFailure { error ->
                         Timber.tag("Linked Products").e(error, "ERROR: on Fetching Post Linked Products")
@@ -77,7 +87,10 @@ class LinkedProductsViewModel @Inject constructor(
             flow {
                 emit(FeatureState.Loading)
 
-                val result = withVisibleLoading { getAppointmentByUserAndPostUseCase(ref.postUserId, ref.postId) }
+                val userLocation = userLocationService.currentLocation()
+                val result = withVisibleLoading {
+                    getAppointmentByUserAndPostUseCase(ref.postUserId, ref.postId, userLocation?.lat, userLocation?.lng)
+                }
 
                 result
                     .onSuccess { appointment ->

@@ -28,6 +28,8 @@ interface AppointmentsApiService {
     suspend fun getAppointmentByPostAndUser(
         @Path("userId") userId: Int,
         @Path("postId") postId: Int,
+        @Query("lat") lat: Float?,
+        @Query("lng") lng: Float?,
     ): AppointmentDto
 
     @POST("appointments/create-scrollbooker-appointment")

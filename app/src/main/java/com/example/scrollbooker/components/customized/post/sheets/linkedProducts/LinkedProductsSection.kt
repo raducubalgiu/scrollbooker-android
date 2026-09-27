@@ -2,6 +2,7 @@ package com.example.scrollbooker.components.customized.post.sheets.linkedProduct
 
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
@@ -21,6 +22,7 @@ import com.example.scrollbooker.components.core.layout.LoadingScreen
 import com.example.scrollbooker.components.customized.productCard.ProductCard
 import com.example.scrollbooker.components.customized.protected.Protected
 import com.example.scrollbooker.core.enums.PermissionEnum
+import androidx.compose.foundation.layout.Column
 import com.example.scrollbooker.core.util.Dimens.BasePadding
 import com.example.scrollbooker.core.util.Dimens.SpacingXL
 import com.example.scrollbooker.core.util.FeatureState
@@ -38,46 +40,53 @@ fun LinkedProductsSection(
         is FeatureState.Loading -> LoadingScreen()
         is FeatureState.Error -> ErrorScreen()
         is FeatureState.Success -> {
-            val products = currentState.data
+            val linkedProducts = currentState.data
+            val products = linkedProducts.products
 
-            if (products.isEmpty()) {
-                EmptyScreen(
-                    message = stringResource(R.string.notFoundServices),
-                    icon = painterResource(R.drawable.ic_shopping_outline),
-                )
-            } else {
-                LazyColumn(
-                    modifier = Modifier.fillMaxSize(),
-                    contentPadding = PaddingValues(vertical = BasePadding)
-                ) {
-                    itemsIndexed(products) { index, product ->
-                        ProductCard(
-                            modifier = Modifier.padding(horizontal = BasePadding),
-                            product = product,
-                            shouldToggleDescription = true,
-                            onOpenProductDetail = {},
-                            onNavigateToBooking = onNavigateToBooking
-                        )
+            Column(modifier = Modifier.fillMaxSize()) {
+                LinkedProductsBusinessHeader(business = linkedProducts.business)
 
-                        if (index < products.lastIndex) {
-                            HorizontalDivider(
-                                modifier = Modifier.padding(
-                                    vertical = SpacingXL,
-                                    horizontal = BasePadding
-                                ),
-                                color = Divider,
-                                thickness = 0.55.dp
+                if (products.isEmpty()) {
+                    EmptyScreen(
+                        message = stringResource(R.string.notFoundServices),
+                        icon = painterResource(R.drawable.ic_shopping_outline),
+                    )
+                } else {
+                    LazyColumn(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .weight(1f),
+                        contentPadding = PaddingValues(vertical = BasePadding)
+                    ) {
+                        itemsIndexed(products) { index, product ->
+                            ProductCard(
+                                modifier = Modifier.padding(horizontal = BasePadding),
+                                product = product,
+                                shouldToggleDescription = true,
+                                onOpenProductDetail = {},
+                                onNavigateToBooking = onNavigateToBooking
                             )
+
+                            if (index < products.lastIndex) {
+                                HorizontalDivider(
+                                    modifier = Modifier.padding(
+                                        vertical = SpacingXL,
+                                        horizontal = BasePadding
+                                    ),
+                                    color = Divider,
+                                    thickness = 0.55.dp
+                                )
+                            }
                         }
-                    }
 
-                    item {
-                        Protected(permission = PermissionEnum.BOOK_BUTTON_VIEW) {
-                            MainButtonOutlined(
-                                modifier = Modifier.padding(BasePadding),
-                                title = stringResource(R.string.seeAllServices),
-                                onClick = {  }
-                            )
+                        item {
+                            Protected(permission = PermissionEnum.BOOK_BUTTON_VIEW) {
+                                MainButtonOutlined(
+                                    modifier = Modifier.padding(BasePadding),
+                                    title = stringResource(R.string.seeAllServices),
+                                    onClick = {  }
+                                )
+                            }
                         }
                     }
                 }

@@ -1,5 +1,6 @@
 package com.example.scrollbooker.entity.booking.products.data.repository
 import com.example.scrollbooker.entity.booking.products.data.mappers.toDomain
+import com.example.scrollbooker.entity.booking.products.domain.model.LinkedProducts
 import com.example.scrollbooker.entity.booking.products.data.remote.ProductBaseInfoUpdateRequest
 import com.example.scrollbooker.entity.booking.products.data.remote.ProductCreateRequest
 import com.example.scrollbooker.entity.booking.products.data.remote.ProductFilterRequest
@@ -29,8 +30,13 @@ class ProductRepositoryImpl @Inject constructor(
         return api.getProductsByAppointmentId(appointmentId).map { it.toDomain() }
     }
 
-    override suspend fun getPostLinkedProducts(postId: Int, allowFallback: Boolean): List<Product> {
-        return api.getPostLinkedProducts(postId, allowFallback).map { it.toDomain() }
+    override suspend fun getPostLinkedProducts(
+        postId: Int,
+        allowFallback: Boolean,
+        lat: Float?,
+        lng: Float?
+    ): LinkedProducts {
+        return api.getPostLinkedProducts(postId, allowFallback, lat, lng).toDomain()
     }
 
     override suspend fun getProduct(productId: Int): Product {

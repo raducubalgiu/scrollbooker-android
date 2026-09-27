@@ -3,8 +3,10 @@ import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.viewModelScope
 import com.example.scrollbooker.components.customized.post.PostInteractionStore
 import com.example.scrollbooker.components.customized.post.PostViewHeartbeatTracker
+import com.example.scrollbooker.core.location.UserLocationService
 import com.example.scrollbooker.core.util.FeatureState
 import com.example.scrollbooker.components.customized.post.VideoPlayerManager
+import com.example.scrollbooker.entity.booking.appointment.domain.model.BusinessCoordinates
 import com.example.scrollbooker.entity.booking.employee.domain.useCase.GetEmployeesByOwnerUseCase
 import com.example.scrollbooker.entity.booking.products.domain.useCase.GetProductsByBusinessIdAndEmployeeIdUseCase
 import com.example.scrollbooker.entity.booking.schedule.domain.useCase.GetSchedulesByUserIdUseCase
@@ -28,6 +30,7 @@ import javax.inject.Inject
 class ProfileViewModel @Inject constructor(
     private val followUserUseCase: FollowUserUseCase,
     private val unfollowUserUseCase: UnfollowUserUseCase,
+    private val userLocationService: UserLocationService,
     savedStateHandle: SavedStateHandle,
 
     getUserProfileUseCase: GetUserProfileUseCase,
@@ -61,6 +64,9 @@ class ProfileViewModel @Inject constructor(
 
     override val userIdFlow: Flow<Int?> = userIdFlowInternal
     override val usernameFlow: Flow<String?> = usernameInternal
+
+    override suspend fun currentLocationForProfile(): BusinessCoordinates? =
+        userLocationService.currentLocation()
 
     private val _isSaving = MutableStateFlow<Boolean>(false)
     val isSaving: StateFlow<Boolean> = _isSaving.asStateFlow()

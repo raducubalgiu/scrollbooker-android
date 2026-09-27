@@ -308,6 +308,8 @@
     <string name="close">Închide</string>
     <string name="locationPermission">Permisiunea locației</string>
     <string name="locationPermissionDescription">Ne ajută să îți oferim servicii din apropiere și să îți personalizăm experiența</string>
+    <string name="allowLocationAccess">Permite accesul la locație</string>
+    <string name="notNow">Nu acum</string>
     <string name="bookings">Rezervări</string>
     <string name="seeAllProducts">Vezi toate produsele</string>
     <string name="nearestServices">Servicii în apropiere</string>
@@ -383,7 +385,6 @@
     <string name="maximumDistance">Distanța maximă</string>
     <string name="activateLocationForSeeTheDistance">Distanță indisponibilă - Nu ai activat permisiunea locației</string>
     <string name="navigationDirections">Direcții de navigare</string>
-    <string name="distanceText">la %1$s km de tine</string>
     <string name="opensOnDayAt">Deschide %s la %s</string>
     <string name="managedProducts">Produse gestionate</string>
     <string name="bookedServices">Servicii rezervate</string>

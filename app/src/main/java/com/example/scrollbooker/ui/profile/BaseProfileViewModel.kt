@@ -14,6 +14,7 @@ import com.example.scrollbooker.core.enums.MediaStatusEnum
 import com.example.scrollbooker.core.enums.ShareChannelEnum
 import com.example.scrollbooker.core.util.FeatureState
 import com.example.scrollbooker.core.util.withVisibleLoading
+import com.example.scrollbooker.entity.booking.appointment.domain.model.BusinessCoordinates
 import com.example.scrollbooker.entity.booking.employee.domain.model.Employee
 import com.example.scrollbooker.entity.booking.employee.domain.useCase.GetEmployeesByOwnerUseCase
 import com.example.scrollbooker.entity.booking.products.domain.model.UserProducts
@@ -66,6 +67,8 @@ abstract class BaseProfileViewModel(
     abstract val userIdFlow: Flow<Int?>
     abstract val usernameFlow: Flow<String?>
 
+    protected open suspend fun currentLocationForProfile(): BusinessCoordinates? = null
+
     private val pagingRefreshTrigger = MutableSharedFlow<Unit>(extraBufferCapacity = 1)
     protected val processingPostIds = MutableStateFlow<Set<Int>>(emptySet())
 
@@ -87,9 +90,13 @@ abstract class BaseProfileViewModel(
                     flow {
                         emit(FeatureState.Loading)
                         val response = if (shouldShowVisibleLoading) {
-                            withVisibleLoading { getUserProfileUseCase(currentUsername, lat = null, lng = null) }
+                            withVisibleLoading {
+                                val location = currentLocationForProfile()
+                                getUserProfileUseCase(currentUsername, lat = location?.lat, lng = location?.lng)
+                            }
                         } else {
-                            getUserProfileUseCase(currentUsername, lat = null, lng = null)
+                            val location = currentLocationForProfile()
+                            getUserProfileUseCase(currentUsername, lat = location?.lat, lng = location?.lng)
                         }
 
                         if (response is FeatureState.Success) {
@@ -250,7 +257,8 @@ abstract class BaseProfileViewModel(
 
     private suspend fun refreshProfileSilently() {
         val username = (profile.value as? FeatureState.Success)?.data?.username ?: return
-        val response = getUserProfileUseCase(username, lat = null, lng = null)
+        val location = currentLocationForProfile()
+        val response = getUserProfileUseCase(username, lat = location?.lat, lng = location?.lng)
 
         if (response is FeatureState.Success) {
             _isFollowState.value = response.data.isFollow

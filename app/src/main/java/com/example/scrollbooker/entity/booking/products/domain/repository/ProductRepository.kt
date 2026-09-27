@@ -3,6 +3,7 @@ import com.example.scrollbooker.entity.booking.products.data.remote.ProductBaseI
 import com.example.scrollbooker.entity.booking.products.data.remote.ProductCreateRequest
 import com.example.scrollbooker.entity.booking.products.data.remote.ProductFilterRequest
 import com.example.scrollbooker.entity.booking.products.data.remote.ProductVariantRequest
+import com.example.scrollbooker.entity.booking.products.domain.model.LinkedProducts
 import com.example.scrollbooker.entity.booking.products.domain.model.Product
 import com.example.scrollbooker.entity.booking.products.domain.model.UserProducts
 
@@ -14,7 +15,12 @@ interface ProductRepository {
         productsLimitPerService: Int?
     ): UserProducts
     suspend fun getProductsByAppointmentId(appointmentId: Int): List<Product>
-    suspend fun getPostLinkedProducts(postId: Int, allowFallback: Boolean): List<Product>
+    suspend fun getPostLinkedProducts(
+        postId: Int,
+        allowFallback: Boolean,
+        lat: Float? = null,
+        lng: Float? = null
+    ): LinkedProducts
     suspend fun getProduct(productId: Int): Product
     suspend fun createProduct(product: ProductCreateRequest, filters: List<ProductFilterRequest>): Product
     suspend fun deleteProduct(productId: Int)

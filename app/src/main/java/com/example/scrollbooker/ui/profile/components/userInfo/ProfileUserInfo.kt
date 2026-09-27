@@ -15,6 +15,7 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -29,6 +30,7 @@ import com.example.scrollbooker.components.core.avatar.Avatar
 import com.example.scrollbooker.core.extensions.formatRating
 import com.example.scrollbooker.core.util.Dimens.AvatarSizeXL
 import com.example.scrollbooker.core.util.Dimens.BasePadding
+import com.example.scrollbooker.core.util.Dimens.SpacingS
 import com.example.scrollbooker.core.util.Dimens.SpacingXL
 import com.example.scrollbooker.core.util.Dimens.SpacingXS
 import com.example.scrollbooker.entity.user.userProfile.domain.model.UserProfile
@@ -36,7 +38,6 @@ import com.example.scrollbooker.navigation.navigators.SocialParam
 import com.example.scrollbooker.ui.profile.components.userInfo.components.ProfileBio
 import com.example.scrollbooker.ui.profile.components.userInfo.components.ProfileBusinessOwner
 import com.example.scrollbooker.ui.profile.components.userInfo.components.ProfileCounters
-import com.example.scrollbooker.ui.profile.components.userInfo.components.ProfileLocationDistance
 import com.example.scrollbooker.ui.profile.components.userInfo.components.ProfileOpeningHours
 import com.example.scrollbooker.ui.theme.OnBackground
 import com.example.scrollbooker.ui.theme.Rating
@@ -82,6 +83,17 @@ fun ProfileUserInfo(
     val isBusinessOrEmployee = user.isBusinessOrEmployee
     val isOpenNow = user.openingHours.openNow
     val isEmployee = user.businessOwner?.id != user.id && user.businessId != null
+
+    val locationSummary = remember(user.isOwnProfile, user.distanceKm, user.address) {
+        if (user.isOwnProfile) {
+            null
+        } else {
+            listOfNotNull(
+                user.distanceKm?.let { "${"%.1f".format(it)}km" },
+                user.address
+            ).joinToString(" • ").takeIf { it.isNotBlank() }
+        }
+    }
 
 //    val intentActions = rememberIntentActions(user)
 //
@@ -169,6 +181,17 @@ fun ProfileUserInfo(
                         openingHours = user.openingHours
                     )
                 }
+
+                if(locationSummary != null) {
+                    Spacer(Modifier.height(SpacingS))
+                    Text(
+                        text = locationSummary,
+                        style = bodyMedium,
+                        color = Color.Gray,
+                        maxLines = 1,
+                        overflow = TextOverflow.Ellipsis
+                    )
+                }
             }
         }
     }
@@ -198,10 +221,6 @@ fun ProfileUserInfo(
 //        ProfileIntentActionsList(
 //            intentList = filteredIntentList
 //        )
-
-        if(!user.isOwnProfile && user.distanceKm != null) {
-            ProfileLocationDistance(distance = user.distanceKm)
-        }
     }
 
     if(!user.bio.isNullOrBlank()) {

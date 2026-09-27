@@ -69,7 +69,7 @@ fun PostActions(
         PostAction(
             isEnabled = !isSavingLike,
             counter = counters.likeCount,
-            icon = R.drawable.ic_heart_solid,
+            icon = R.drawable.ic_heart_outlined,
             tint = if (userActions.isLiked) Error
                    else Color.White,
             onClick = onLike
