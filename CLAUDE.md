@@ -6,6 +6,15 @@ narrowly-scoped `app/CLAUDE.md` also exists with quick build commands and
 general code-style rules — both apply; when they overlap, this file is the
 more detailed/authoritative one for architecture and data-flow rules.
 
+## Git workflow
+
+**Claude never runs `git commit` or `git push` in this repo, under any
+circumstance, even after finishing and verifying a change.** Leave edits as
+uncommitted working-tree changes and say so explicitly when reporting a
+change as done — committing and pushing are the user's own action, always.
+This applies regardless of how confident the change is or how trivial it
+seems; there is no "safe enough to commit" exception.
+
 ## Project Overview
 
 - **Name**: Scroll Booker — a booking marketplace app with a TikTok/Instagram
