@@ -49,9 +49,9 @@ private val IdleTrackHeight = 2.dp
 private val ActiveTrackHeight = 4.dp
 private val IdleThumbRadius = 0.dp
 private val ActiveThumbRadius = 6.dp
+
 val VideoScrubberTouchHeight = 16.dp
 private val TouchTargetHeight = VideoScrubberTouchHeight
-private val TrackBottomInset = 2.dp
 
 @Composable
 fun VideoScrubber(
@@ -123,8 +123,9 @@ fun VideoScrubber(
         }
 
         val isScrubberActive = isDragging || isPaused
-        val isShortVideo = durationMs.longValue in 1 until ShortVideoDurationThresholdMs
-        val isTrackVisible = isScrubberActive || !isShortVideo
+        val isPlayerReady = durationMs.longValue > 0
+        val isShortVideo = isPlayerReady && durationMs.longValue < ShortVideoDurationThresholdMs
+        val isTrackVisible = isPlayerReady && (isScrubberActive || !isShortVideo)
 
         val trackHeight by animateDpAsState(
             targetValue = if (isScrubberActive) ActiveTrackHeight else IdleTrackHeight,
@@ -139,18 +140,17 @@ fun VideoScrubber(
             label = "scrubberVisibility"
         )
 
+        val activeLineAlpha by animateFloatAsState(
+            targetValue = if (isScrubberActive) 1.0f else 0.65f,
+            label = "scrubberActiveAlpha"
+        )
+
         Canvas(
             modifier = Modifier
                 .align(Alignment.BottomCenter)
                 .fillMaxWidth()
                 .height(TouchTargetHeight)
                 .pointerInput(player) {
-                    // Read events on the Initial pass, which always resolves before the Main
-                    // pass that Button/clickable use — a hard Compose ordering guarantee,
-                    // regardless of sibling z-order. That lets us decide tap-vs-drag first:
-                    // consuming here (drag) is guaranteed to reach Book Now before its own
-                    // click detector runs; not consuming (plain tap) leaves the event pristine
-                    // for Book Now's Main-pass handler to fire normally.
                     awaitEachGesture {
                         val down = awaitFirstDown(requireUnconsumed = false, pass = PointerEventPass.Initial)
                         val pointerId = down.id
@@ -193,22 +193,24 @@ fun VideoScrubber(
         ) {
             val fraction = if (isDragging) dragFraction else progress.floatValue
             val trackStrokePx = trackHeight.toPx()
-            val y = size.height - TrackBottomInset.toPx()
+            val y = size.height - ActiveThumbRadius.toPx()
 
             drawLine(
-                color = Color.White.copy(alpha = 0.35f * trackAlpha),
+                color = Color.White.copy(alpha = 0.25f * trackAlpha),
                 start = Offset(0f, y),
                 end = Offset(size.width, y),
                 strokeWidth = trackStrokePx,
                 cap = StrokeCap.Round
             )
+
             drawLine(
-                color = Color.White.copy(alpha = trackAlpha),
+                color = Color.White.copy(alpha = activeLineAlpha * trackAlpha),
                 start = Offset(0f, y),
                 end = Offset(size.width * fraction, y),
                 strokeWidth = trackStrokePx,
                 cap = StrokeCap.Round
             )
+
             if (thumbRadius > 0.dp) {
                 drawCircle(
                     color = Color.White.copy(alpha = trackAlpha),
@@ -219,6 +221,7 @@ fun VideoScrubber(
         }
     }
 }
+
 
 @Composable
 private fun VideoTimeLabel(currentTimeMs: Long, totalTimeMs: Long) {
