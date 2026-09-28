@@ -101,7 +101,7 @@ fun MyCalendarHeader(
                             onAction(MyCalendarHeaderStateAction.OnChangeTab(date, index))
                         }
                     },
-                    bgColor = if(isCurrentTab) Primary else Color.Transparent,
+                    bgColor = if(isCurrentTab) OnBackground else Color.Transparent,
                     label = displayShortDayOfWeek(date, AppLocaleProvider.current()),
                     isLoading = state.isRefreshing,
                     isDayAvailable = isAvailable

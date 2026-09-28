@@ -6,7 +6,6 @@ import com.example.scrollbooker.core.enums.AppointmentChannelEnum
 import com.example.scrollbooker.core.enums.BusinessShortDomainEnum
 import com.example.scrollbooker.core.enums.toDomainColor
 import com.example.scrollbooker.core.extensions.monochromeGradient
-import com.example.scrollbooker.core.extensions.parseTimeStringFromLocalDateTimeString
 import com.example.scrollbooker.entity.nomenclature.currency.domain.model.Currency
 import com.example.scrollbooker.ui.theme.Divider
 import com.example.scrollbooker.ui.theme.Error
@@ -46,7 +45,8 @@ data class CalendarEvents(
         val baseBg: Color = when {
             isBooked && info?.channel == AppointmentChannelEnum.SCROLL_BOOKER -> Primary
             isBooked && info?.channel == AppointmentChannelEnum.OWN_CLIENT -> domainColor
-            isBlocked -> Error
+            isBlocked && info?.isExternal == true -> domainColor
+            isBlocked && info?.isExternal == false -> Error
             isLastMinute -> LastMinute
             else -> SurfaceBG
         }
@@ -68,9 +68,9 @@ data class CalendarEvents(
 
         val borderAlpha = when {
             isBooked && info?.channel == AppointmentChannelEnum.SCROLL_BOOKER -> 0.25f
-            isBooked && info?.channel == AppointmentChannelEnum.OWN_CLIENT -> 0.45f
-            isBlocked -> 0.45f
-            isLastMinute -> 0.45f
+            isBooked && info?.channel == AppointmentChannelEnum.OWN_CLIENT -> 0.4f
+            isBlocked -> 0.4f
+            isLastMinute -> 0.4f
             else -> 0.30f
         }
 
@@ -85,7 +85,8 @@ data class CalendarEvents(
         val line = when {
             isBooked && info?.channel == AppointmentChannelEnum.SCROLL_BOOKER -> Primary.copy(alpha = lineAlpha)
             isBooked && info?.channel == AppointmentChannelEnum.OWN_CLIENT -> domainColor.copy(alpha = lineAlpha)
-            isBlocked -> Error.copy(alpha = lineAlpha)
+            isBlocked && info?.isExternal == true -> domainColor.copy(alpha = lineAlpha)
+            isBlocked && info?.isExternal == false -> Error.copy(alpha = lineAlpha)
             isLastMinute -> LastMinute.copy(alpha = lineAlpha)
             else -> SurfaceBG
         }
@@ -93,7 +94,8 @@ data class CalendarEvents(
         val border = when {
             isBooked && info?.channel == AppointmentChannelEnum.SCROLL_BOOKER -> Primary.copy(alpha = borderAlpha)
             isBooked && info?.channel == AppointmentChannelEnum.OWN_CLIENT -> domainColor.copy(alpha = borderAlpha)
-            isBlocked -> Error.copy(alpha = borderAlpha)
+            isBlocked && info?.isExternal == true -> domainColor.copy(alpha = borderAlpha)
+            isBlocked && info?.isExternal == false -> Error.copy(alpha = borderAlpha)
             isLastMinute -> LastMinute.copy(alpha = borderAlpha)
             else -> Divider.copy(alpha = borderAlpha)
         }
@@ -153,6 +155,7 @@ data class CalendarEventsInfo(
     val totalDuration: Int,
     val paymentCurrency: Currency,
     val products: List<CalendarEventsProduct> = emptyList(),
+    val isExternal: Boolean
 )
 
 data class CalendarEventsProduct(
@@ -176,17 +179,6 @@ fun CalendarEvents.blockedStartLocale(): Set<LocalDateTime> =
         .map { it.startDateLocale }
         .filterNotNull()
         .toSet()
-
-data class SlotTimeBounds(
-    val start: String,
-    val end: String
-)
-
-fun CalendarEventsSlot.toTime(): SlotTimeBounds =
-    SlotTimeBounds(
-        start = parseTimeStringFromLocalDateTimeString(startDateLocale),
-        end = parseTimeStringFromLocalDateTimeString(endDateLocale)
-    )
 
 fun CalendarEventsSlot.isFreeSlot(): Boolean {
     val now = LocalDateTime.now()

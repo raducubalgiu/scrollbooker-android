@@ -90,7 +90,8 @@ fun CalendarEventsInfoDto.toDomain(): CalendarEventsInfo {
         totalDiscount = totalDiscount,
         totalDuration = totalDuration,
         paymentCurrency = paymentCurrency,
-        products = products.map { it.toDomain() }
+        products = products.map { it.toDomain() },
+        isExternal = isExternal
     )
 }
 

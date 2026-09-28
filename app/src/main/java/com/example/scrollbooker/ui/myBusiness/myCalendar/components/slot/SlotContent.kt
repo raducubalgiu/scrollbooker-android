@@ -6,12 +6,12 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.ColumnScope
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.material3.Icon
@@ -24,10 +24,13 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import com.example.scrollbooker.R
 import com.example.scrollbooker.components.core.inputs.RoundCheckbox
+import com.example.scrollbooker.core.extensions.toTwoDecimals
 import com.example.scrollbooker.core.util.Dimens.SpacingS
 import com.example.scrollbooker.entity.booking.availability.domain.model.BlockStatus
 import com.example.scrollbooker.entity.booking.availability.domain.model.CalendarEventsSlot
@@ -36,7 +39,9 @@ import com.example.scrollbooker.entity.booking.availability.domain.model.isFreeS
 import com.example.scrollbooker.ui.myBusiness.myCalendar.BlockUiState
 import com.example.scrollbooker.ui.theme.Divider
 import com.example.scrollbooker.ui.theme.Error
-import com.example.scrollbooker.ui.theme.labelMedium
+import com.example.scrollbooker.ui.theme.OnBackground
+import com.example.scrollbooker.ui.theme.bodyMedium
+import com.example.scrollbooker.ui.theme.bodySmall
 
 @Composable
 fun SlotContent(
@@ -61,8 +66,22 @@ fun SlotContent(
     val isCheckboxEnabled = blockStatus != BlockStatus.Permanent
     val isCheckboxChecked = isBlockedLocally || isPermanentlyBlocked
 
-    val showBookLine = !slot.isFreeSlot() && !isBefore && !slot.isBlocked
+    val isExternal = slot.info?.isExternal == true
+
+    val showBookLine = (!slot.isFreeSlot() && !slot.isBlocked) || isExternal
     val blockedMessage = slot.info?.message ?: stringResource(R.string.blocked)
+
+    val servicesNames = slot.info?.products
+        ?.joinToString(" • ") { it.productName }
+        .orEmpty()
+
+    val price = slot.info?.totalPriceWithDiscount?.toTwoDecimals()
+    val currencyName = slot.info?.paymentCurrency?.name
+
+    val subtitle = listOfNotNull(
+        servicesNames.takeIf { it.isNotBlank() },
+        price?.let { if (currencyName != null) "$it $currencyName" else it }
+    ).joinToString(" • ")
 
     Column(verticalArrangement = Arrangement.spacedBy(2.dp)) {
         Row(modifier = Modifier.fillMaxWidth()) {
@@ -71,27 +90,19 @@ fun SlotContent(
                     modifier = Modifier
                         .width(4.dp)
                         .fillMaxHeight()
-                        .clip(shape = ShapeDefaults.ExtraLarge)
+                        .clip(shape = ShapeDefaults.Large)
                         .background(lineColor)
                 )
 
                 Spacer(Modifier.width(SpacingS))
             }
 
-            Column {
+            Box {
                 Row(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .height(40.dp),
+                    modifier = Modifier.fillMaxWidth(),
                     verticalAlignment = Alignment.CenterVertically,
                     horizontalArrangement = Arrangement.SpaceBetween
                 ) {
-                    Text(
-                        text = "${slot.startDateLocale!!.toLocalTime()} - ${slot.endDateLocale!!.toLocalTime()}",
-                        style = labelMedium,
-                        maxLines = 1
-                    )
-
                     AnimatedVisibility(
                         visible = showCheckbox && isCheckboxEnabled,
                         enter = fadeIn(),
@@ -116,10 +127,19 @@ fun SlotContent(
                     if (!isVeryCompact) {
                         when {
                             slot.isBlocked -> {
-                                SlotContainer(
-                                    text = blockedMessage,
-                                    color = lineColor
-                                )
+                                SlotContainer(text = blockedMessage) {
+                                    Column(
+                                        modifier = Modifier.fillMaxWidth().weight(1f),
+                                        verticalArrangement = Arrangement.Bottom,
+                                        horizontalAlignment = Alignment.Start
+                                    ) {
+                                        Text(
+                                            text = if(isExternal) "Din Google Calendar" else "Slot Blocat",
+                                            style = bodySmall,
+                                            color = if(isExternal) Color.Gray else lineColor
+                                        )
+                                    }
+                                }
                             }
 
                             isCheckboxChecked -> {
@@ -131,7 +151,17 @@ fun SlotContent(
 
                             blockUiState.isBlocking && slot.isFreeSlot() -> null
 
-                            slot.isBooked -> SlotIsBooked(slot, maxLines)
+                            slot.isBooked -> {
+                                SlotContainer(text = slot.info?.customer?.fullname ?: stringResource(R.string.booked)) {
+                                    Text(
+                                        text = subtitle,
+                                        style = bodyMedium,
+                                        maxLines = maxLines,
+                                        overflow = TextOverflow.Ellipsis,
+                                        color = Color.Gray
+                                    )
+                                }
+                            }
 
                             slot.isLastMinute -> {
                                 SlotIsLastMinute(
@@ -147,9 +177,6 @@ fun SlotContent(
                             }
 
                             else -> {
-                                // Scales with the slot's actual height instead of a fixed size -
-                                // a short-duration slot has little room, and a 40.dp icon would
-                                // overflow/clip awkwardly against it.
                                 val iconSize = (height * 0.6f).coerceIn(16.dp, 28.dp)
 
                                 Box(
@@ -173,15 +200,19 @@ fun SlotContent(
 }
 
 @Composable
-private fun SlotContainer(text: String, color: Color) {
-    Box(
-        modifier = Modifier.fillMaxSize(),
-        contentAlignment = Alignment.Center
-    ) {
+private fun SlotContainer(
+    text: String,
+    color: Color = OnBackground,
+    content: (@Composable ColumnScope.() -> Unit)? = null
+) {
+    Column(modifier = Modifier.fillMaxSize()) {
         Text(
-            modifier = Modifier.align(Alignment.Center),
+            style = bodyMedium,
             color = color,
-            text = text
+            text = text,
+            fontWeight = FontWeight.SemiBold
         )
+
+        content?.invoke(this)
     }
 }

@@ -41,12 +41,12 @@ fun CalendarSlot(
             .height(touchHeight)
             .fillMaxWidth()
             .padding(horizontal = 4.dp)
-            .clip(shape = ShapeDefaults.Medium)
+            .clip(shape = ShapeDefaults.Small)
             .background(style.background)
             .border(
                 width = 1.dp,
                 color = style.borderColor,
-                shape = ShapeDefaults.Medium
+                shape = ShapeDefaults.Small
             )
             .clickable(enabled = isEnabled) {
                 onSlotClick(slot)

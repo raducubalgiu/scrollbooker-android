@@ -89,6 +89,9 @@ data class CalendarEventsInfoDto(
     val paymentCurrency: Currency,
 
     val products: List<CalendarEventsProductDto> = emptyList(),
+
+    @SerializedName("is_external")
+    val isExternal: Boolean
 )
 
 data class CalendarEventsProductDto(
