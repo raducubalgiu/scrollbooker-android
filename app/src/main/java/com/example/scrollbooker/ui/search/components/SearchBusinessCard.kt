@@ -135,12 +135,10 @@ fun SearchBusinessCard(
 
         Spacer(Modifier.height(8.dp))
 
-        // Detalii business
         Column(modifier = Modifier.padding(vertical = 8.dp)) {
             Text(
                 text = name,
                 style = titleMedium.copy(fontWeight = FontWeight.SemiBold),
-                fontSize = 18.sp
             )
 
             Row(verticalAlignment = Alignment.CenterVertically) {
@@ -204,33 +202,3 @@ data class ServiceUiModel(
     val duration: String,
     val price: Int
 )
-
-//@Preview(
-//    name = "Light",
-//    showBackground = true,
-//    uiMode = Configuration.UI_MODE_NIGHT_NO
-//)
-//@Preview(
-//    name = "Dark",
-//    showBackground = true,
-//    uiMode = Configuration.UI_MODE_NIGHT_YES
-//)
-//@Composable
-//fun BusinessCardPreview() {
-//    ScrollBookerTheme(
-//        themePreferenceEnum = ThemePreferenceEnum.DARK
-//    ) {
-//        SearchBusinessCard(
-//            imageUrl = "https://picsum.photos/600/300",
-//            name = "Ida Spa Dorobanti",
-//            rating = 5.0,
-//            reviews = 4327,
-//            location = "Sector 1, București",
-//            services = listOf(
-//                ServiceUiModel("NEW Intensive Muscle Release Massage", "1 hr - 1 hr 30 mins", 280),
-//                ServiceUiModel("King Balinese Massage", "1 hr - 1 hr 30 mins", 280),
-//                ServiceUiModel("Neuro Sedative Relaxing Massage", "1 hr - 1 hr 30 mins", 290),
-//            )
-//        )
-//    }
-//}

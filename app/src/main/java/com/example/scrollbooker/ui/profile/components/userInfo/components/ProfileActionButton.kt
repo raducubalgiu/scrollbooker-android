@@ -1,4 +1,5 @@
 package com.example.scrollbooker.ui.profile.components.userInfo.components
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
@@ -20,6 +21,7 @@ fun ProfileActionButton(
     containerColor: Color = SurfaceBG,
     contentColor: Color = OnSurfaceBG,
     contentPadding: PaddingValues = PaddingValues(vertical = 14.dp),
+    border: BorderStroke? = null,
     content: @Composable () -> Unit,
 ) {
     Button(
@@ -28,6 +30,7 @@ fun ProfileActionButton(
         enabled = isEnabled,
         shape = shape,
         contentPadding = contentPadding,
+        border = border,
         colors = ButtonDefaults.buttonColors(
             containerColor = containerColor,
             contentColor = contentColor

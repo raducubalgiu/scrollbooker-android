@@ -18,7 +18,7 @@ import com.example.scrollbooker.core.extensions.displayShortDayOfWeek
 import com.example.scrollbooker.core.util.AppLocaleProvider
 import com.example.scrollbooker.core.util.Dimens.BasePadding
 import com.example.scrollbooker.components.customized.calendar.CalendarDayTab
-import com.example.scrollbooker.ui.theme.Primary
+import com.example.scrollbooker.ui.theme.OnBackground
 import org.threeten.bp.LocalDate
 
 @Composable
@@ -63,7 +63,7 @@ fun HeaderPager(
                             val targetDayIndex = page * 7 + index
                             onChangeTab(targetDayIndex)
                         },
-                        bgColor = if (isSelected) Primary else Color.Transparent,
+                        bgColor = if (isSelected) OnBackground else Color.Transparent,
                         label = remember(
                             date,
                             currentLocale

@@ -4,7 +4,6 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.SheetState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -15,12 +14,11 @@ import com.example.scrollbooker.core.util.Dimens.BasePadding
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.example.scrollbooker.components.core.layout.ErrorScreen
+import com.example.scrollbooker.components.core.sheet.Sheet
 import com.example.scrollbooker.components.core.sheet.SheetHeader
 import com.example.scrollbooker.components.customized.SchedulesSection
-import com.example.scrollbooker.core.util.Dimens.SpacingXL
 import com.example.scrollbooker.core.util.FeatureState
 import com.example.scrollbooker.entity.booking.schedule.domain.model.Schedule
-import com.example.scrollbooker.ui.theme.Background
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 
@@ -37,11 +35,9 @@ fun UserScheduleSheet(
     val scope = rememberCoroutineScope()
     val schedules by schedulesFlow.collectAsStateWithLifecycle()
 
-    ModalBottomSheet(
+    Sheet(
         sheetState = sheetState,
-        onDismissRequest = { scope.launch { sheetState.hide() } },
-        containerColor = Background,
-        dragHandle = {}
+        onClose = { scope.launch { sheetState.hide() } },
     ) {
         SheetHeader(
             title = stringResource(R.string.scheduleShort),
@@ -50,7 +46,7 @@ fun UserScheduleSheet(
 
         Column(modifier = Modifier
             .fillMaxWidth()
-            .padding(SpacingXL)
+            .padding(horizontal = BasePadding)
         ) {
             when(val state = schedules) {
                 is FeatureState.Loading -> ScheduleShimmer()

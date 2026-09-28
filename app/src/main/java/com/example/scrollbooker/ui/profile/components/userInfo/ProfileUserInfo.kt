@@ -15,7 +15,6 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -27,6 +26,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.scrollbooker.R
 import com.example.scrollbooker.components.core.avatar.Avatar
+import com.example.scrollbooker.components.customized.DisplayAddressWithDistance
 import com.example.scrollbooker.core.extensions.formatRating
 import com.example.scrollbooker.core.util.Dimens.AvatarSizeXL
 import com.example.scrollbooker.core.util.Dimens.BasePadding
@@ -83,17 +83,6 @@ fun ProfileUserInfo(
     val isBusinessOrEmployee = user.isBusinessOrEmployee
     val isOpenNow = user.openingHours.openNow
     val isEmployee = user.businessOwner?.id != user.id && user.businessId != null
-
-    val locationSummary = remember(user.isOwnProfile, user.distanceKm, user.address) {
-        if (user.isOwnProfile) {
-            null
-        } else {
-            listOfNotNull(
-                user.distanceKm?.let { "${"%.1f".format(it)}km" },
-                user.address
-            ).joinToString(" • ").takeIf { it.isNotBlank() }
-        }
-    }
 
 //    val intentActions = rememberIntentActions(user)
 //
@@ -169,7 +158,6 @@ fun ProfileUserInfo(
                         Text(
                             text = user.counters.ratingsAverage.formatRating(),
                             style = titleMedium,
-                            fontSize = 19.sp,
                             fontWeight = FontWeight.Bold,
                             color = OnBackground
                         )
@@ -182,14 +170,12 @@ fun ProfileUserInfo(
                     )
                 }
 
-                if(locationSummary != null) {
+                if (!user.isOwnProfile) {
                     Spacer(Modifier.height(SpacingS))
-                    Text(
-                        text = locationSummary,
-                        style = bodyMedium,
-                        color = Color.Gray,
-                        maxLines = 1,
-                        overflow = TextOverflow.Ellipsis
+
+                    DisplayAddressWithDistance(
+                        distanceKm = user.distanceKm,
+                        address = user.address ?: ""
                     )
                 }
             }

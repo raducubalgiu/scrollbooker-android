@@ -17,6 +17,7 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.scrollbooker.R
+import com.example.scrollbooker.components.customized.DisplayAddressWithDistance
 import com.example.scrollbooker.core.extensions.formatRating
 import com.example.scrollbooker.core.util.Dimens.SpacingS
 import com.example.scrollbooker.entity.booking.business.domain.model.NearbyBusiness
@@ -97,12 +98,9 @@ fun NearbyBusinessItem(
             overflow = TextOverflow.Ellipsis
         )
 
-        Text(
-            text = location.formattedAddress,
-            style = MaterialTheme.typography.bodyMedium,
-            color = Color.Gray,
-            maxLines = 1,
-            overflow = TextOverflow.Ellipsis
+        DisplayAddressWithDistance(
+            distanceKm = null,
+            address = location.formattedAddress
         )
     }
 }

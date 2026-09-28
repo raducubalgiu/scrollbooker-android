@@ -1,10 +1,9 @@
 package com.example.scrollbooker.ui.profile.components.userInfo.components
-import androidx.compose.foundation.border
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.width
-import androidx.compose.material3.ShapeDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -21,7 +20,6 @@ import com.example.scrollbooker.ui.theme.OnPrimary
 import com.example.scrollbooker.ui.theme.OnSurfaceBG
 import com.example.scrollbooker.ui.theme.Primary
 import com.example.scrollbooker.ui.theme.SurfaceBG
-import com.example.scrollbooker.ui.theme.bodyLarge
 import com.example.scrollbooker.ui.theme.bodyMedium
 
 @Composable
@@ -45,7 +43,7 @@ fun UserProfileActions(
                 Text(
                     text = stringResource(R.string.book),
                     color = OnPrimary,
-                    style = bodyLarge,
+                    style = bodyMedium,
                     fontWeight = FontWeight.Bold,
                 )
             }
@@ -55,22 +53,17 @@ fun UserProfileActions(
 
         isFollow?.let {
             ProfileActionButton(
-                modifier = Modifier
-                    .weight(5f)
-                    .border(
-                        width = 1.dp,
-                        color = if(isFollow) Divider else SurfaceBG,
-                        shape = ShapeDefaults.ExtraLarge
-                    ),
-                containerColor = if(isFollow) Color.Transparent else SurfaceBG,
+                modifier = Modifier.weight(5f),
+                containerColor = if (isFollow) Color.Transparent else SurfaceBG,
                 contentColor = OnPrimary,
                 isEnabled = isFollowEnabled,
-                onClick = { onFollow?.invoke() }
+                onClick = { onFollow?.invoke() },
+                border = if (isFollow) BorderStroke(1.dp, Divider) else null
             ) {
                 Text(
-                    text = if(isFollow) stringResource(R.string.following) else stringResource(R.string.follow),
-                    color = if(isFollow) OnBackground else OnSurfaceBG,
-                    style = bodyLarge,
+                    text = if (isFollow) stringResource(R.string.following) else stringResource(R.string.follow),
+                    color = if (isFollow) OnBackground else OnSurfaceBG,
+                    style = bodyMedium,
                     fontWeight = FontWeight.Bold,
                 )
             }

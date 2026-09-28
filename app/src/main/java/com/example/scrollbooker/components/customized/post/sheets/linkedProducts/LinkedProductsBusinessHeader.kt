@@ -8,7 +8,6 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -16,6 +15,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import com.example.scrollbooker.components.core.avatar.Avatar
+import com.example.scrollbooker.components.customized.DisplayAddressWithDistance
 import com.example.scrollbooker.components.customized.RatingsStars
 import com.example.scrollbooker.core.extensions.formatRating
 import com.example.scrollbooker.core.util.Dimens.AvatarSizeM
@@ -28,13 +28,6 @@ import com.example.scrollbooker.ui.theme.bodyMedium
 
 @Composable
 fun LinkedProductsBusinessHeader(business: LinkedProductsBusiness) {
-    val locationSummary = remember(business.distanceKm, business.address) {
-        listOfNotNull(
-            business.distanceKm?.let { "${"%.1f".format(it)}km" },
-            business.address
-        ).joinToString(" • ").takeIf { it.isNotBlank() }
-    }
-
     Row(
         modifier = Modifier.padding(BasePadding),
         verticalAlignment = Alignment.CenterVertically
@@ -75,15 +68,10 @@ fun LinkedProductsBusinessHeader(business: LinkedProductsBusiness) {
 
             Spacer(Modifier.height(SpacingS))
 
-            if (locationSummary != null) {
-                Text(
-                    text = locationSummary,
-                    color = Color.Gray,
-                    style = bodyMedium,
-                    maxLines = 1,
-                    overflow = TextOverflow.Ellipsis
-                )
-            }
+            DisplayAddressWithDistance(
+                distanceKm = business.distanceKm,
+                address = business.address ?: ""
+            )
         }
     }
 }

@@ -1,5 +1,7 @@
 package com.example.scrollbooker.ui.myBusiness.myCalendar.components.header
 
+import androidx.compose.foundation.border
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
@@ -8,16 +10,14 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.automirrored.filled.ArrowForwardIos
-import androidx.compose.material.icons.filled.ArrowBackIosNew
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.IconButtonDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
@@ -25,7 +25,6 @@ import com.example.scrollbooker.R
 import com.example.scrollbooker.components.core.dropdown.EmployeeSelectDropdown
 import com.example.scrollbooker.components.core.dropdown.OwnIdentityChip
 import com.example.scrollbooker.core.util.Dimens.BasePadding
-import com.example.scrollbooker.core.util.Dimens.SpacingM
 import com.example.scrollbooker.core.util.Dimens.SpacingS
 import com.example.scrollbooker.core.util.Dimens.SpacingXS
 import com.example.scrollbooker.ui.myBusiness.myCalendar.components.header.MyCalendarHeaderActionsStateAction.HandleNextWeek
@@ -45,7 +44,7 @@ fun MyCalendarHeaderActions(
     Row(modifier = Modifier
         .fillMaxWidth()
         .padding(
-            vertical = SpacingM,
+            vertical = SpacingXS,
             horizontal = BasePadding
         ),
         verticalAlignment = Alignment.CenterVertically,
@@ -91,33 +90,35 @@ fun MyCalendarHeaderActions(
         Spacer(Modifier.width(SpacingS))
 
         Row(verticalAlignment = Alignment.CenterVertically) {
-            IconButton(
-                onClick = { if (state.enableBack) onAction(HandlePreviousWeek) },
-                colors = IconButtonDefaults.iconButtonColors(
-                    containerColor = if(state.enableBack) SurfaceBG else Color.Transparent,
-                    contentColor = if(state.enableBack) OnSurfaceBG.copy(0.8f) else Divider
-                )
+            Box(
+                modifier = Modifier
+                    .border(1.dp, Divider, CircleShape)
+                    .clip(CircleShape)
+                    .clickable(enabled = state.enableBack) { onAction(HandlePreviousWeek) }
+                    .padding(8.dp),
+                contentAlignment = Alignment.Center
             ) {
                 Icon(
-                    modifier = Modifier.size(15.dp),
-                    imageVector = Icons.Default.ArrowBackIosNew,
+                    painter = painterResource(R.drawable.ic_arrow_chevron_left_outline),
                     contentDescription = null,
+                    tint = if(state.enableBack) OnSurfaceBG.copy(0.8f) else Divider
                 )
             }
 
             Spacer(Modifier.width(SpacingXS))
 
-            IconButton(
-                onClick = { if (state.enableNext) onAction(HandleNextWeek) },
-                colors = IconButtonDefaults.iconButtonColors(
-                    containerColor = if(state.enableNext) SurfaceBG else Color.Transparent,
-                    contentColor = if(state.enableNext) OnSurfaceBG.copy(0.8f) else Divider
-                )
+            Box(
+                modifier = Modifier
+                    .border(1.dp, Divider, CircleShape)
+                    .clip(CircleShape)
+                    .clickable(enabled = state.enableNext) { onAction(HandleNextWeek) }
+                    .padding(8.dp),
+                contentAlignment = Alignment.Center
             ) {
                 Icon(
-                    modifier = Modifier.size(15.dp),
-                    imageVector = Icons.AutoMirrored.Filled.ArrowForwardIos,
+                    painter = painterResource(R.drawable.ic_arrow_chevron_right_outlines),
                     contentDescription = null,
+                    tint = if(state.enableNext) OnSurfaceBG.copy(0.8f) else Divider
                 )
             }
         }

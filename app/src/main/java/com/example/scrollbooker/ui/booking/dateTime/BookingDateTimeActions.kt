@@ -1,7 +1,9 @@
 package com.example.scrollbooker.ui.booking.dateTime
 
 import androidx.compose.foundation.border
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -9,16 +11,12 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.automirrored.filled.ArrowForwardIos
-import androidx.compose.material.icons.filled.ArrowBackIosNew
 import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
-import androidx.compose.material3.IconButtonDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
@@ -26,9 +24,10 @@ import androidx.compose.ui.unit.dp
 import com.example.scrollbooker.R
 import com.example.scrollbooker.core.util.Dimens.BasePadding
 import com.example.scrollbooker.core.util.Dimens.SpacingS
+import com.example.scrollbooker.core.util.Dimens.SpacingXS
 import com.example.scrollbooker.ui.theme.Divider
 import com.example.scrollbooker.ui.theme.OnSurfaceBG
-import com.example.scrollbooker.ui.theme.titleLarge
+import com.example.scrollbooker.ui.theme.titleMedium
 
 @Composable
 fun BookingDateTimeActions(
@@ -57,49 +56,41 @@ fun BookingDateTimeActions(
 
             Text(
                 text = period,
-                style = titleLarge,
+                style = titleMedium,
                 fontWeight = FontWeight.SemiBold
             )
         }
 
         Row(verticalAlignment = Alignment.CenterVertically) {
-            IconButton(
-                onClick = { if (enableBack) handlePreviousWeek() },
-                modifier = Modifier.border(
-                    width = 1.dp,
-                    color = if(enableBack) Divider else Color.Transparent,
-                    shape = CircleShape
-                ),
-                colors = IconButtonDefaults.iconButtonColors(
-                    containerColor = Color.Transparent,
-                    contentColor = if (enableBack) OnSurfaceBG.copy(alpha = 0.8f) else Divider
-                )
+            Box(
+                modifier = Modifier
+                    .border(1.dp, Divider, CircleShape)
+                    .clip(CircleShape)
+                    .clickable(enabled = enableBack) { handlePreviousWeek() }
+                    .padding(8.dp),
+                contentAlignment = Alignment.Center
             ) {
                 Icon(
-                    modifier = Modifier.size(15.dp),
-                    imageVector = Icons.Default.ArrowBackIosNew,
+                    painter = painterResource(R.drawable.ic_arrow_chevron_left_outline),
                     contentDescription = null,
+                    tint = if(enableBack) OnSurfaceBG.copy(0.8f) else Divider
                 )
             }
 
-            Spacer(Modifier.width(SpacingS))
+            Spacer(Modifier.width(SpacingXS))
 
-            IconButton(
-                onClick = { if (enableNext) handleNextWeek() },
-                modifier = Modifier.border(
-                    width = 1.dp,
-                    color = if(enableNext) Divider else Color.Transparent,
-                    shape = CircleShape
-                ),
-                colors = IconButtonDefaults.iconButtonColors(
-                    containerColor = Color.Transparent,
-                    contentColor = if (enableNext) OnSurfaceBG.copy(alpha = 0.8f) else Divider
-                )
+            Box(
+                modifier = Modifier
+                    .border(1.dp, Divider, CircleShape)
+                    .clip(CircleShape)
+                    .clickable(enabled = enableNext) { handleNextWeek() }
+                    .padding(8.dp),
+                contentAlignment = Alignment.Center
             ) {
                 Icon(
-                    modifier = Modifier.size(15.dp),
-                    imageVector = Icons.AutoMirrored.Filled.ArrowForwardIos,
+                    painter = painterResource(R.drawable.ic_arrow_chevron_right_outlines),
                     contentDescription = null,
+                    tint = if(enableNext) OnSurfaceBG.copy(0.8f) else Divider
                 )
             }
         }

@@ -19,6 +19,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import com.example.scrollbooker.components.core.avatar.AvatarWithRating
+import com.example.scrollbooker.core.util.Dimens.AvatarSizeL
 import com.example.scrollbooker.core.util.Dimens.BasePadding
 import com.example.scrollbooker.entity.booking.business.domain.model.BusinessProfileEmployee
 import com.example.scrollbooker.ui.theme.bodyMedium
@@ -42,7 +43,7 @@ fun BusinessEmployeeItem(
             verticalArrangement = Arrangement.Center
         ) {
             AvatarWithRating(
-                size = 80.dp,
+                size = AvatarSizeL,
                 url = "${employee.avatar}",
                 rating = employee.ratingsAverage,
                 onClick = onNavigateToEmployeeProfile

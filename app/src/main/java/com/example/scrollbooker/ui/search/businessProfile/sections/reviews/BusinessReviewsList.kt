@@ -19,6 +19,7 @@ import com.example.scrollbooker.components.core.avatar.Avatar
 import com.example.scrollbooker.components.customized.RatingsStars
 import com.example.scrollbooker.core.extensions.display
 import com.example.scrollbooker.core.util.Dimens.AvatarSizeM
+import com.example.scrollbooker.core.util.Dimens.AvatarSizeS
 import com.example.scrollbooker.core.util.Dimens.BasePadding
 import com.example.scrollbooker.core.util.Dimens.SpacingS
 import com.example.scrollbooker.core.util.Dimens.SpacingXS
@@ -27,6 +28,7 @@ import com.example.scrollbooker.core.util.Dimens.SpacingXXS
 import com.example.scrollbooker.entity.booking.business.domain.model.BusinessProfileReview
 import com.example.scrollbooker.navigation.navigators.UserProfileParam
 import com.example.scrollbooker.ui.theme.OnBackground
+import com.example.scrollbooker.ui.theme.bodyLarge
 import com.example.scrollbooker.ui.theme.bodyMedium
 import com.example.scrollbooker.ui.theme.titleMedium
 
@@ -47,7 +49,7 @@ fun BusinessReviewsList(
             ) {
                 Avatar(
                     url = r.reviewer.avatar ?: "",
-                    size = AvatarSizeM,
+                    size = AvatarSizeS,
                     onClick = {
                         onNavigateToReviewerProfile(
                             UserProfileParam(r.reviewer.id, r.reviewer.username, r.reviewer.profession)
@@ -62,7 +64,6 @@ fun BusinessReviewsList(
                         maxLines = 1,
                         overflow = TextOverflow.Ellipsis,
                         modifier = Modifier.padding(bottom = SpacingXXS),
-                        style = titleMedium,
                         color = OnBackground,
                         text = r.reviewer.fullName
                     )

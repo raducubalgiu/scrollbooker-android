@@ -36,7 +36,7 @@ fun MyProfileActions(
         ) {
             Text(
                 text = stringResource(R.string.editProfile),
-                style = bodyLarge,
+                style = bodyMedium,
                 fontWeight = FontWeight.Bold,
                 color = OnBackground
             )
@@ -59,7 +59,7 @@ fun MyProfileActions(
                     Spacer(Modifier.width(SpacingM))
                     Text(
                         text = stringResource(R.string.calendar),
-                        style = bodyLarge,
+                        style = bodyMedium,
                         fontWeight = FontWeight.Bold,
                         color = OnBackground
                     )
@@ -72,7 +72,7 @@ fun MyProfileActions(
             ) {
                 Text(
                     text = stringResource(R.string.shareProfile),
-                    style = bodyLarge,
+                    style = bodyMedium,
                     fontWeight = FontWeight.Bold,
                     color = OnBackground
                 )
