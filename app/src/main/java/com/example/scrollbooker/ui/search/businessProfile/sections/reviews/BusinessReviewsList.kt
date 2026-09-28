@@ -12,6 +12,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -65,7 +66,8 @@ fun BusinessReviewsList(
                         overflow = TextOverflow.Ellipsis,
                         modifier = Modifier.padding(bottom = SpacingXXS),
                         color = OnBackground,
-                        text = r.reviewer.fullName
+                        text = r.reviewer.fullName,
+                        fontWeight = FontWeight.SemiBold
                     )
 
                     Spacer(Modifier.height(SpacingXS))

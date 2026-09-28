@@ -5,7 +5,6 @@ import androidx.compose.animation.core.tween
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
 import androidx.compose.animation.togetherWith
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
@@ -17,7 +16,6 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.ScrollableTabRow
 import androidx.compose.material3.ShapeDefaults
-import androidx.compose.material3.Tab
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -25,13 +23,12 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import com.example.scrollbooker.R
 import com.example.scrollbooker.components.core.buttons.MainButtonOutlined
+import com.example.scrollbooker.components.core.tabs.ServiceTab
 import com.example.scrollbooker.components.customized.productCard.ProductCard
 import com.example.scrollbooker.core.util.Dimens.BasePadding
 import com.example.scrollbooker.core.util.Dimens.SpacingS
@@ -39,9 +36,6 @@ import com.example.scrollbooker.entity.booking.products.domain.model.Product
 import com.example.scrollbooker.entity.booking.products.domain.model.UserProducts
 import com.example.scrollbooker.ui.theme.Background
 import com.example.scrollbooker.ui.theme.Divider
-import com.example.scrollbooker.ui.theme.OnBackground
-import com.example.scrollbooker.ui.theme.OnSurfaceBG
-import com.example.scrollbooker.ui.theme.SurfaceBG
 import com.example.scrollbooker.ui.theme.bodyMedium
 import com.example.scrollbooker.ui.theme.titleLarge
 
@@ -71,30 +65,15 @@ fun BusinessServicesSection(
                 divider = {},
                 indicator = { _ -> Box(Modifier.size(0.dp)) },
                 edgePadding = 0.dp,
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(vertical = 8.dp)
+                modifier = Modifier.fillMaxWidth()
             ) {
                 serviceGroups.forEachIndexed { index, group ->
                     val isSelected = currentPage == index
 
-                    Tab(
-                        selected = isSelected,
+                    ServiceTab(
+                        isSelected = isSelected,
+                        serviceName = group.service.shortName,
                         onClick = { currentPage = index },
-                        modifier = Modifier
-                            .clip(ShapeDefaults.ExtraLarge)
-                            .background(if (isSelected) SurfaceBG else Background)
-                            .height(42.dp),
-                        text = {
-                            val tabTitle = group.service.shortName
-                            Text(
-                                modifier = Modifier.padding(horizontal = 12.dp, vertical = 4.dp),
-                                text = tabTitle,
-                                fontSize = 16.sp,
-                                fontWeight = if (isSelected) FontWeight.Bold else FontWeight.Medium,
-                                color = if (isSelected) OnSurfaceBG else OnBackground,
-                            )
-                        }
                     )
                 }
             }

@@ -20,7 +20,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.scrollbooker.ui.theme.OnSurfaceBG
 import com.example.scrollbooker.ui.theme.SurfaceBG
-import com.example.scrollbooker.ui.theme.bodyLarge
+import com.example.scrollbooker.ui.theme.bodyMedium
 
 @Composable
 fun ServiceTab(
@@ -28,8 +28,8 @@ fun ServiceTab(
     serviceName: String,
     onClick: () -> Unit,
     shape: Shape = ShapeDefaults.ExtraLarge,
-    paddingValues: PaddingValues = PaddingValues(horizontal = 16.dp, vertical = 8.dp),
-    style: TextStyle = bodyLarge,
+    paddingValues: PaddingValues = PaddingValues(horizontal = 12.dp, vertical = 12.dp),
+    style: TextStyle = bodyMedium,
     fontSize: TextUnit = 14.sp
 ) {
     Box(

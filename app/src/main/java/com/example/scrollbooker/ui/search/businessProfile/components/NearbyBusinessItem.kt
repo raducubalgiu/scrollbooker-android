@@ -60,7 +60,6 @@ fun NearbyBusinessItem(
             Text(
                 text = owner.fullName,
                 style = titleMedium.copy(fontWeight = FontWeight.SemiBold),
-                fontSize = 18.sp,
                 fontWeight = FontWeight.SemiBold,
                 maxLines = 1,
                 overflow = TextOverflow.Ellipsis,
