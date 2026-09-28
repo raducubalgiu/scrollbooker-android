@@ -46,6 +46,8 @@ fun EditUsernameScreen(
     onBack: () -> Unit
 ) {
     val state = viewModel.editState.collectAsState().value
+    val userState by viewModel.profile.collectAsState()
+    val user = (userState as? FeatureState.Success)?.data
 
     if (viewModel.isSaved) {
         LaunchedEffect(state) {
@@ -57,7 +59,7 @@ fun EditUsernameScreen(
     val searchState by viewModel.searchState.collectAsState()
 
     val isSaving by viewModel.editState.collectAsState()
-    var username by remember { mutableStateOf("") }
+    var username by remember { mutableStateOf(user?.username ?: "") }
 
     val isSubmittedEnabled = when {
         searchState is FeatureState.Success<*> -> {
@@ -72,6 +74,7 @@ fun EditUsernameScreen(
     val isLoading = isSaving is FeatureState.Loading
 
     FormLayout(
+        onBack = onBack,
         enableBottomAction = false,
         headerTitle = "",
         headLine = stringResource(R.string.usernameTitle),

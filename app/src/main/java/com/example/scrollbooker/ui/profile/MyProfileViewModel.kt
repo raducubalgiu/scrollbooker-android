@@ -11,7 +11,10 @@ import com.example.scrollbooker.components.customized.post.PostInteractionStore
 import com.example.scrollbooker.components.customized.post.PostViewHeartbeatTracker
 import com.example.scrollbooker.core.util.FeatureState
 import com.example.scrollbooker.components.customized.post.VideoPlayerManager
+import com.example.scrollbooker.core.network.util.isTokenValid
 import com.example.scrollbooker.core.util.withVisibleLoading
+import com.example.scrollbooker.entity.auth.domain.useCase.RefreshTokenUseCase
+import com.example.scrollbooker.entity.auth.domain.useCase.SaveUserSessionUseCase
 import com.example.scrollbooker.entity.booking.employee.domain.useCase.GetEmployeesByOwnerUseCase
 import com.example.scrollbooker.entity.booking.products.domain.useCase.GetProductsByBusinessIdAndEmployeeIdUseCase
 import com.example.scrollbooker.entity.booking.schedule.domain.useCase.GetSchedulesByUserIdUseCase
@@ -43,6 +46,7 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.distinctUntilChanged
+import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 import timber.log.Timber
@@ -60,6 +64,8 @@ class MyProfileViewModel @Inject constructor(
     private val updatePublicEmailUseCase: UpdatePublicEmailUseCase,
     private val updateAvatarUseCase: UpdateAvatarUseCase,
     private val searchUsernameUseCase: SearchUsernameUseCase,
+    private val refreshTokenUseCase: RefreshTokenUseCase,
+    private val saveUserSessionUseCase: SaveUserSessionUseCase,
     @ApplicationContext private val app: Context,
 
     getUserProfileUseCase: GetUserProfileUseCase,
@@ -221,23 +227,40 @@ class MyProfileViewModel @Inject constructor(
         viewModelScope.launch {
             _editState.value = FeatureState.Loading
 
-            val result = updateUsernameUseCase(newUsername)
+            val result = withVisibleLoading { updateUsernameUseCase(username = newUsername) }
 
-            result
-                .onSuccess {
-                    _editState.value = FeatureState.Success(Unit)
+            result.fold(
+                onSuccess = {
+                    val refreshToken = authDataStore.getRefreshToken().firstOrNull()
+
+                    if (isTokenValid(refreshToken) && !refreshToken.isNullOrBlank()) {
+                        refreshTokenUseCase(refreshToken).onFailure { e ->
+                            Timber.tag("Collect Username").e(e, "ERROR: Token could not be refreshed.")
+                            _editState.value = FeatureState.Error(e)
+                            return@fold
+                        }
+                    }
+
+                    saveUserSessionUseCase().onFailure { e ->
+                        Timber.tag("Collect Username").e(e, "ERROR: Session could not be saved.")
+                        _editState.value = FeatureState.Error(e)
+                        return@fold
+                    }
 
                     val currentProfile = (profile.value as? FeatureState.Success)?.data
                     if (currentProfile != null) {
                         val updatedProfile = currentProfile.copy(username = newUsername)
                         profileMutations.emit(FeatureState.Success(updatedProfile))
                     }
+
+                    _editState.value = FeatureState.Success(Unit)
                     isSaved = true
-                }
-                .onFailure { error ->
+                },
+                onFailure = { error ->
                     Timber.tag("EditProfile").e(error, "ERROR: on Edit Username User Data")
                     _editState.value = FeatureState.Error(error = null)
                 }
+            )
         }
     }
 
